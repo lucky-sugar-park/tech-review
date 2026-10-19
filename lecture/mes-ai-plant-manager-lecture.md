@@ -203,6 +203,58 @@ AI는 이 양쪽 끝을 모두 고칠 수 있다.
 [MES]   기존 MES DB와 API (교체하지 않음)
 ```
 
+#### 일반 아키텍처 그림
+
+중소기업 MES에 AI 공장장을 얹을 때 예상되는 일반적인 구성이다. 모든 구성요소가 **사내망(온프레미스)** 안에 있고, 기존 MES는 그대로 둔 채 **읽기는 조회 도구로, 쓰기는 승인 대기열을 거쳐서만** 연결한다.
+
+![AI 공장장 일반 아키텍처](./images/architecture.svg)
+
+> 그림 원본: [`images/architecture.svg`](./images/architecture.svg) (장표에 그대로 삽입 가능). 수정하려면 [`images/make_architecture_svg.py`](./images/make_architecture_svg.py)에서 배치와 문구를 고친 뒤 다시 생성한다.
+
+| 계층 | 역할 | 기술 예시 | 설계 포인트 |
+|---|---|---|---|
+| ① 사용자 채널 | 브리핑 열람, 질의, 승인 | 웹·모바일, 사내 메신저 | 승인함은 따로 둔다. AI가 제안하고 사람이 누른다 |
+| ② AI 공장장 서비스 | 상황 분류, 위임, 종합, 검증 | Python, FastAPI, LangGraph | 정기 실행(07:00 브리핑)과 이벤트 실행(알람, 불량 급증)을 모두 받는다 |
+| ③ 도구 계층 | MES 조회, 문서 검색, 계산, 실행 요청 | MCP 서버, OR-Tools | **숫자는 여기서만 나온다.** 조회는 읽기 전용 템플릿, 쓰기는 승인 대기열에 등록만 한다 |
+| ④ 모델 서빙 | LLM 추론, 임베딩 | Ollama 또는 vLLM, 오픈 모델 | GPU 1장으로 시작. 데이터가 공장 밖으로 나가지 않는다 |
+| ⑤ 데이터 계층 | 원천 데이터, 문서 색인, 판단 기록, 이벤트 | MES DB, pgvector, Postgres, MQTT·Kafka | 판단 기록과 감사 로그는 AI 서비스 쪽 DB에 따로 남긴다 |
+| ⑥ 기존 MES | 기준정보, 계획, 실적, 품질, 설비, 출하 | 기존 시스템 그대로 | **교체하지 않는다.** 조회 API와 쓰기 API, 이벤트 발행만 갖추면 된다(장표 K) |
+| ⑦ 현장 | 실적 입력, 설비 데이터 수집 | POP, 바코드, PLC, OPC UA | 실시간 제어는 PLC와 MES가 맡는다. AI는 관여하지 않는다 |
+
+#### 아침 브리핑 처리 흐름
+
+위 구성에서 07:00 아침 브리핑이 만들어지는 순서다. [데모 코드](../demo/morning-briefing/)는 이 흐름을 축소해 구현했다.
+
+![아침 브리핑 처리 흐름](./images/briefing-sequence.svg)
+
+<details>
+<summary>Mermaid 원본 (GitHub에서 바로 렌더링됨, <code>images/briefing-sequence.mmd</code>)</summary>
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant S as 스케줄러 (07:00)
+    participant G as AI 공장장 (LangGraph)
+    participant T as MES 조회 도구 (읽기 전용)
+    participant DB as MES DB
+    participant L as LLM (Ollama)
+    participant U as 공장장·팀장
+
+    S->>G: 아침 브리핑 실행
+    G->>T: 전일 실적, 금일 계획, 출하 예정, 재고, 자재·설비 위험 조회
+    T->>DB: SQL 집계 (읽기 전용)
+    DB-->>T: 수치
+    T-->>G: 조회 결과 + 조회 시각
+    Note over G: 출하 충족 계산 (코드)<br/>재고 + 생산 계획 − 출하 예정
+    G->>L: 데이터만 근거로 주의 사항·권고 작성 요청
+    L-->>G: 권고 문장
+    Note over G: 검증: 문장 속 숫자가 MES 데이터에 있는가?<br/>없으면 규칙 기반 문장으로 대체
+    G->>U: 브리핑 전달 (표의 숫자는 MES, 출처 표시)
+    U-->>G: 회의에서 결정 (예: 조립2라인 우선 투입)
+```
+
+</details>
+
 ### 장표 K: AI-ready MES 체크리스트 ⭐
 
 | # | 설계 원칙 | 왜 필요한가 |

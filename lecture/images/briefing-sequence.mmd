@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant S as 스케줄러 (07:00)
+    participant G as AI 공장장 (LangGraph)
+    participant T as MES 조회 도구 (읽기 전용)
+    participant DB as MES DB
+    participant L as LLM (Ollama)
+    participant U as 공장장·팀장
+
+    S->>G: 아침 브리핑 실행
+    G->>T: 전일 실적, 금일 계획, 출하 예정, 재고, 자재·설비 위험 조회
+    T->>DB: SQL 집계 (읽기 전용)
+    DB-->>T: 수치
+    T-->>G: 조회 결과 + 조회 시각
+    Note over G: 출하 충족 계산 (코드)<br/>재고 + 생산 계획 − 출하 예정
+    G->>L: 데이터만 근거로 주의 사항·권고 작성 요청
+    L-->>G: 권고 문장
+    Note over G: 검증: 문장 속 숫자가 MES 데이터에 있는가?<br/>없으면 규칙 기반 문장으로 대체
+    G->>U: 브리핑 전달 (표의 숫자는 MES, 출처 표시)
+    U-->>G: 회의에서 결정 (예: 조립2라인 우선 투입)
