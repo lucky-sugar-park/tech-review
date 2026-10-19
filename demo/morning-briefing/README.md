@@ -96,6 +96,24 @@ set OLLAMA_MODEL=qwen3.6:35b-a3b
 python briefing.py
 ```
 
+### Windows에서 `source`가 인식되지 않을 때
+
+`source`는 bash·zsh 명령이라 PowerShell과 cmd에는 없습니다. 또 Windows 가상환경은 실행 파일이 `bin`이 아니라 `Scripts` 폴더에 있습니다.
+
+| 터미널 | 가상환경 활성화 |
+|---|---|
+| PowerShell | `.\.venv\Scripts\Activate.ps1` |
+| cmd | `.venv\Scripts\activate.bat` |
+| Git Bash | `source .venv/Scripts/activate` (`source`는 되지만 경로가 `Scripts`) |
+
+활성화가 계속 막히면 **활성화 없이** 가상환경의 파이썬을 직접 지정해서 실행해도 됩니다.
+
+```powershell
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python seed_mes.py
+.venv\Scripts\python briefing.py --no-llm
+```
+
 ### 환경 변수
 
 | 변수 | 의미 | 기본값 |
