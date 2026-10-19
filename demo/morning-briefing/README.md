@@ -25,26 +25,102 @@ MES 조회    출하 충족    주의 사항    LLM 문장의    브리핑
 
 ## 실행
 
+준비물: Python 3.10 이상. Ollama 모드를 쓰려면 [Ollama](https://ollama.com/download)를 설치해 둡니다. Windows는 설치하면 백그라운드에서 서버가 자동으로 실행됩니다.
+
+### macOS / Linux (bash, zsh)
+
 ```bash
 cd demo/morning-briefing
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
-python seed_mes.py              # 가상 MES DB(mes.db) 생성
+python seed_mes.py                          # 가상 MES DB(mes.db) 생성
 
 # 1) LLM 없이 (백업 모드, 오프라인)
 python briefing.py --no-llm
 
 # 2) Ollama 사용
-ollama pull qwen3:8b            # 사용할 모델 (다른 모델이면 OLLAMA_MODEL로 지정)
+ollama pull qwen3:8b                        # 기본 모델
 python briefing.py
+
+# 다른 모델로 실행
 OLLAMA_MODEL=qwen3.6:35b-a3b python briefing.py
 ```
 
-환경 변수:
-- `OLLAMA_MODEL`: 사용할 Ollama 모델 (기본값 `qwen3:8b`)
-- `BRIEFING_DATE`: 브리핑 기준일 (기본값 `2026-10-20`, 샘플 데이터 날짜)
-- Ollama 서버 주소를 바꾸려면 `OLLAMA_HOST`를 설정합니다.
+### Windows (PowerShell)
+
+```powershell
+cd demo\morning-briefing
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+python seed_mes.py                          # 가상 MES DB(mes.db) 생성
+
+# 1) LLM 없이 (백업 모드, 오프라인)
+python briefing.py --no-llm
+
+# 2) Ollama 사용
+ollama pull qwen3:8b                        # 기본 모델
+python briefing.py
+
+# 다른 모델로 실행 (현재 PowerShell 창에서만 유효)
+$env:OLLAMA_MODEL = "qwen3.6:35b-a3b"
+python briefing.py
+```
+
+> `Activate.ps1`이 "스크립트를 실행할 수 없습니다" 오류로 막히면, 현재 창에서만 실행 정책을 풀고 다시 활성화합니다.
+> ```powershell
+> Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+> .\.venv\Scripts\Activate.ps1
+> ```
+
+### Windows (명령 프롬프트, cmd)
+
+```bat
+cd demo\morning-briefing
+py -m venv .venv
+.venv\Scripts\activate.bat
+pip install -r requirements.txt
+
+python seed_mes.py
+
+python briefing.py --no-llm
+
+ollama pull qwen3:8b
+python briefing.py
+
+rem 다른 모델로 실행 (현재 cmd 창에서만 유효, = 앞뒤에 공백 없이)
+set OLLAMA_MODEL=qwen3.6:35b-a3b
+python briefing.py
+```
+
+### 환경 변수
+
+| 변수 | 의미 | 기본값 |
+|---|---|---|
+| `OLLAMA_MODEL` | 사용할 Ollama 모델 | `qwen3:8b` |
+| `BRIEFING_DATE` | 브리핑 기준일 | `2026-10-20` (샘플 데이터 날짜) |
+| `OLLAMA_HOST` | Ollama 서버 주소 (다른 PC의 Ollama를 쓸 때) | `http://localhost:11434` |
+
+환경 변수 설정 문법은 셸마다 다릅니다.
+
+| 셸 | 설정 | 해제 |
+|---|---|---|
+| bash / zsh | `export OLLAMA_MODEL=qwen3.6:35b-a3b` | `unset OLLAMA_MODEL` |
+| PowerShell | `$env:OLLAMA_MODEL = "qwen3.6:35b-a3b"` | `Remove-Item Env:OLLAMA_MODEL` |
+| cmd | `set OLLAMA_MODEL=qwen3.6:35b-a3b` | `set OLLAMA_MODEL=` |
+
+### Windows에서 자주 겪는 문제
+
+| 증상 | 원인과 해결 |
+|---|---|
+| `python`을 찾을 수 없음, 또는 Microsoft Store가 열림 | Python 설치 시 "Add python.exe to PATH"를 체크하지 않은 경우. `py` 런처를 쓰거나(`py seed_mes.py`), Python을 다시 설치하며 PATH 옵션을 켭니다 |
+| 이모지(📋 ✅ ⚠️)가 네모로 보임 | 구형 콘솔의 글꼴 문제. **Windows Terminal**에서 실행하면 정상 표시됩니다 |
+| 표의 열이 조금 어긋남 | 한글이 영문보다 폭이 넓어서 생기는 현상. 내용에는 문제가 없습니다 |
+| 출력을 파일로 저장할 때 인코딩 오류 | 스크립트가 출력을 UTF-8로 고정하므로 `python briefing.py --no-llm > briefing.txt`로 저장하면 됩니다. 파일은 UTF-8로 열어 주세요 |
+| `주의 사항 작성: rules (LLM 호출 실패: ConnectError)` | Ollama 서버가 실행 중이 아님. 시작 메뉴에서 Ollama를 실행하거나 `ollama serve`를 실행합니다 |
 
 ## 출력 예시 (`--no-llm`)
 

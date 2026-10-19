@@ -16,6 +16,7 @@ LangGraph 흐름:  collect(MES 조회) → analyze(출하 충족 계산) → adv
 import argparse
 import os
 import re
+import sys
 from datetime import date, timedelta
 from typing import TypedDict
 
@@ -176,6 +177,10 @@ def build_graph():
 
 
 if __name__ == "__main__":
+    # Windows에서 출력을 파일·파이프로 보낼 때 cp949 인코딩 오류(이모지)가 나지 않도록 UTF-8로 고정
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     parser = argparse.ArgumentParser(description="AI 공장장 아침 브리핑 데모")
     parser.add_argument("--no-llm", action="store_true", help="LLM 없이 규칙 기반으로 작성 (백업 모드)")
     args = parser.parse_args()
