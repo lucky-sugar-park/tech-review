@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 공장장 화면 시안</title>
+<style>
+  :root {
+    --bg: #E9ECEF; --panel: #FFFFFF; --line: #D5DAE0; --text: #1E293B; --muted: #64748B;
+    --mes: #0E7490; --ai: #7C3AED; --ok: #16A34A; --warn: #D97706; --crit: #DC2626;
+    --chip: #F1F5F9; --accent: #F59E0B;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; font-size: 14px; }
+  .tabs { display: flex; gap: 6px; padding: 12px 16px 0; flex-wrap: wrap; }
+  .tab { border: 1px solid var(--line); background: #F8FAFC; padding: 8px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font: inherit; color: var(--muted); }
+  .tab.on { background: var(--panel); color: var(--text); font-weight: 700; border-bottom-color: var(--panel); }
+  .view { display: none; padding: 0 16px 16px; }
+  .view.on { display: block; }
+  .frame { background: var(--panel); border: 1px solid var(--line); border-radius: 0 10px 10px 10px; overflow: hidden; }
+  .note { color: var(--muted); font-size: 12px; padding: 8px 2px; }
+
+  /* 오늘 화면 */
+  .topbar { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .brand { font-weight: 800; }
+  .fresh { font-size: 12px; padding: 3px 8px; border-radius: 99px; background: #DCFCE7; color: #166534; }
+  .ask { flex: 1; min-width: 220px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; color: var(--muted); background: #F8FAFC; }
+  .layout { display: grid; grid-template-columns: 140px 1fr 330px; min-height: 620px; }
+  .nav { border-right: 1px solid var(--line); padding: 12px 8px; background: #F8FAFC; }
+  .nav div { padding: 9px 10px; border-radius: 6px; margin-bottom: 2px; display: flex; justify-content: space-between; color: var(--muted); }
+  .nav div.on { background: #E2E8F0; color: var(--text); font-weight: 700; }
+  .count { background: var(--crit); color: #fff; font-size: 11px; border-radius: 99px; padding: 0 7px; }
+  .main { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+  h3 { margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 700; }
+  .badge { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; vertical-align: middle; margin-left: 6px; }
+  .b-mes { background: #CFFAFE; color: var(--mes); }
+  .b-ai { background: #EDE9FE; color: var(--ai); }
+  .summary { font-size: 17px; font-weight: 700; margin: 4px 0 12px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .kpi { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  .kpi .v { font-size: 22px; font-weight: 800; }
+  .kpi .l { font-size: 12px; color: var(--muted); }
+  .kpi.warn .v { color: var(--warn); }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; grid-template-columns: 14px 1fr; gap: 10px; cursor: pointer; }
+  .card + .card { margin-top: 8px; }
+  .card.sel { border-color: var(--accent); box-shadow: 0 0 0 2px #FDE68A; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 4px; }
+  .crit { background: var(--crit); } .warnc { background: var(--warn); }
+  .ct { font-weight: 800; font-size: 15px; }
+  .cd { color: var(--muted); margin: 4px 0; font-size: 13px; }
+  .cr { font-size: 13px; }
+  .acts { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .btn { border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  .btn.pri { background: var(--text); color: #fff; border-color: var(--text); }
+  .lines { display: grid; gap: 8px; }
+  .lrow { display: grid; grid-template-columns: 70px 1fr 54px; align-items: center; gap: 10px; font-size: 13px; }
+  .bar { height: 12px; background: #E2E8F0; border-radius: 6px; position: relative; overflow: hidden; }
+  .bar i { position: absolute; inset: 0 auto 0 0; background: #94A3B8; border-radius: 6px; }
+  .bar.w i { background: var(--warn); }
+  .st { font-size: 12px; color: var(--muted); } .st.w { color: var(--warn); font-weight: 700; }
+  .chat { border-left: 1px solid var(--line); display: flex; flex-direction: column; background: #FBFCFD; }
+  .chat-h { padding: 12px 14px; border-bottom: 1px solid var(--line); font-weight: 800; }
+  .ctx { font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .msgs { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .m { padding: 9px 11px; border-radius: 10px; max-width: 92%; font-size: 13px; line-height: 1.5; }
+  .m.me { align-self: flex-end; background: var(--text); color: #fff; }
+  .m.ai { background: #fff; border: 1px solid var(--line); }
+  .m.ai ul { margin: 6px 0; padding-left: 18px; }
+  .calc { background: var(--chip); border-radius: 6px; padding: 6px 8px; font-size: 12px; margin-top: 6px; }
+  .src { font-size: 11px; color: var(--mes); margin-top: 6px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 8px; }
+  .chipq { background: var(--chip); border: 0; border-radius: 99px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  .input { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--line); }
+  .input div { flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; color: var(--muted); background: #fff; }
+  .status { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); background: #F8FAFC; flex-wrap: wrap; }
+  .stop { border: 1px solid var(--crit); color: var(--crit); background: #fff; border-radius: 6px; padding: 4px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+
+  /* 승인 카드 */
+  .approve { max-width: 760px; margin: 24px auto; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .ap-h { display: flex; justify-content: space-between; padding: 12px 18px; background: #FFFBEB; border-bottom: 1px solid #FDE68A; font-size: 13px; }
+  .risk { font-weight: 800; color: var(--warn); }
+  .ap-b { padding: 16px 18px; }
+  .ap-t { font-size: 19px; font-weight: 800; margin-bottom: 14px; }
+  .ap-row { display: grid; grid-template-columns: 110px 1fr; padding: 9px 0; border-top: 1px solid #EEF1F4; font-size: 14px; gap: 10px; }
+  .ap-row b { color: var(--muted); font-weight: 700; }
+  .impact { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { background: var(--chip); border-radius: 6px; padding: 3px 8px; font-size: 13px; }
+  .pill.good { background: #DCFCE7; color: #166534; font-weight: 700; }
+  .diff { font-family: ui-monospace, Consolas, monospace; font-size: 12px; background: #F8FAFC; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+  .ap-f { display: flex; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--line); align-items: center; flex-wrap: wrap; }
+  .ok { background: var(--ok); color: #fff; border: 0; border-radius: 8px; padding: 9px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+  .reasons { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; font-size: 12px; color: var(--muted); align-items: center; }
+
+  /* 현장 태블릿 */
+  .devices { display: flex; gap: 28px; justify-content: center; padding: 24px; flex-wrap: wrap; }
+  .phone { width: 320px; border: 10px solid #111827; border-radius: 34px; background: #0F172A; color: #fff; overflow: hidden; }
+  .ph-h { padding: 16px 18px 10px; font-size: 13px; color: #CBD5E1; }
+  .ph-alert { margin: 0 14px 12px; background: #78350F; border: 1px solid var(--accent); border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; }
+  .ph-alert small { display: block; font-weight: 400; color: #FDE68A; margin-top: 4px; font-size: 12px; }
+  .big { display: block; width: calc(100% - 28px); margin: 0 14px 10px; padding: 18px; font: inherit; font-size: 18px; font-weight: 800; text-align: left; border: 0; border-radius: 14px; background: #1E293B; color: #fff; cursor: pointer; }
+  .mic { margin: 8px 14px 18px; padding: 16px; text-align: center; border-radius: 99px; background: var(--accent); color: #0F172A; font-weight: 800; font-size: 16px; }
+  .ph-ans { margin: 0 14px 12px; background: #1E293B; border-radius: 12px; padding: 12px; font-size: 14px; line-height: 1.5; display: none; }
+
+  /* 메신저 */
+  .messenger { max-width: 560px; margin: 24px auto; background: #F3F4F6; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .bot { display: flex; gap: 10px; margin-bottom: 14px; }
+  .avatar { width: 36px; height: 36px; border-radius: 8px; background: var(--accent); color: #0F172A; display: grid; place-items: center; font-weight: 800; flex: none; }
+  .bubble { background: #fff; border-radius: 10px; padding: 12px; font-size: 14px; line-height: 1.6; border: 1px solid var(--line); flex: 1; }
+  .bubble .acts { margin-top: 10px; }
+  .reply { margin: 0 0 14px 46px; }
+  .reply .me { background: #FEF3C7; border-radius: 10px; padding: 8px 12px; display: inline-block; font-size: 14px; }
+  .thread { font-size: 12px; color: var(--muted); margin: 0 0 6px 46px; }
+
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .nav { display: none; }
+    .chat { border-left: 0; border-top: 1px solid var(--line); min-height: 420px; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="tabs" role="tablist">
+  <button class="tab on" data-v="today">① 오늘 화면 (관리자)</button>
+  <button class="tab" data-v="approve">② 승인 카드</button>
+  <button class="tab" data-v="field">③ 현장 태블릿</button>
+  <button class="tab" data-v="msg">④ 사내 메신저</button>
+</div>
+
+<!-- ① 오늘 화면 -->
+<section class="view on" id="today">
+  <div class="frame">
+    <div class="topbar">
+      <span class="brand">미래정밀 1공장</span>
+      <span>10월 20일(화)</span>
+      <span class="fresh">데이터 기준 06:55 · 전일 실적 마감 ✓</span>
+      <div class="ask">🔍 무엇이든 물어보세요 (예: 2라인 어제 왜 느렸어?)</div>
+    </div>
+    <div class="layout">
+      <nav class="nav">
+        <div class="on">오늘</div>
+        <div>승인함 <span class="count">2</span></div>
+        <div>알림 <span class="count">3</span></div>
+        <div>질문 기록</div>
+        <div>리포트</div>
+        <div>설정</div>
+      </nav>
+      <main class="main">
+        <div>
+          <h3>① 아침 브리핑 <span class="badge b-ai">AI 요약</span></h3>
+          <div class="summary">B-205 출하 200개 부족 예상 외 2건이 주의가 필요합니다</div>
+          <div class="kpis">
+            <div class="kpi"><div class="v">94.0%</div><div class="l">전일 생산 달성률 <span class="badge b-mes">MES</span></div></div>
+            <div class="kpi warn"><div class="v">2 / 3</div><div class="l">금일 출하 충족 품목 <span class="badge b-mes">MES</span></div></div>
+            <div class="kpi"><div class="v">3.1%</div><div class="l">전일 불량률 <span class="badge b-mes">MES</span></div></div>
+            <div class="kpi"><div class="v">3 / 3</div><div class="l">가동 중인 라인 <span class="badge b-mes">MES</span></div></div>
+          </div>
+        </div>
+        <div>
+          <h3>② 주의가 필요한 일 (우선순위순)</h3>
+          <div class="card sel" data-k="b205">
+            <span class="dot crit"></span>
+            <div>
+              <div class="ct">B-205 출하 200개 부족 예상</div>
+              <div class="cd">재고 300 + 금일 생산 계획 3,000 − 출하 예정 3,500 = −200 <span class="badge b-mes">MES</span></div>
+              <div class="cr">권고: 오전 중 조립2라인 우선 투입 <span class="badge b-ai">AI</span></div>
+              <div class="acts"><button class="btn why" data-k="b205">왜?</button><button class="btn pri go-approve">승인 요청 보기</button><button class="btn">나중에</button></div>
+            </div>
+          </div>
+          <div class="card" data-k="mat">
+            <span class="dot warnc"></span>
+            <div>
+              <div class="ct">자재 A (PP 수지) 입고 지연 가능성</div>
+              <div class="cd">다온케미칼 · 금일 입고 예정 · 납기 회신 미수신 <span class="badge b-mes">MES</span></div>
+              <div class="cr">권고: 구매팀 납기 확인 <span class="badge b-ai">AI</span></div>
+              <div class="acts"><button class="btn why" data-k="mat">왜?</button><button class="btn">구매팀에 확인 요청</button></div>
+            </div>
+          </div>
+          <div class="card" data-k="vib">
+            <span class="dot warnc"></span>
+            <div>
+              <div class="ct">3호기 사출기 진동 상승 추세</div>
+              <div class="cd">최근 3일 상승 · 사출2라인 <span class="badge b-mes">MES</span></div>
+              <div class="cr">권고: 점심시간 점검 <span class="badge b-ai">AI</span></div>
+              <div class="acts"><button class="btn why" data-k="vib">왜?</button><button class="btn">보전 작업 요청</button></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3>③ 라인 상태 (정상은 회색, 이상만 색)</h3>
+          <div class="lines">
+            <div class="lrow"><span>사출1라인</span><div class="bar"><i style="width:96%"></i></div><span class="st">정상</span></div>
+            <div class="lrow"><span>사출2라인</span><div class="bar w"><i style="width:90%"></i></div><span class="st w">주의</span></div>
+            <div class="lrow"><span>조립2라인</span><div class="bar"><i style="width:97%"></i></div><span class="st">정상</span></div>
+          </div>
+        </div>
+      </main>
+      <aside class="chat">
+        <div class="chat-h">💬 AI 공장장에게 묻기<div class="ctx" id="ctx">선택한 항목: B-205 출하 부족</div></div>
+        <div class="msgs" id="msgs">
+          <div class="m ai">카드의 <b>[왜?]</b>를 누르거나 아래 추천 질문을 눌러 보세요. 선택한 항목이 질문의 맥락이 됩니다.</div>
+        </div>
+        <div class="chips">
+          <button class="chipq" data-k="b205">B-205 왜 부족해?</button>
+          <button class="chipq" data-k="trend">B-205 지난주 추이 보여줘</button>
+        </div>
+        <div class="input"><div>질문을 입력하세요…</div><button class="btn">🎤</button><button class="btn pri">↵</button></div>
+      </aside>
+    </div>
+    <div class="status">
+      <span>AI 상태: 07:00 브리핑 실행 · 모델 qwen3.6 (온프레미스) · 근거 검증 통과 · 규칙 모드 아님</span>
+      <button class="stop">■ AI 작업 멈춤</button>
+    </div>
+  </div>
+  <div class="note">설계 포인트: MES 배지(청록)는 시스템이 계산한 숫자, AI 배지(보라)는 AI가 쓴 문장. 카드 하나 = 결정 하나. 대화는 선택한 카드의 맥락을 이어받는다.</div>
+</section>
+
+<!-- ② 승인 카드 -->
+<section class="view" id="approve">
+  <div class="frame">
+    <div class="approve">
+      <div class="ap-h"><span>승인 요청 · 요청자 AI 공장장 · 07:02</span><span class="risk">위험 등급: 중</span></div>
+      <div class="ap-b">
+        <div class="ap-t">조립2라인 오전 우선 투입 (B-205 200개 추가 확보)</div>
+        <div class="ap-row"><b>영향</b><div class="impact"><span class="pill good">출하 충족 3/3 (현재 2/3)</span><span class="pill">잔업 0시간</span><span class="pill">다른 주문 납기 영향 없음</span></div></div>
+        <div class="ap-row"><b>근거 ▸</b><div>재고·계획·출하 계산 <span class="badge b-mes">MES</span> · 조립2라인 오전 작업 여유 확인 <span class="badge b-mes">MES</span></div></div>
+        <div class="ap-row"><b>실행 내용 ▸</b><div class="diff">MES 작업지시 순서 변경 2건<br>WO-1020-02 (B-205)  3순위 → 1순위<br>WO-1020-05 (B-207)  1순위 → 3순위</div></div>
+        <div class="ap-row"><b>되돌리기</b><div>가능 (해당 작업 시작 전까지)</div></div>
+      </div>
+      <div class="ap-f">
+        <button class="ok">✓ 승인</button>
+        <button class="btn">✎ 수정 후 승인</button>
+        <button class="btn">✕ 거절</button>
+        <div class="reasons">거절 이유: <button class="chipq">이미 조치함</button><button class="chipq">라인 사정</button><button class="chipq">데이터 틀림</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="note">설계 포인트: 승인하면 MES에서 무엇이 바뀌는지 정확히 미리 보여준다. 되돌릴 수 있는지 표시하고, 거절 이유는 칩으로 받아 학습에 쓴다. (B-207은 시안용 가상 품목)</div>
+</section>
+
+<!-- ③ 현장 태블릿 -->
+<section class="view" id="field">
+  <div class="frame">
+    <div class="devices">
+      <div class="phone">
+        <div class="ph-h">조립2라인 · 반장 김OO · 07:15</div>
+        <div class="ph-alert">⚠ 오전 B-205 우선 투입<small>생산관리자 승인 07:05 · 작업지시 순서 변경됨</small></div>
+        <button class="big" data-a="state">우리 라인 지금 상태</button>
+        <button class="big" data-a="alarm">알람 원인 알려줘</button>
+        <button class="big" data-a="down">비가동 입력 🎤 📷</button>
+        <button class="big" data-a="hand">교대 인계 요약</button>
+        <div class="ph-ans" id="phans"></div>
+        <div class="mic">🎤 길게 눌러 말하기</div>
+      </div>
+    </div>
+  </div>
+  <div class="note">설계 포인트: 장갑·소음·밝은 조명을 전제로 큰 버튼, 한 번 탭, 음성, 고대비. 승인된 지시가 현장 화면에 바로 도착한다. 네트워크가 끊겨도 지침과 최근 데이터는 보이게 한다.</div>
+</section>
+
+<!-- ④ 메신저 -->
+<section class="view" id="msg">
+  <div class="frame">
+    <div class="messenger">
+      <div class="bot"><div class="avatar">AI</div><div class="bubble">
+        <b>📋 10/20 아침 브리핑 · 주의 3건</b><br>
+        🔴 B-205 출하 200개 부족 예상 → 조립2라인 우선 투입 권고<br>
+        🟠 자재 A 입고 지연 가능성 (납기 회신 미수신)<br>
+        🟠 3호기 사출기 진동 상승 추세
+        <div class="acts"><button class="btn">브리핑 전체 보기</button><button class="btn pri">승인함 열기 (2)</button></div>
+      </div></div>
+      <div class="thread">↳ 스레드 답장</div>
+      <div class="reply"><span class="me">B-205 왜 부족해?</span></div>
+      <div class="bot"><div class="avatar">AI</div><div class="bubble">
+        원인은 두 가지입니다.<br>
+        · <b>전일 생산 미달</b>: 계획 3,000개 중 2,900개 생산 (100개 미달)<br>
+        · <b>오늘 출하 증가</b>: 나래모빌리티 3,500개 (전일 3,000개보다 500개 많음)
+        <div class="calc">재고 300 + 금일 계획 3,000 − 출하 예정 3,500 = −200</div>
+        <div class="src">출처: MES 작업지시·작업실적·출하계획·출하실적·재고 (06:55)</div>
+        <div class="acts"><button class="btn pri">조립2라인 우선 투입 승인 요청</button><button class="btn">👍</button><button class="btn">👎</button></div>
+      </div></div>
+    </div>
+  </div>
+  <div class="note">설계 포인트: 1단계는 새 앱 없이 사내 메신저에서 시작한다. 질문은 브리핑에 답장으로 하고, 답에서 바로 승인으로 이어진다.</div>
+</section>
+
+<script>
+  const tabs = document.querySelectorAll(".tab");
+  function show(v) {
+    tabs.forEach(t => t.classList.toggle("on", t.dataset.v === v));
+    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === v));
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.v)));
+  document.querySelectorAll(".go-approve").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); show("approve"); }));
+
+  const answers = {
+    b205: { q: "B-205 왜 부족해?", ctx: "B-205 출하 부족",
+      a: `원인은 두 가지입니다.<ul><li><b>전일 생산 미달</b>: 계획 3,000개 중 2,900개 생산 (100개 미달) → 오늘 아침 재고 300개</li><li><b>오늘 출하 증가</b>: 나래모빌리티 3,500개 (전일 출하 3,000개보다 500개 많음)</li></ul><div class="calc">재고 300 + 금일 계획 3,000 − 출하 예정 3,500 = −200</div><div class="src">출처: MES 작업지시·작업실적·출하계획·출하실적·재고 (06:55) ▸</div><div class="acts"><button class="btn pri go-approve2">승인 요청 보기</button><button class="btn">👍</button><button class="btn">👎</button></div>` },
+    mat: { q: "자재 A는 왜 위험해?", ctx: "자재 A 입고 지연",
+      a: `오늘 입고 예정인 자재 A(PP 수지)의 공급사 <b>다온케미칼</b>에서 아직 납기 회신이 없습니다. 같은 날 입고 예정인 자재 B는 확정되었습니다.<div class="src">출처: MES 자재 입고 예정 (06:55) ▸</div><div class="acts"><button class="btn pri">구매팀에 확인 요청</button></div>` },
+    vib: { q: "3호기 진동은 얼마나 심각해?", ctx: "3호기 진동 상승",
+      a: `이상 감지 모델이 <b>최근 3일간 진동 상승 추세</b>를 기록했습니다. 아직 정지 기준에는 도달하지 않았습니다. 매뉴얼과 과거 정비 이력을 보면 베어링 점검이 우선 후보입니다.<div class="src">출처: 설비 이상 징후 (06:50) · 매뉴얼 RAG ▸</div><div class="acts"><button class="btn pri">보전 작업 요청</button></div>` },
+    trend: { q: "B-205 지난주 추이 보여줘", ctx: "B-205 출하 부족",
+      a: `요청하신 차트 카드입니다 (시안용 예시 수치).<div class="calc"><b>B-205 일별 생산 (계획 3,000)</b><br>10/14 ▇▇▇▇▇▇▇▇▇ 2,980<br>10/15 ▇▇▇▇▇▇▇▇▇▇ 3,010<br>10/16 ▇▇▇▇▇▇▇▇▇ 2,950<br>10/17 ▇▇▇▇▇▇▇▇▇▇ 3,000<br>10/19 ▇▇▇▇▇▇▇▇▇ 2,900</div><div class="src">AI가 차트 부품을 골라 띄우고, 숫자는 MES 조회로 채움 ▸</div>` },
+  };
+  const msgs = document.getElementById("msgs");
+  function ask(k) {
+    const x = answers[k]; if (!x) return;
+    document.getElementById("ctx").textContent = "선택한 항목: " + x.ctx;
+    document.querySelectorAll(".card").forEach(c => c.classList.toggle("sel", c.dataset.k === k || (k === "trend" && c.dataset.k === "b205")));
+    msgs.insertAdjacentHTML("beforeend", `<div class="m me">${x.q}</div><div class="m ai">${x.a}</div>`);
+    msgs.querySelectorAll(".go-approve2").forEach(b => b.onclick = () => show("approve"));
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+  document.querySelectorAll(".why, .chipq[data-k]").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); ask(b.dataset.k); }));
+  document.querySelectorAll(".card").forEach(c => c.addEventListener("click", () => {
+    document.querySelectorAll(".card").forEach(x => x.classList.toggle("sel", x === c));
+    document.getElementById("ctx").textContent = "선택한 항목: " + answers[c.dataset.k].ctx;
+  }));
+
+  const field = {
+    state: "조립2라인 정상 가동 중. 오전 작업: <b>B-205 우선</b> (승인됨). 현재 생산 0 / 목표 3,000.",
+    alarm: "현재 활성 알람 없음. 최근 알람: 어제 14:20 공압 저하 (조치 완료).",
+    down: "🎤 말씀하세요. 예: “금형 교체 때문에 10분 정지” → 비가동 사유 ‘금형 교체’로 입력 제안",
+    hand: "야간조 인계: B-205 2,900개 생산 (100개 미달). 특이사항 없음. 오전 B-205 우선 투입 지시 있음.",
+  };
+  document.querySelectorAll(".big").forEach(b => b.addEventListener("click", () => {
+    const el = document.getElementById("phans"); el.style.display = "block"; el.innerHTML = field[b.dataset.a];
+  }));
+</script>
+</body>
+</html>
