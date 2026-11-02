@@ -344,18 +344,63 @@ divider("PART 2", "모듈별 AI 활용 지도", P2, "[0:26] 데모에서 멈췄�
     ["자재·재고", "예측, LLM", "실물·전산 재고 차이 탐지, 결품 위험 경고", "L2", "중간"],
     ["설비 자동 수집", "이상 감지, 통계", "측정값 추세 이탈 경고, 공정 조건-불량 상관, 예지보전", "L1~L2", "수집 선행"],
     ["모니터링", "LLM", "아침 브리핑, 교대 보고서, 자연어 질의", "L1", "낮음 ★"],
+    ["지식 도우미 (공통)", "LLM + RAG", "MES 사용법, 생산·품질·보전 지식 질의응답 (출처 표시)", "L1", "문서 선행"],
   ];
   const hot = new Set([1, 9]);
-  const body = rows.map((r, i) => i === 0 ? r : r.map((c) => ({ text: c, options: hot.has(i) ? { fill: { color: "FEF3C7" }, bold: true } : {} })));
+  const know = 10;
+  const body = rows.map((r, i) => i === 0 ? r : r.map((c) => ({ text: c, options: hot.has(i) ? { fill: { color: "FEF3C7" }, bold: true } : i === know ? { fill: { color: "EDE9FE" }, bold: true } : {} })));
   s.addTable(body, {
-    x: 0.6, y: 1.25, w: 12.1, colW: [2.3, 2.1, 5.4, 1.0, 1.3], rowH: 0.5, fontSize: 13, color: C.text1,
+    x: 0.6, y: 1.25, w: 12.1, colW: [2.3, 2.1, 5.4, 1.0, 1.3], rowH: 0.46, fontSize: 13, color: C.text1,
     border: { type: "solid", pt: 0.75, color: HEX_BORDER }, valign: "middle", margin: [0, 0.1, 0, 0.1], objectName: nm("table"),
   });
   txt(s, "★ 읽기 전용이라 위험이 낮고 효과가 바로 보이는 출발점", { x: 0.6, y: 6.5, w: 12.1, h: 0.35, fontSize: 13, color: C.accent3 });
   s.addNotes(
     "[0:27] 모듈별 AI 활용 지도입니다. 자율성은 L1 참모, L2 추천, L3 승인형 실행입니다(뒤에서 설명).\n" +
     "강조 표시한 두 줄, 기준정보와 모니터링이 출발점입니다. 둘 다 읽기 전용이라 위험이 낮고 바로 효과가 보입니다.\n" +
-    "생산계획은 솔버가 계산하고 LLM은 설명합니다. 품질과 설비는 RAG와 이상 감지가 결합됩니다."
+    "생산계획은 솔버가 계산하고 LLM은 설명합니다. 품질과 설비는 RAG와 이상 감지가 결합됩니다.\n" +
+    "마지막 줄 지식 도우미는 모듈 하나가 아니라 전 모듈에 공통으로 걸칩니다. 다음 장에서 자세히 봅니다."
+  );
+}
+{
+  const s = content("지식 도우미: 매뉴얼과 현장 지식을 묻는 순간 꺼내 준다", P2);
+  txt(s, "MES 데이터는 “무엇이 일어났나”에, 문서 지식(RAG)은 “어떻게 해야 하나”에 답한다", { x: 0.6, y: 1.2, w: 12.1, h: 0.35, fontSize: 14, italic: true, color: C.accent3 });
+  const kinds = [
+    ["MES 사용 매뉴얼", "사용 설명서 · 화면 도움말 · 사내 FAQ", "“작업지시 순서는 어디서 바꿔?”", C.accent2],
+    ["생산 지식", "작업표준서 · 품종 교체 절차 · 공정 조건표", "“B-205로 교체할 때 금형 온도는?”", C.accent1],
+    ["품질 지식", "검사 기준서 · 불량 사례와 조치 · 8D 보고서", "“이 버 불량, 예전에 어떻게 해결했어?”", C.accent4],
+    ["보전 지식", "설비 매뉴얼 · 알람 코드표 · 정비 이력", "“3호기 E-217 알람이 뭐야?”", C.accent6],
+  ];
+  const w = 2.85, gap = 0.233;
+  kinds.forEach(([t, src, q, col], i) => {
+    const x = 0.6 + i * (w + gap);
+    card(s, x, 1.8, w, 2.9, C.background2);
+    badge(s, x + 0.25, 2.0, String(i + 1), col, C.background1, 0.44);
+    txt(s, t, { x: x + 0.8, y: 2.0, w: w - 0.95, h: 0.44, fontSize: 16, bold: true, valign: "middle" });
+    txt(s, src, { x: x + 0.25, y: 2.6, w: w - 0.45, h: 0.8, fontSize: 13, color: C.accent3 });
+    card(s, x + 0.2, 3.5, w - 0.4, 1.0, C.background1, HEX_BORDER);
+    txt(s, q, { x: x + 0.35, y: 3.5, w: w - 0.7, h: 1.0, fontSize: 13, bold: true, valign: "middle" });
+  });
+  const flow = ["질문", "사내 문서 검색 (RAG)", "근거와 함께 답", "출처 문서 · 개정판 표시"];
+  const fw = 2.75, fg = 0.37;
+  flow.forEach((f, i) => {
+    const x = 0.6 + i * (fw + fg);
+    card(s, x, 4.95, fw, 0.6, i === 3 ? "EDE9FE" : C.background1, C.accent6);
+    txt(s, f, { x, y: 4.95, w: fw, h: 0.6, fontSize: 14, bold: true, align: "center", valign: "middle" });
+    if (i < flow.length - 1) arrowR(s, x + fw + 0.05, 5.25, fg - 0.1, C.accent6);
+  });
+  card(s, 0.6, 5.8, 12.1, 0.95, C.text1);
+  txt(s, [
+    { text: "효과  ", options: { bold: true, color: C.accent1 } },
+    { text: "신입 교육 단축, 숙련자 노하우 보존", options: { color: C.background1, breakLine: true } },
+    { text: "원칙  ", options: { bold: true, color: C.accent1 } },
+    { text: "폐기 개정판 제외 · 문서 권한 준수 · 수치는 RAG가 아니라 MES 조회 도구에서 · 사내 서버에서만", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.8, w: 11.6, h: 0.95, fontSize: 14, valign: "middle" });
+  s.addNotes(
+    "[0:29] AI 활용 지도의 마지막 줄, 지식 도우미입니다. 모듈 하나가 아니라 모든 모듈에 걸칩니다.\n" +
+    "MES 데이터가 '무엇이 일어났나'에 답한다면, 문서 지식은 '어떻게 해야 하나'에 답합니다. MES 사용 매뉴얼, 작업표준서와 품종 교체 절차, 검사 기준과 불량 사례, 설비 매뉴얼과 알람 코드표를 RAG로 색인해 두면, 묻는 순간 관련 문서를 찾아 근거와 함께 답합니다.\n" +
+    "효과: 신입 교육 시간이 줄고, 숙련자에게만 있던 노하우가 사람이 바뀌어도 남습니다. 비가동 사유를 넣으면 조치 가이드가 나오는 '돌려주는 고리'도 이것으로 만듭니다.\n" +
+    "원칙: 답마다 출처 문서와 개정판 표시, 폐기된 개정판은 색인에서 제외, 문서 권한을 그대로 따름. 재고나 실적 같은 수치는 RAG가 아니라 MES 조회 도구에서 가져옵니다. Ollama와 pgvector/Qdrant로 사내 서버에서만 돌립니다.\n" +
+    "시작점: 가장 많이 묻는 설비 1~2대의 매뉴얼·알람 코드표와 불량 사례 이력부터. 체크리스트 7번(문서 디지털화)이 원료입니다."
   );
 }
 {
