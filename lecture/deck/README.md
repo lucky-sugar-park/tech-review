@@ -1,6 +1,6 @@
 # 강의 슬라이드 덱 생성
 
-`../mes-ai-plant-manager.pptx`(22장, 발표자 노트 포함)를 만드는 스크립트입니다.
+`../mes-ai-plant-manager.pptx`(24장, 발표자 노트 포함)를 만드는 스크립트입니다.
 
 ```bash
 npm install pptxgenjs

@@ -120,23 +120,29 @@ pres.addSection({ title: "오프닝" });
   const s = content("MES의 진짜 문제는 기능이 아니다", "오프닝");
   txt(s, "“여러분이 만든 MES 대시보드, 현장에서 몇 명이나 볼까요?”", { x: 0.6, y: 1.3, w: 12.1, h: 0.5, fontSize: 20, italic: true, color: C.accent2 });
   const cols = [
-    { x: 0.6, title: "입력되지 않는 데이터", items: ["실적을 몰아서 늦게 입력", "'기타' 불량 남발, 원인 미기록", "비가동 사유 칸이 비어 있음"], ai: "음성·사진 입력 · 수집 보완 · 이상 탐지" },
-    { x: 6.85, title: "아무도 보지 않는 대시보드", items: ["화면은 많지만 매일 보는 사람은 소수", "모듈마다 따로 놀아 원인이 안 보임", "숫자는 있는데 '그래서 뭘 하라고?'"], ai: "아침 브리핑 · 자연어 질의 · 원인 분석 · 추천" },
+    { x: 0.6, title: "입력되지 않는 데이터", items: ["입력은 작업자, 혜택은 관리자", "장갑·소음·먼 단말 → 몰아서 입력", "평가에 쓰일까 봐 비가동 사유를 비워 둠"], ai: "입력하면 바로 돌려주기 · 음성·사진 입력" },
+    { x: 6.85, title: "아무도 보지 않는 대시보드", items: ["답이 아니라 숫자만 보여줌", "입력이 엉망이라 숫자를 믿지 않음", "찾아가야 보이고, 본 뒤 할 행동이 없음"], ai: "먼저 알려주는 브리핑 · 근거 · 승인 버튼" },
   ];
   cols.forEach((c, i) => {
-    card(s, c.x, 2.05, 5.85, 4.65);
-    badge(s, c.x + 0.35, 2.35, String(i + 1));
-    txt(s, c.title, { x: c.x + 1.0, y: 2.35, w: 4.6, h: 0.46, fontSize: 22, bold: true, valign: "middle" });
+    card(s, c.x, 2.0, 5.85, 3.75);
+    badge(s, c.x + 0.35, 2.25, String(i + 1));
+    txt(s, c.title, { x: c.x + 1.0, y: 2.25, w: 4.6, h: 0.46, fontSize: 22, bold: true, valign: "middle" });
     txt(s, c.items.map((t, k) => ({ text: t, options: { bullet: true, breakLine: k < c.items.length - 1 } })),
-      { x: c.x + 0.4, y: 3.05, w: 5.1, h: 1.65, fontSize: 16, paraSpaceAfter: 8 });
-    card(s, c.x + 0.35, 4.95, 5.15, 1.45, C.background1, C.accent1);
-    txt(s, "AI가 고치는 방법", { x: c.x + 0.6, y: 5.1, w: 4.7, h: 0.35, fontSize: 13, bold: true, color: C.accent1 });
-    txt(s, c.ai, { x: c.x + 0.6, y: 5.5, w: 4.7, h: 0.75, fontSize: 15, bold: true });
+      { x: c.x + 0.4, y: 2.9, w: 5.1, h: 1.35, fontSize: 15, paraSpaceAfter: 6 });
+    card(s, c.x + 0.35, 4.4, 5.15, 1.1, C.background1, C.accent1);
+    txt(s, "AI가 고치는 방법", { x: c.x + 0.6, y: 4.5, w: 4.7, h: 0.32, fontSize: 13, bold: true, color: C.accent1 });
+    txt(s, c.ai, { x: c.x + 0.6, y: 4.85, w: 4.7, h: 0.5, fontSize: 15, bold: true });
   });
+  card(s, 0.6, 5.95, 12.1, 0.85, C.text1);
+  txt(s, [
+    { text: "하나의 악순환  ", options: { bold: true, color: C.accent1 } },
+    { text: "입력이 안 됨 → 숫자를 믿을 수 없음 → 안 봄 → “입력해 봐야 아무도 안 쓴다”", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.95, w: 11.6, h: 0.85, fontSize: 16, valign: "middle" });
   s.addNotes(
     "[0:01] 질문으로 시작합니다. 손을 들어보게 해도 좋습니다.\n" +
     "중소기업 MES의 가장 큰 문제는 기능이 아니라 두 끝입니다. 입력 쪽은 데이터가 제때, 제대로 들어오지 않고, 활용 쪽은 대시보드를 아무도 보지 않습니다.\n" +
-    "AI는 양쪽을 모두 고칠 수 있습니다. 입력 쪽은 음성·사진 입력과 이상 탐지로, 활용 쪽은 브리핑과 질의, 원인 분석으로. 이 두 끝이 오늘 강의의 프레임입니다."
+    "두 문제는 하나의 악순환이고 뿌리가 같습니다. 수고하는 사람과 혜택을 보는 사람이 다릅니다.\n" +
+    "끊는 방향: 입력하는 사람에게는 즉시 돌려주고(비가동 사유를 넣으면 조치 가이드가 나옴), 보는 사람에게는 답을 먼저 가져다줍니다. AI만으로 안 되는 것도 있습니다. 입력 데이터를 평가가 아니라 개선에 쓴다는 원칙, 종이·엑셀 병행 폐지가 함께 가야 합니다."
   );
 }
 {
@@ -151,21 +157,25 @@ pres.addSection({ title: "오프닝" });
     txt(s, l.t, { x: 0.95, y: l.y + 0.2, w: 5.4, h: 0.5, fontSize: 22, bold: true, color: l.color });
     txt(s, l.d, { x: 0.95, y: l.y + 0.72, w: 5.4, h: 0.4, fontSize: 15, color: l.color });
   });
+  card(s, 7.0, 1.5, 5.7, 1.55, "FEF3C7", C.accent1);
+  txt(s, "AI 공장장 = 공장장의 판단 루프를 공장 전체 범위에서 수행하는 AI 시스템. 최종 결정과 책임은 사람에게", { x: 7.25, y: 1.5, w: 5.25, h: 1.55, fontSize: 16, bold: true, valign: "middle" });
   const pts = [
-    ["AI는 MES를 대체하지 않는다", "MES는 기록 시스템으로 그대로 둔다"],
-    ["MES 데이터를 판단과 행동으로 잇는다", "보는 화면이 아니라 말을 거는 시스템"],
-    ["오늘의 질문", "MES를 AI가 쓸 수 있게(AI-ready) 만들려면 무엇을 설계해야 하나?"],
+    ["모델이 아니라 시스템", "MES 조회 도구 · RAG · 솔버 · LLM 에이전트 · 승인 체계"],
+    ["MES를 대체하지 않는다", "설비를 직접 제어하지도, 공장장을 대신하지도 않는다"],
+    ["대시보드와 다르다", "여러 모듈을 엮어 판단하고 먼저 말을 건다"],
   ];
   pts.forEach((p, i) => {
-    const y = 1.5 + i * 1.55;
-    badge(s, 7.2, y + 0.05, String(i + 1));
-    txt(s, p[0], { x: 7.85, y, w: 4.85, h: 0.5, fontSize: 19, bold: true, valign: "middle" });
-    txt(s, p[1], { x: 7.85, y: y + 0.55, w: 4.85, h: 0.8, fontSize: 15, color: C.accent3 });
+    const y = 3.35 + i * 1.0;
+    badge(s, 7.0, y + 0.02, String(i + 1));
+    txt(s, p[0], { x: 7.65, y, w: 5.05, h: 0.45, fontSize: 18, bold: true, valign: "middle" });
+    txt(s, p[1], { x: 7.65, y: y + 0.45, w: 5.05, h: 0.45, fontSize: 14, color: C.accent3 });
   });
   s.addNotes(
     "[0:02] 오늘의 핵심 메시지입니다. MES는 공장의 몸과 신경, AI 공장장은 그 위에 얹히는 두뇌입니다.\n" +
-    "AI는 MES를 대체하지 않습니다. MES 데이터가 판단과 행동으로 이어지게 만듭니다.\n" +
-    "그래서 IT 엔지니어에게 남는 질문은 하나입니다. 우리가 만드는 MES를 AI가 쓸 수 있게 하려면 무엇을 설계해야 하는가. 마지막에 체크리스트로 답합니다."
+    "AI 공장장의 정의를 먼저 한 문장으로: 공장장이 매일 하는 판단 루프(상황 파악 → 진단 → 판단 → 검증 → 지시 → 학습)를 공장 전체 범위에서 수행하는 AI 시스템. 최종 결정과 책임은 사람에게 남습니다.\n" +
+    "하나의 모델이 아니라 시스템이고, MES를 대체하지 않으며, 대시보드처럼 숫자만 보여주는 것이 아니라 먼저 말을 겁니다.\n" +
+    "정부 사업 '모두의 AI 공장장'(2026.09)은 같은 말을 쓰는 정책 사업 이름이라는 점을 구분해 둡니다.\n" +
+    "IT 엔지니어에게 남는 질문: MES를 AI가 쓸 수 있게(AI-ready) 하려면 무엇을 설계해야 하는가. 마지막에 체크리스트로 답합니다."
   );
 }
 
@@ -176,32 +186,34 @@ const P1 = "PART 1 MES 개관";
 divider("PART 1", "중소기업 MES 개관", P1, "[0:03] 첫 번째 부분: 중소기업 MES의 모듈과 데이터, 그리고 시간 계층. 8분.");
 {
   const s = content("중소기업 MES 모듈 지도", P1);
-  card(s, 0.6, 1.3, 12.1, 0.7, C.background2);
-  txt(s, "기준정보   품목 · BOM · 공정/라우팅 · 설비 · 작업자 · 거래처 · 불량코드", { x: 0.9, y: 1.3, w: 11.6, h: 0.7, fontSize: 16, bold: true, valign: "middle" });
-  const flow = ["영업·수주", "생산계획·작업지시", "작업실적(POP)", "품질검사", "출하"];
+  card(s, 0.6, 1.25, 12.1, 0.6, C.background2);
+  txt(s, "기준정보   품목 · BOM · 공정/라우팅 · 설비 · 작업자 · 거래처 · 불량코드", { x: 0.9, y: 1.25, w: 11.6, h: 0.6, fontSize: 15, bold: true, valign: "middle" });
   const fw = 2.04, gap = 0.47;
-  flow.forEach((f, i) => {
-    const x = 0.6 + i * (fw + gap);
-    card(s, x, 2.35, fw, 0.85, C.background1, C.accent2);
-    txt(s, f, { x, y: 2.35, w: fw, h: 0.85, fontSize: 15, bold: true, align: "center", valign: "middle" });
-    if (i < flow.length - 1) arrowR(s, x + fw + 0.06, 2.775, gap - 0.12, C.accent2);
-  });
-  const sub = [[1, "자재·재고 (LOT)"], [2, "설비·비가동"], [3, "불량·클레임"]];
-  sub.forEach(([i, t]) => {
-    const x = 0.6 + i * (fw + gap);
-    arrowD(s, x + fw / 2, 3.25, 0.4, C.accent3);
-    card(s, x, 3.7, fw, 0.75, C.background2);
-    txt(s, t, { x, y: 3.7, w: fw, h: 0.75, fontSize: 14, bold: true, align: "center", valign: "middle" });
-  });
-  card(s, 0.6, 4.8, 7.6, 0.75, C.background2);
-  txt(s, "모니터링·KPI   생산현황 · OEE · 불량률 · 납기", { x: 0.9, y: 4.8, w: 7.2, h: 0.75, fontSize: 15, valign: "middle" });
-  card(s, 8.45, 4.8, 4.25, 0.75, C.background2);
-  txt(s, "추적성   LOT 역추적", { x: 8.75, y: 4.8, w: 3.9, h: 0.75, fontSize: 15, valign: "middle" });
-  card(s, 0.6, 5.85, 12.1, 0.8, C.text1);
-  txt(s, "데이터 수집   POP 단말 · 바코드/QR · PLC/센서 (OPC UA, Modbus) · 수기 입력", { x: 0.9, y: 5.85, w: 11.6, h: 0.8, fontSize: 15, bold: true, color: C.background1, valign: "middle" });
+  const row = (y, label, items, col, hotLast) => {
+    txt(s, label, { x: 0.6, y: y - 0.36, w: 6, h: 0.3, fontSize: 12, bold: true, color: col });
+    items.forEach((f, i) => {
+      const x = 0.6 + i * (fw + gap), hot = hotLast && i === items.length - 1;
+      card(s, x, y, fw, 0.72, hot ? "FEF3C7" : C.background1, hot ? C.accent1 : col);
+      txt(s, f, { x, y, w: fw, h: 0.72, fontSize: 14, bold: true, align: "center", valign: "middle" });
+      if (i < items.length - 1) arrowR(s, x + fw + 0.06, y + 0.36, gap - 0.12, col);
+    });
+  };
+  row(2.35, "판매 흐름", ["영업·수주", "생산계획·작업지시", "작업실적(POP)", "품질검사", "출하"], C.accent2, false);
+  row(3.6, "구매 흐름  (엑셀·메일·전화로 처리하는 데이터 공백 지대)", ["부품 발주", "납품 관리", "입고·수입검사", "자재·재고 (LOT)"], C.accent3, true);
+  const x4 = 0.6 + 4 * (fw + gap);
+  card(s, x4, 3.6, fw, 0.72, C.background2);
+  txt(s, "설비·비가동\n불량·클레임", { x: x4, y: 3.6, w: fw, h: 0.72, fontSize: 13, bold: true, align: "center", valign: "middle" });
+  card(s, 0.6, 4.6, 7.6, 0.65, C.background2);
+  txt(s, "모니터링·KPI   생산현황 · OEE · 불량률 · 납기", { x: 0.9, y: 4.6, w: 7.2, h: 0.65, fontSize: 14, valign: "middle" });
+  card(s, 8.45, 4.6, 4.25, 0.65, C.background2);
+  txt(s, "추적성   LOT 역추적 (입고~출하)", { x: 8.75, y: 4.6, w: 3.9, h: 0.65, fontSize: 14, valign: "middle" });
+  card(s, 0.6, 5.45, 12.1, 0.7, C.text1);
+  txt(s, "데이터 수집   POP 단말 · 바코드/QR · PLC/센서 (OPC UA, Modbus) · 수기 입력", { x: 0.9, y: 5.45, w: 11.6, h: 0.7, fontSize: 14, bold: true, color: C.background1, valign: "middle" });
+  txt(s, "판매 흐름과 구매 흐름은 자재·재고에서 만난다. 생산계획이 자재 소요를 만들고, 소요가 부품 발주로 이어진다", { x: 0.6, y: 6.35, w: 12.1, h: 0.4, fontSize: 14, italic: true, color: C.accent3 });
   s.addNotes(
     "[0:04] 중소기업 MES는 보통 ERP 기능 일부(수주, 구매)까지 포함합니다.\n" +
-    "가운데 흐름이 핵심입니다: 수주 → 계획·작업지시 → 실적(POP) → 품질검사 → 출하. 그 아래로 자재·재고, 설비·비가동, 불량·클레임이 붙고, 위에는 기준정보, 아래에는 데이터 수집이 깔립니다.\n" +
+    "위쪽이 판매 흐름: 수주 → 계획·작업지시 → 실적(POP) → 품질검사 → 출하. 아래쪽이 구매 흐름: 부품 발주 → 납품 관리(납기 회신·납품 예정) → 입고·수입검사 → 자재·재고. 두 흐름이 자재·재고에서 만납니다.\n" +
+    "중소기업은 구매 흐름을 엑셀·메일·전화로 처리하는 경우가 많아 이 구간이 대표적인 데이터 공백 지대입니다.\n" +
     "곧 데모에서 이 모듈들을 실제 화면으로 보게 됩니다."
   );
 }
@@ -212,19 +224,49 @@ divider("PART 1", "중소기업 MES 개관", P1, "[0:03] 첫 번째 부분: 중�
     ["기준정보", "품목, BOM, 표준 사이클타임", "표준값이 실제와 다름, 개정 누락"],
     ["생산계획·작업지시", "작업지시, 우선순위", "엑셀로 따로 관리, 현장에서 순서를 임의로 바꿈"],
     ["작업실적(POP)", "시작·종료, 수량, 작업자", "몰아서 입력, 누락, 시간 부정확"],
-    ["품질", "검사 결과, 불량 유형", "'기타' 불량 남발, 원인 미기록"],
+    ["품질", "검사 결과, 불량 유형·원인", "원인은 기록되지만 표현이 제각각, 다시 꺼내 분석하지 않음"],
     ["설비", "가동·비가동, 보전 이력", "비가동 사유 미입력, 정비 내용이 자유 서술"],
+    ["구매 (발주·납품·입고)", "발주서, 납기 회신, 입고 LOT", "메일·전화로 처리, 지연을 입고 당일에야 앎"],
     ["자재·재고", "입출고, LOT", "실물과 전산 재고의 불일치"],
   ];
   s.addTable(rows, {
-    x: 0.6, y: 1.35, w: 12.1, colW: [2.6, 3.6, 5.9], rowH: 0.66, fontSize: 15, color: C.text1,
+    x: 0.6, y: 1.3, w: 12.1, colW: [2.7, 3.3, 6.1], rowH: 0.6, fontSize: 14, color: C.text1,
     border: { type: "solid", pt: 0.75, color: HEX_BORDER }, valign: "middle", margin: [0, 0.12, 0, 0.12], objectName: nm("table"),
   });
-  card(s, 0.6, 6.2, 12.1, 0.6, C.background1, C.accent1);
-  txt(s, "AI 판단 품질의 상한은 MES 데이터 품질이다", { x: 0.9, y: 6.2, w: 11.6, h: 0.6, fontSize: 17, bold: true, color: C.text1, valign: "middle" });
+  card(s, 0.6, 6.25, 12.1, 0.6, C.background1, C.accent1);
+  txt(s, "AI 판단 품질의 상한은 MES 데이터 품질이다", { x: 0.9, y: 6.25, w: 11.6, h: 0.6, fontSize: 17, bold: true, color: C.text1, valign: "middle" });
   s.addNotes(
     "[0:06] 각 모듈의 데이터가 현실에서 어떻게 망가지는지 보는 표입니다. 여러분도 다 겪어 보셨을 겁니다.\n" +
-    "이 표가 중요한 이유: AI는 이 데이터 위에서 판단합니다. 그래서 AI 판단 품질의 상한은 MES 데이터 품질입니다. 뒤에서 '입력 쪽 AI'가 왜 먼저인지 이 표로 다시 돌아옵니다."
+    "품질은 의외로 원인이 잘 기록되는 편입니다. 문제는 표현이 사람마다 다르고, 다시 꺼내 보거나 공정 데이터와 엮어 분석하지 않는다는 점입니다.\n" +
+    "이 표가 중요한 이유: AI는 이 데이터 위에서 판단합니다. 그래서 AI 판단 품질의 상한은 MES 데이터 품질입니다."
+  );
+}
+{
+  const s = content("생산 카운트만으로는 '왜'를 알 수 없다", P1);
+  const lv = [
+    ["생산 카운트만", "대부분의 공장", "얼마나 만들었나? 언제 멈췄나?", "왜 불량이 났나? 언제 고장 날까?"],
+    ["+ 제품 자동 측정값", "치수·중량·외관", "품질이 언제부터 기준선 쪽으로 흘렀나?", "그 변화의 원인은?"],
+    ["+ 생산 환경·공정 조건", "온도·압력·금형 온도·진동", "어떤 조건 변화가 불량·고장으로 이어졌나?", "—"],
+  ];
+  txt(s, "답할 수 있는 질문", { x: 5.0, y: 1.3, w: 3.9, h: 0.35, fontSize: 13, bold: true, color: C.accent5 });
+  txt(s, "답할 수 없는 질문", { x: 9.1, y: 1.3, w: 3.6, h: 0.35, fontSize: 13, bold: true, color: C.accent4 });
+  lv.forEach(([t, d, can, cannot], i) => {
+    const y = 1.75 + i * 1.3, hot = i === 2;
+    card(s, 0.6, y, 12.1, 1.1, hot ? "FEF3C7" : C.background2, hot ? C.accent1 : undefined);
+    txt(s, t, { x: 0.9, y: y + 0.15, w: 3.9, h: 0.45, fontSize: 18, bold: true });
+    txt(s, d, { x: 0.9, y: y + 0.6, w: 3.9, h: 0.38, fontSize: 13, color: C.accent3 });
+    txt(s, can, { x: 5.0, y, w: 3.9, h: 1.1, fontSize: 15, bold: hot, valign: "middle" });
+    txt(s, cannot, { x: 9.1, y, w: 3.4, h: 1.1, fontSize: 15, color: C.accent3, valign: "middle" });
+  });
+  card(s, 0.6, 5.75, 12.1, 1.0, C.text1);
+  txt(s, [
+    { text: "데이터가 없는 원인은 어떤 모델도 찾지 못한다", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "시작점: 불량이 잦은 공정의 핵심 공정 조건 3~5개를 LOT·시각과 묶어 수집 (OPC UA, Modbus, 설비 PC 로그)", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.75, w: 11.6, h: 1.0, fontSize: 15, valign: "middle" });
+  s.addNotes(
+    "[0:07] 설비 자동 수집 이야기입니다. 대부분의 공장은 설비에서 생산 카운트만 자동으로 수집합니다. 제품 측정값은 합격·불합격만 남기고 버리거나 설비 PC에만 남고, 온도·압력·금형 온도·진동 같은 공정 조건은 대부분 수집하지 않습니다.\n" +
+    "품질 분석과 예지보전에 정말 필요한 것은 '그 제품이 어떤 조건에서 만들어졌나'입니다. 이 데이터가 없으면 AI 공장장은 무엇이 일어났는지는 말해도 왜 일어났는지는 말하지 못합니다.\n" +
+    "모든 신호를 다 모을 필요는 없습니다. 불량이 잦은 공정의 핵심 조건 3~5개부터 시작하세요."
   );
 }
 {
@@ -262,10 +304,10 @@ pres.addSection({ title: "MES 데모" });
   s.addText("LIVE DEMO · 15분", { placeholder: "body" });
   s.addText("멈춤 지점 = AI가 들어갈 자리", { placeholder: "title" });
   const stops = [
-    ["작업지시·생산계획", "긴급 주문이 오면 이 순서를 누가 다시 짜나?"],
-    ["작업실적·불량 입력", "'기타 불량'이 쌓이면 원인은 영영 모른다"],
+    ["작업지시·생산계획", "이 순서, 최적화하고 있나? 긴급 주문이 오면?"],
+    ["작업실적·불량 입력", "기록된 원인, 다시 꺼내 보는 사람이 있나?"],
     ["설비 비가동", "알람 이력과 정비 이력이 따로 논다"],
-    ["모니터링 대시보드", "보는 화면에서 말을 거는 시스템으로"],
+    ["모니터링 대시보드", "찾아오기 전에 먼저 말을 걸고, 물으면 답한다"],
   ];
   stops.forEach(([t, d], i) => {
     const x = 0.8 + i * 2.98;
@@ -276,10 +318,10 @@ pres.addSection({ title: "MES 데모" });
   });
   s.addNotes(
     "[0:11] 데모 시작. 데모 중 네 곳에서 30초씩 멈춥니다.\n" +
-    "① 작업지시 화면: '지금 긴급 주문이 들어오면, 이 순서를 누가 어떻게 다시 짤까요?' → 뒤의 시나리오 ①\n" +
-    "② 실적·불량 입력: '여기 기타 불량이 쌓이면, 원인은 영영 모릅니다.' → 입력 쪽 AI, 시나리오 ②\n" +
+    "① 작업지시 화면: '이 작업지시 순서는 누가, 어떤 기준으로 정했을까요? 최적화를 하고 있나요? 그렇다면 긴급 주문이 들어왔을 때는 어떻게 다시 짤까요?' → 시나리오 ①\n" +
+    "② 실적·불량 입력: '불량 원인은 꼼꼼히 기록되고 있습니다. 그런데 이 기록을 다시 꺼내 보는 사람이 있을까요? 같은 원인이 어느 설비, 어느 금형, 어느 시간대에 반복되는지 알고 계신가요?' → 시나리오 ②\n" +
     "③ 설비 비가동: '비가동 사유 칸이 비어 있죠. 알람 이력과 정비 이력은 따로 놉니다.' → 알람 진단\n" +
-    "④ 대시보드: '이 화면을 매일 아침 보는 사람이 있다면, AI 공장장은 그 사람에게 먼저 말을 거는 대시보드입니다.' → 아침 브리핑\n" +
+    "④ 대시보드: '이 화면을 매일 아침 찾아와 보는 사람이 몇이나 될까요? AI 공장장은 사람이 찾아오기 전에 먼저 말을 겁니다. 그리고 왜?라고 물으면 근거를 보여줍니다.' → 아침 브리핑 + 자연어 질의\n" +
     "시간 관리: 세부 기능은 건너뛰고 멈춤 지점 네 곳만 확실히. [0:26]에 데모 종료."
   );
 }
@@ -296,18 +338,20 @@ divider("PART 2", "모듈별 AI 활용 지도", P2, "[0:26] 데모에서 멈췄�
     ["기준정보", "통계, LLM", "표준 vs 실적 사이클타임 차이 탐지, 갱신 제안", "L2", "낮음 ★"],
     ["생산계획", "솔버 + LLM", "긴급 주문 재계획 시나리오, 납기 영향 설명", "L2~L3", "중간"],
     ["작업실적(POP)", "음성·비전, 이상 탐지", "말·사진으로 실적 입력, 누락·이상값 경고", "L1~L2", "낮음"],
-    ["품질", "ML, LLM, RAG", "불량 급증 시 4M 원인 후보, 8D 초안", "L2", "중간"],
+    ["품질", "ML, LLM, RAG", "기록된 원인의 표현 통일·반복 패턴 분석, 4M 원인 후보", "L2", "중간"],
     ["설비", "이상 감지, RAG", "알람 원인 진단, 매뉴얼 기반 조치 가이드", "L2", "중간"],
-    ["자재·재고", "예측, LLM", "결품 위험 경고, 발주 제안", "L2", "중간"],
+    ["구매 (발주·납품·입고)", "예측, LLM, OCR", "발주 제안, 납기 회신 메일 추출, 명세서 OCR 입고", "L1~L3", "낮음~중간"],
+    ["자재·재고", "예측, LLM", "실물·전산 재고 차이 탐지, 결품 위험 경고", "L2", "중간"],
+    ["설비 자동 수집", "이상 감지, 통계", "측정값 추세 이탈 경고, 공정 조건-불량 상관, 예지보전", "L1~L2", "수집 선행"],
     ["모니터링", "LLM", "아침 브리핑, 교대 보고서, 자연어 질의", "L1", "낮음 ★"],
   ];
-  const hot = new Set([1, 7]);
+  const hot = new Set([1, 9]);
   const body = rows.map((r, i) => i === 0 ? r : r.map((c) => ({ text: c, options: hot.has(i) ? { fill: { color: "FEF3C7" }, bold: true } : {} })));
   s.addTable(body, {
-    x: 0.6, y: 1.3, w: 12.1, colW: [2.0, 2.4, 5.5, 1.1, 1.1], rowH: 0.62, fontSize: 14, color: C.text1,
+    x: 0.6, y: 1.25, w: 12.1, colW: [2.3, 2.1, 5.4, 1.0, 1.3], rowH: 0.5, fontSize: 13, color: C.text1,
     border: { type: "solid", pt: 0.75, color: HEX_BORDER }, valign: "middle", margin: [0, 0.1, 0, 0.1], objectName: nm("table"),
   });
-  txt(s, "★ 읽기 전용이라 위험이 낮고 효과가 바로 보이는 출발점", { x: 0.6, y: 6.4, w: 12.1, h: 0.4, fontSize: 14, color: C.accent3 });
+  txt(s, "★ 읽기 전용이라 위험이 낮고 효과가 바로 보이는 출발점", { x: 0.6, y: 6.5, w: 12.1, h: 0.35, fontSize: 13, color: C.accent3 });
   s.addNotes(
     "[0:27] 모듈별 AI 활용 지도입니다. 자율성은 L1 참모, L2 추천, L3 승인형 실행입니다(뒤에서 설명).\n" +
     "강조 표시한 두 줄, 기준정보와 모니터링이 출발점입니다. 둘 다 읽기 전용이라 위험이 낮고 바로 효과가 보입니다.\n" +
@@ -341,34 +385,43 @@ divider("PART 2", "모듈별 AI 활용 지도", P2, "[0:26] 데모에서 멈췄�
 const P3 = "PART 3 AI 공장장";
 divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 절정. 모듈을 엮어 판단하는 AI 공장장. 10분.");
 {
-  const s = content("AI 공장장이란", P3);
-  card(s, 0.6, 1.35, 5.6, 5.3);
-  txt(s, "정의", { x: 0.95, y: 1.6, w: 5, h: 0.4, fontSize: 15, bold: true, color: C.accent1 });
-  txt(s, "공장장의 판단 루프를 공장 전체 범위에서 수행하는 AI", { x: 0.95, y: 2.05, w: 4.95, h: 1.0, fontSize: 21, bold: true });
-  const loop = ["상황 파악", "진단", "판단", "검증", "지시", "학습"];
-  loop.forEach((l, i) => {
-    const col = i % 3, row = Math.floor(i / 3);
-    const x = 0.95 + col * 1.65, y = 3.35 + row * 0.85;
-    card(s, x, y, 1.45, 0.6, C.background1, C.accent2);
-    txt(s, l, { x, y, w: 1.45, h: 0.6, fontSize: 15, bold: true, align: "center", valign: "middle" });
+  const s = content("자율성 단계와 현실", P3);
+  const lv = [
+    ["L1", "참모", "브리핑 · 교대 보고 · “B-205는 왜 부족해?”", "지금 바로 가능", C.accent5],
+    ["L2", "추천", "4M 원인 후보 · 알람 진단 · 납기 지연 경고", "확산 중", C.accent5],
+    ["L3", "승인형 실행", "재계획 → 승인 → 작업지시 변경", "일부 영역", C.accent1],
+    ["L4", "조건부 자율", "에너지 운전 조정 · 점검 일정 자동 등록", "좁은 영역 실증", C.accent1],
+    ["L5", "다크팩토리", "공장 전체 자율 운영", "중장기 (2028~2030)", C.accent3],
+  ];
+  lv.forEach(([k, n, ex, real, col], i) => {
+    const y = 1.3 + i * 1.07;
+    card(s, 0.6, y, 7.7, 0.92, i < 3 ? "FEF3C7" : C.background2);
+    txt(s, k, { x: 0.85, y, w: 0.7, h: 0.92, fontSize: 22, bold: true, color: C.text2, valign: "middle" });
+    txt(s, n, { x: 1.6, y: y + 0.1, w: 2.0, h: 0.4, fontSize: 16, bold: true });
+    txt(s, real, { x: 1.6, y: y + 0.5, w: 2.0, h: 0.35, fontSize: 12, bold: true, color: col });
+    txt(s, ex, { x: 3.7, y, w: 4.45, h: 0.92, fontSize: 14, valign: "middle" });
   });
-  txt(s, "최종 책임은 사람에게 있다", { x: 0.95, y: 5.3, w: 4.95, h: 0.4, fontSize: 16, bold: true, color: C.accent4 });
-  txt(s, "정책: 과기정통부·중기부 '모두의 AI 공장장' (2026.09)", { x: 0.95, y: 5.8, w: 4.95, h: 0.6, fontSize: 13, color: C.accent3 });
-
-  txt(s, "자율성 단계", { x: 6.7, y: 1.4, w: 5, h: 0.4, fontSize: 15, bold: true, color: C.accent1 });
-  const lv = [["L1", "참모", true], ["L2", "추천", true], ["L3", "승인형 실행", true], ["L4", "조건부 자율", false], ["L5", "다크팩토리", false]];
-  lv.forEach(([k, n, now], i) => {
-    const w = 1.08, x = 6.7 + i * 1.2, h = 1.0 + i * 0.75, y = 6.0 - h;
-    card(s, x, y, w, h, now ? C.accent1 : (i === 3 ? "FDE68A" : C.background2));
-    txt(s, k, { x, y: y + 0.12, w, h: 0.4, fontSize: 18, bold: true, align: "center", color: C.text2 });
-    txt(s, n, { x: x + 0.05, y: y + 0.52, w: w - 0.1, h: 0.45, fontSize: 12, align: "center", color: C.text2 });
+  const pts = [
+    ["업무별로 올라간다", "“우리 공장은 L몇?”이 아니라 “이 업무는 L몇까지?”"],
+    ["올라갈 조건을 숫자로", "추천 일치율 · 수정 비율 · 근거 없는 수치 0건"],
+    ["모델보다 구조", "L3부터 쓰기 API · 승인 대기열 · 감사 로그 · 멱등성"],
+  ];
+  pts.forEach(([t, d], i) => {
+    const y = 1.3 + i * 1.2;
+    badge(s, 8.65, y + 0.02, String(i + 1));
+    txt(s, t, { x: 9.3, y, w: 3.4, h: 0.45, fontSize: 17, bold: true, valign: "middle" });
+    txt(s, d, { x: 9.3, y: y + 0.47, w: 3.4, h: 0.65, fontSize: 13, color: C.accent3 });
   });
-  txt(s, "지금 현실: L1~L3", { x: 6.7, y: 6.15, w: 3.5, h: 0.4, fontSize: 15, bold: true, color: C.accent1 });
-  txt(s, "L5는 2028~2030년 목표 (정부·삼성)", { x: 9.6, y: 6.15, w: 3.1, h: 0.4, fontSize: 12, color: C.accent3, align: "right" });
+  card(s, 8.65, 4.95, 4.05, 1.62, C.text1);
+  txt(s, [
+    { text: "중소기업 1년 목표", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "L1은 전 업무에, L2는 품질·설비·납품에, L3는 재계획 한 영역에", options: { color: C.background1 } },
+  ], { x: 8.9, y: 4.95, w: 3.6, h: 1.62, fontSize: 15, valign: "middle" });
   s.addNotes(
-    "[0:33] AI 공장장은 공장장이 매일 하는 판단 루프, 상황 파악 → 진단 → 판단 → 검증 → 지시 → 학습을 공장 전체 범위에서 수행하는 AI입니다. 최종 책임은 사람에게 남습니다.\n" +
-    "자율성은 다섯 단계로 봅니다. 지금 현실은 L1~L3, 즉 참모, 추천, 승인형 실행입니다. L5 다크팩토리는 정부가 2028~29년, 삼성이 2030년을 목표로 두고 있습니다.\n" +
-    "정부가 2026년 9월에 '모두의 AI 공장장'이라는 이름으로 중소기업 지원 사업을 시작했습니다(강의 직전 최신 보도 확인)."
+    "[0:33] AI 공장장은 공장장의 판단 루프, 상황 파악 → 진단 → 판단 → 검증 → 지시 → 학습을 공장 전체 범위에서 수행합니다. 얼마나 맡길지는 자율성 다섯 단계로 봅니다.\n" +
+    "2026년 현실: L1 참모는 지금 바로 가능(읽기 전용), L2 추천은 선도 기업과 실증 현장에서 확산 중, L3 승인형 실행은 MES 쓰기 API와 승인 체계가 있는 일부 영역, L4는 에너지처럼 위험이 낮고 되돌리기 쉬운 좁은 영역에서 실증, L5 다크팩토리는 정부 2028~29년, 삼성 2030년 목표입니다.\n" +
+    "세 가지 포인트: 자율성은 업무별로 따로 올라가고, 올라갈 조건을 숫자로 정하고, 단계를 올리는 데 필요한 것은 더 좋은 모델보다 구조입니다. MES가 AI-ready인 만큼만 자율성을 줄 수 있습니다.\n" +
+    "정책: 과기정통부·중기부 '모두의 AI 공장장'(2026.09). 강의 직전 최신 보도 확인."
   );
 }
 {
@@ -443,7 +496,41 @@ divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 
   );
 }
 {
-  const s = content("시나리오 ① 긴급 주문 끼워 넣기", P3);
+  const s = content("먼저 알려주고, 물으면 답한다", P3);
+  card(s, 0.6, 1.3, 7.2, 5.45, C.background2);
+  card(s, 3.6, 1.55, 3.95, 0.6, C.text1);
+  txt(s, "B-205는 왜 부족해?", { x: 3.8, y: 1.55, w: 3.6, h: 0.6, fontSize: 16, bold: true, color: C.background1, valign: "middle" });
+  card(s, 0.85, 2.4, 6.7, 4.1, C.background1, HEX_BORDER);
+  txt(s, [
+    { text: "B-205 출하 부족 200개의 원인은 두 가지입니다.", options: { bold: true, breakLine: true } },
+    { text: "전일 생산 미달: 계획 3,000개 중 2,900개 생산 → 오늘 아침 재고 300개", options: { bullet: true, breakLine: true } },
+    { text: "오늘 출하 증가: 나래모빌리티 3,500개 (전일 3,000개보다 500개 많음)", options: { bullet: true, breakLine: true } },
+    { text: "권고: 오전 중 조립2라인 우선 투입 검토 (관리자 확인)", options: { bullet: true, bold: true, color: C.accent4 } },
+  ], { x: 1.1, y: 2.6, w: 6.2, h: 2.4, fontSize: 14, paraSpaceAfter: 6 });
+  card(s, 1.1, 5.1, 6.2, 0.5, C.background2);
+  txt(s, "계산: 재고 300 + 금일 계획 3,000 − 출하 예정 3,500 = −200", { x: 1.25, y: 5.1, w: 6.0, h: 0.5, fontSize: 13, valign: "middle" });
+  txt(s, "출처: MES 작업지시·실적·출하계획·재고 · 데모 ask.py 출력", { x: 1.1, y: 5.75, w: 6.2, h: 0.4, fontSize: 12, color: C.accent2 });
+  const pts = [
+    ["숫자는 코드가 계산", "미달 100, 증가 500은 코드가. LLM은 설명만, 근거 없는 숫자는 차단", C.accent5],
+    ["행동으로 연결", "답 옆에 승인 버튼. 결정은 생산관리자가", C.accent1],
+    ["권한 안에서만", "정해진 조회 도구, 묻는 사람의 권한 범위. 만능 챗봇은 안티패턴", C.accent4],
+    ["창구는 여럿", "브리핑에 답장 · 메신저 봇 · MES 옆 대화 패널 · 현장 음성", C.accent2],
+  ];
+  pts.forEach(([t, d, col], i) => {
+    const y = 1.3 + i * 1.38;
+    badge(s, 8.15, y + 0.05, String(i + 1), col, C.background1, 0.44);
+    txt(s, t, { x: 8.75, y, w: 3.95, h: 0.5, fontSize: 17, bold: true, valign: "middle" });
+    txt(s, d, { x: 8.75, y: y + 0.52, w: 3.95, h: 0.75, fontSize: 13, color: C.accent3 });
+  });
+  s.addNotes(
+    "[0:38] AI 공장장은 먼저 알려주고(브리핑), 물으면 답합니다(대화 창구). 대화 창구는 별도의 범용 챗봇이 아니라 AI 공장장에 붙은 창구입니다. 브리핑의 맥락을 이어받고, 같은 MES 조회 도구로 근거를 다시 조회해 답합니다.\n" +
+    "원인 수치는 코드가 계산하고 LLM은 설명만 씁니다. 데이터에 없는 숫자를 쓰면 검증 단계가 그 답을 버립니다.\n" +
+    "브리핑 → 왜? → 근거 → 승인 버튼이 하나의 흐름이라는 점을 강조하세요. 가능하면 briefing.py와 ask.py를 이어서 실행한 30~60초 녹화본을 보여줍니다."
+  );
+}
+{
+  const s = content("시나리오 ① 생산계획·작업지시 최적화: 긴급 주문", P3);
+  txt(s, "평소 엑셀과 경험으로 정하던 순서의 공백이, 여러 제약을 짧은 시간에 따져야 하는 긴급 주문에서 가장 선명하게 드러난다", { x: 0.6, y: 1.2, w: 12.1, h: 0.35, fontSize: 14, italic: true, color: C.accent3 });
   const steps = [
     ["주문 접수", "“C사 긴급\n300개,\n목요일 출하”", C.background2],
     ["병렬 조회", "자재 재고\n정비 일정\n실제 사이클타임", C.background2],
@@ -454,11 +541,11 @@ divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 
   const w = 2.15, gap = 0.34;
   steps.forEach(([t, d, f], i) => {
     const x = 0.6 + i * (w + gap);
-    card(s, x, 1.6, w, 3.3, f, i === 4 ? C.accent1 : undefined);
-    badge(s, x + 0.22, 1.82, String(i + 1));
-    txt(s, t, { x: x + 0.22, y: 2.45, w: w - 0.4, h: 0.5, fontSize: 18, bold: true });
-    txt(s, d, { x: x + 0.22, y: 3.0, w: w - 0.3, h: 1.85, fontSize: 15, color: C.text1 });
-    if (i < steps.length - 1) arrowR(s, x + w + 0.04, 3.25, gap - 0.08);
+    card(s, x, 1.75, w, 3.25, f, i === 4 ? C.accent1 : undefined);
+    badge(s, x + 0.22, 1.95, String(i + 1));
+    txt(s, t, { x: x + 0.22, y: 2.55, w: w - 0.4, h: 0.5, fontSize: 18, bold: true });
+    txt(s, d, { x: x + 0.22, y: 3.1, w: w - 0.3, h: 1.8, fontSize: 15, color: C.text1 });
+    if (i < steps.length - 1) arrowR(s, x + w + 0.04, 3.35, gap - 0.08);
   });
   const who = [["솔버", "일정 계산", C.accent2], ["LLM", "해석과 조율", C.accent1], ["사람", "결정", C.accent4]];
   who.forEach(([a, b, col], i) => {
@@ -468,7 +555,7 @@ divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 
     txt(s, b, { x: x + 1.6, y: 5.3, w: 2.1, h: 1.3, fontSize: 18, bold: true, valign: "middle" });
   });
   s.addNotes(
-    "[0:39] 데모 첫 번째 멈춤 지점의 답입니다.\n" +
+    "[0:39] 데모 첫 번째 멈춤 지점의 답입니다. 중소기업의 생산계획과 작업지시 순서는 대개 담당자가 엑셀과 경험으로 정하고 최적화를 하지 않습니다. 그 공백이 긴급 주문처럼 짧은 시간에 여러 제약을 동시에 따져야 하는 순간 가장 선명하게 드러나고, 잔업·금형 교체·다른 고객 납기 지연 같은 숨은 비용도 이때 생깁니다.\n" +
     "영업에서 긴급 주문이 오면, AI 공장장이 주문을 해석하고 자재, 정비 일정, 실제 사이클타임을 동시에 조회합니다. 솔버가 시나리오 세 개를 계산하고, LLM이 납기·비용·위험을 비교해 권고안을 만듭니다. 생산관리자가 승인하면 작업지시가 바뀌고 영업에 납기가 회신됩니다.\n" +
     "역할 분담을 강조하세요: 일정 계산은 솔버, 해석과 조율은 LLM, 결정은 사람."
   );
@@ -486,17 +573,20 @@ divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 
     ["품질 엔지니어 검증", "예: “금형 온도 편차와 상관관계 높음” → 현장 확인"],
     ["조치와 학습", "조치 지시 → 결과를 사례로 축적 → 다음 진단 품질 향상"],
   ];
+  card(s, 5.2, 5.75, 7.5, 0.85, "FEF3C7", C.accent1);
+  txt(s, "전제 조건: 금형 온도가 LOT·시각 단위로 수집되고 있어야 이 결론이 나온다", { x: 5.45, y: 5.75, w: 7.1, h: 0.85, fontSize: 14, bold: true, valign: "middle" });
   st.forEach(([t, d], i) => {
-    const y = 1.4 + i * 1.32;
+    const y = 1.4 + i * 1.05;
     badge(s, 5.2, y + 0.1, String(i + 1), C.accent2, C.background1);
     txt(s, t, { x: 5.85, y: y + 0.05, w: 6.8, h: 0.5, fontSize: 19, bold: true, valign: "middle" });
-    txt(s, d, { x: 5.85, y: y + 0.58, w: 6.8, h: 0.65, fontSize: 15, color: C.accent3 });
+    txt(s, d, { x: 5.85, y: y + 0.55, w: 6.8, h: 0.5, fontSize: 14, color: C.accent3 });
   });
   s.addNotes(
     "[0:41] 데모 두 번째 멈춤 지점의 답입니다.\n" +
     "품질 모듈에서 오후 불량률이 두 배로 뛰면, AI 공장장이 품질 에이전트에 일을 맡깁니다. 그 시간대의 LOT, 작업자, 설비 조건, 자재 LOT를 모두 조회해 4M 관점의 원인 후보를 근거와 함께 순위로 제시합니다.\n" +
     "결정은 품질 엔지니어가 합니다. 그리고 결과가 사례로 쌓여 다음 진단이 좋아집니다.\n" +
-    "핵심 문장: 모듈 하나만 봐서는 안 보이는 원인이, 모듈을 엮으면 보인다."
+    "핵심 문장: 모듈 하나만 봐서는 안 보이는 원인이, 모듈을 엮으면 보인다.\n" +
+    "전제 조건: '금형 온도 편차'라는 결론은 금형 온도가 LOT·시각 단위로 수집되고 있어야 나옵니다. 생산 카운트만 수집하는 공장에서는 AI도 이 원인을 찾을 수 없습니다(앞의 '생산 카운트만으로는 왜를 알 수 없다'와 연결)."
   );
 }
 
@@ -549,18 +639,20 @@ divider("PART 4", "아키텍처와 AI-ready MES", P4, "[0:43] 이제 엔지니�
     ["자유 서술을 코드로", "불량 · 비가동 사유를 코드화"],
     ["문서 디지털화와 개정판", "작업표준서 · 매뉴얼 = RAG의 원료"],
     ["역할 기반 권한", "AI가 사용자 권한 이상을 보지 않게"],
+    ["측정값·공정 조건 수집", "생산 카운트를 넘어 LOT·시각과 연결"],
   ];
   items.forEach(([t, d], i) => {
-    const col = i % 2, row = Math.floor(i / 2);
-    const x = 0.6 + col * 6.15, y = 1.35 + row * 1.35;
-    card(s, x, y, 5.95, 1.18, C.background2);
-    badge(s, x + 0.25, y + 0.36, String(i + 1));
-    txt(s, t, { x: x + 0.95, y: y + 0.14, w: 4.85, h: 0.45, fontSize: 18, bold: true, valign: "middle" });
-    txt(s, d, { x: x + 0.95, y: y + 0.62, w: 4.85, h: 0.42, fontSize: 14, color: C.accent3 });
+    const col = i % 3, row = Math.floor(i / 3);
+    const x = 0.6 + col * 4.1, y = 1.35 + row * 1.8;
+    const hot = i === 8;
+    card(s, x, y, 3.9, 1.6, hot ? "FEF3C7" : C.background2, hot ? C.accent1 : undefined);
+    badge(s, x + 0.25, y + 0.25, String(i + 1));
+    txt(s, t, { x: x + 0.85, y: y + 0.22, w: 2.95, h: 0.52, fontSize: 16, bold: true, valign: "middle" });
+    txt(s, d, { x: x + 0.25, y: y + 0.85, w: 3.5, h: 0.65, fontSize: 13, color: C.accent3 });
   });
   s.addNotes(
-    "[0:46] 오늘의 실무 결과물입니다. 이 여덟 가지를 갖추면 어떤 AI를 붙이든 쉬워집니다.\n" +
-    "1번 조회 API는 아침 브리핑을 바로 가능하게 하고, 2번 이벤트는 '데이터가 깨우는' 브리핑과 알람 진단을, 3·4번은 AI 제안을 안전하게 실행하게 합니다. 5·6번은 AI 판단 품질의 상한을 올리고, 7번은 RAG의 원료, 8번은 보안입니다.\n" +
+    "[0:46] 오늘의 실무 결과물입니다. 이 아홉 가지를 갖추면 어떤 AI를 붙이든 쉬워집니다.\n" +
+    "1번 조회 API는 아침 브리핑을 바로 가능하게 하고, 2번 이벤트는 '데이터가 깨우는' 브리핑과 알람 진단을, 3·4번은 AI 제안을 안전하게 실행하게 합니다(L3의 조건). 5·6번은 AI 판단 품질의 상한을 올리고, 7번은 RAG의 원료, 8번은 보안, 9번은 AI가 '왜'에 답하기 위한 원료입니다.\n" +
     "오늘 돌아가서 여러분 MES에서 몇 개가 갖춰져 있는지 세어 보세요."
   );
 }
