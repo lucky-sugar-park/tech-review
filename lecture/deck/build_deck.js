@@ -49,6 +49,15 @@ pres.defineSlideMaster({
   slideNumber: { x: 12.3, y: 7.0, w: 0.6, h: 0.3, fontSize: 10, color: C.accent3 },
 });
 pres.defineSlideMaster({
+  title: "DEMO_DARK",
+  background: { color: C.text2 },
+  objects: [
+    { placeholder: { options: { name: "body", type: "body", x: 0.8, y: 0.6, w: 8, h: 0.45, fontSize: 18, bold: true, color: C.accent1, margin: 0 }, text: "" } },
+    { placeholder: { options: { name: "title", type: "title", align: "left", x: 0.8, y: 1.1, w: 11.7, h: 0.9, fontSize: 34, bold: true, color: C.background1, valign: "top", margin: 0 }, text: "" } },
+  ],
+  slideNumber: { x: 12.3, y: 7.0, w: 0.6, h: 0.3, fontSize: 10, color: C.accent3 },
+});
+pres.defineSlideMaster({
   title: "CONTENT",
   background: { color: C.background1 },
   objects: [
@@ -695,6 +704,49 @@ divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 
     "청록 MES 배지는 시스템이 계산한 숫자, 보라 AI 배지는 AI가 쓴 문장입니다. '숫자는 MES, LLM은 해석' 원칙을 화면에서 보여주는 장치입니다.\n" +
     "오른쪽 대화 패널은 선택한 카드의 맥락을 이어받습니다. 정상은 회색, 이상만 색으로(ISA-101), AI 알림에도 예산을 둡니다(ISA-18.2). 화면은 AI가 마음대로 그리지 않고 검증된 카드 부품을 골라 MES 조회 결과로 채웁니다(통제된 생성형 UI).\n" +
     "시간이 있으면 HTML 시안을 열어 [왜?]를 눌러 보여주세요."
+  );
+}
+{
+  const s = pres.addSlide({ masterName: "DEMO_DARK", sectionTitle: P3 });
+  s.addText("LIVE DEMO · 약 2분 (백업: 녹화 60초)", { placeholder: "body" });
+  s.addText("아침 브리핑: AI 공장장이 먼저 말을 건다", { placeholder: "title" });
+  const L = 0.8, R = 6.85, W = 5.65, Y = 2.3, H = 4.45;
+  card(s, L, Y, W, H, C.text1);
+  txt(s, "브리핑에 담기는 것 (가상 데이터, 07:00 기준)", { x: L + 0.3, y: Y + 0.2, w: W - 0.6, h: 0.4, fontSize: 15, bold: true, color: C.accent1 });
+  const items = [
+    ["전일 실적", "생산 94.0% · 출하 100% 달성률"],
+    ["금일 계획", "품목별 생산 계획 · 출하 예정 · 완제품 재고 → 출하 충족 여부"],
+    ["주의 사항", "B-205 200개 부족 → 조립2라인 우선 투입 권고 · 자재 A 입고 지연 · 3호기 진동"],
+  ];
+  items.forEach(([t, d], i) => {
+    const y = Y + 0.8 + i * 0.95;
+    badge(s, L + 0.3, y, String(i + 1), C.accent1, C.text2, 0.42);
+    txt(s, t, { x: L + 0.9, y: y - 0.02, w: W - 1.2, h: 0.36, fontSize: 15, bold: true, color: C.background1 });
+    txt(s, d, { x: L + 0.9, y: y + 0.34, w: W - 1.2, h: 0.55, fontSize: 12, color: "CBD5E1" });
+  });
+  txt(s, "collect → analyze → advise → verify → render", { x: L + 0.3, y: Y + 3.65, w: W - 0.6, h: 0.3, fontSize: 12, bold: true, color: C.accent2 });
+  txt(s, "숫자는 MES SQL, 계산은 코드, LLM은 주의 사항 문장만", { x: L + 0.3, y: Y + 3.95, w: W - 0.6, h: 0.3, fontSize: 12, color: "CBD5E1" });
+
+  card(s, R, Y, W, H, C.text1);
+  txt(s, "데모 방식", { x: R + 0.3, y: Y + 0.2, w: W - 0.6, h: 0.4, fontSize: 15, bold: true, color: C.accent1 });
+  const steps = [
+    ["mes_tools.py 먼저 보기", "“숫자는 전부 여기서 SQL로 나옵니다”"],
+    ["briefing.py --no-llm", "규칙 기반 브리핑 (오프라인 백업 모드)"],
+    ["briefing.py (Ollama)", "표 숫자는 같고, 주의 사항 문장만 LLM이 다듬는다"],
+    ["ask.py \"B-205는 왜 부족해?\"", "원인 2가지 + 계산식, 근거 없는 숫자는 verify가 차단"],
+  ];
+  steps.forEach(([t, d], i) => {
+    const y = Y + 0.72 + i * 0.84;
+    badge(s, R + 0.3, y, String(i + 1), C.accent2, C.background1, 0.42);
+    txt(s, t, { x: R + 0.9, y: y - 0.02, w: W - 1.2, h: 0.36, fontSize: 14, bold: true, color: C.background1 });
+    txt(s, d, { x: R + 0.9, y: y + 0.34, w: W - 1.2, h: 0.4, fontSize: 12, color: "CBD5E1" });
+  });
+  txt(s, "사전 준비: seed_mes.py 실행 · 모델 미리 로드", { x: R + 0.3, y: Y + 4.05, w: W - 0.6, h: 0.3, fontSize: 11, color: C.accent3 });
+  s.addNotes(
+    "[0:43] 아침 브리핑 라이브 데모입니다(약 2분). 시간이 부족하거나 현장 네트워크·GPU가 불안하면 미리 찍은 30~60초 녹화본으로 대체합니다.\n" +
+    "브리핑 내용: 가상 MES 데이터에서 전일 생산·출하 실적, 금일 품목별 생산 계획·출하 예정·완제품 재고를 모아 출하 충족 여부를 계산하고, 주의 사항(B-205 200개 부족, 자재 A 입고 지연, 3호기 진동 상승)을 붙입니다.\n" +
+    "데모 순서: ① mes_tools.py를 열어 '숫자는 전부 여기서 SQL로 나온다'를 보여줍니다. ② briefing.py --no-llm으로 규칙 기반 브리핑. ③ briefing.py로 Ollama 브리핑. 표의 숫자는 같고 주의 사항 문장만 달라진다는 점을 짚습니다. ④ ask.py \"B-205는 왜 부족해?\"로 원인 2가지와 계산식을 보여줍니다. LLM이 근거 없는 숫자를 쓰면 verify가 버린다는 점을 강조합니다.\n" +
+    "사전 준비: demo/morning-briefing에서 seed_mes.py 실행, ollama pull qwen3:8b, 첫 응답이 느리지 않도록 모델을 한 번 미리 호출해 둡니다. 명령은 README에 bash·PowerShell·cmd별로 있습니다."
   );
 }
 
