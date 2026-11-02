@@ -383,7 +383,7 @@ divider("PART 2", "모듈별 AI 활용 지도", P2, "[0:26] 데모에서 멈췄�
 // PART 3 · AI 공장장
 // ═════════════════════════════════════════════════════════════════════════
 const P3 = "PART 3 AI 공장장";
-divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 절정. 모듈을 엮어 판단하는 AI 공장장. 10분.");
+divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 절정. 모듈을 엮어 판단하는 AI 공장장과, 사람과 일하는 방식. 11분.");
 {
   const s = content("자율성 단계와 현실", P3);
   const lv = [
@@ -589,12 +589,73 @@ divider("PART 3", "AI 공장장: 개념과 시나리오", P3, "[0:33] 오늘의 
     "전제 조건: '금형 온도 편차'라는 결론은 금형 온도가 LOT·시각 단위로 수집되고 있어야 나옵니다. 생산 카운트만 수집하는 공장에서는 AI도 이 원인을 찾을 수 없습니다(앞의 '생산 카운트만으로는 왜를 알 수 없다'와 연결)."
   );
 }
+{
+  const s = content("사람과 일하는 방식: 네 단계 고리", P3);
+  txt(s, "성패는 모델이 아니라 상호작용 설계에서 갈린다. 사람이 일하는 흐름(회의 · 교대 · 메신저) 안으로 들어가야 쓰인다", { x: 0.6, y: 1.2, w: 12.1, h: 0.35, fontSize: 14, italic: true, color: C.accent3 });
+  const steps = [
+    ["알려주기", "07:00 브리핑\n교대 인수인계\n이상·예외 알림", "L1"],
+    ["답하기", "“B-205 왜 부족해?”\n근거와 계산을 함께\n요청형 화면", "L1~L2"],
+    ["승인으로 실행", "승인 카드: 영향 ·\n근거 · 변경 미리보기\n→ MES 작업지시 변경", "L3"],
+    ["배우기", "결과 추적\n거절 이유 · 피드백\n판단 기록 축적", "—"],
+  ];
+  const w = 2.75, gap = 0.37;
+  steps.forEach(([t, d, lv], i) => {
+    const x = 0.6 + i * (w + gap), hot = i === 2;
+    card(s, x, 1.8, w, 2.75, hot ? "FEF3C7" : C.background2, hot ? C.accent1 : undefined);
+    badge(s, x + 0.25, 2.0, String(i + 1));
+    txt(s, t, { x: x + 0.85, y: 2.0, w: w - 1.0, h: 0.46, fontSize: 18, bold: true, valign: "middle" });
+    txt(s, d, { x: x + 0.25, y: 2.65, w: w - 0.4, h: 1.3, fontSize: 14 });
+    txt(s, lv, { x: x + 0.25, y: 4.05, w: w - 0.4, h: 0.35, fontSize: 13, bold: true, color: C.accent2 });
+    if (i < steps.length - 1) arrowR(s, x + w + 0.05, 3.17, gap - 0.1);
+  });
+  txt(s, "단계별 도입: 새 앱부터 만들지 않는다", { x: 0.6, y: 4.85, w: 12.1, h: 0.4, fontSize: 16, bold: true });
+  const roll = [["사내 메신저", "브리핑 + 답장 질문"], ["오늘 화면", "결정 카드 + 승인함"], ["역할별 화면", "계획 비교 · 원인 분석"], ["현장 확장", "태블릿 · 음성 · 오프라인"]];
+  roll.forEach(([t, d], i) => {
+    const x = 0.6 + i * (w + gap);
+    card(s, x, 5.35, w, 1.3, C.text1);
+    txt(s, `${i + 1}단계  ${t}`, { x: x + 0.25, y: 5.5, w: w - 0.4, h: 0.45, fontSize: 16, bold: true, color: C.accent1 });
+    txt(s, d, { x: x + 0.25, y: 5.98, w: w - 0.4, h: 0.5, fontSize: 14, color: C.background1 });
+    if (i < roll.length - 1) arrowR(s, x + w + 0.05, 6.0, gap - 0.1);
+  });
+  s.addNotes(
+    "[0:42] 지금까지 AI 공장장이 무엇을 하는지 봤다면, 이제 사람과 어떻게 일하는지입니다. 같은 AI라도 사람이 찾아가야 하는 화면에 두면 기존 대시보드처럼 아무도 보지 않습니다.\n" +
+    "상호작용의 뼈대는 네 단계입니다. 먼저 알려주고, 물으면 근거와 함께 답하고, 제안은 승인 버튼 한 번으로 MES에 반영되고, 거절 이유와 결과를 배웁니다. 앞에서 본 자율성 단계가 이 고리에 그대로 겹칩니다.\n" +
+    "도입은 새 앱부터 만들지 않습니다. 1단계는 사내 메신저에서 브리핑과 답장 질문, 데모 코드 수준이면 됩니다. 반응이 검증된 뒤 웹 '오늘' 화면과 승인함, 역할별 화면, 현장 순으로 갑니다.\n" +
+    "사례: Microsoft Factory Operations Agent는 Teams 안에서 동작(preview), Workerbase는 한 번 탭, Proceedix는 오프라인 우선, Augmentir는 역할별 화면과 먼저 알려주기."
+  );
+}
+{
+  const s = content("화면은 데이터가 아니라 결정 카드 중심으로", P3);
+  const iw = 7.7, ih = iw * 809 / 1408;
+  s.addImage({ path: path.join(IMG, "ux-today.png"), x: 0.6, y: 1.35, w: iw, h: ih, altText: "AI 공장장 웹 '오늘' 화면 시안: 아침 브리핑과 KPI, 우선순위별 결정 카드, 라인 상태, 오른쪽 대화 패널, 하단 AI 상태 표시줄", objectName: nm("image") });
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.6, y: 1.35, w: iw, h: ih, fill: { type: "none" }, line: { color: HEX_BORDER, width: 1 }, objectName: nm("frame") });
+  txt(s, "화면 시안: ux/ai-plant-manager-mockup.html (오늘 화면 · 승인 카드 · 현장 태블릿 · 메신저)", { x: 0.6, y: 1.45 + ih, w: iw, h: 0.35, fontSize: 12, color: C.accent3 });
+  const pts = [
+    ["카드 하나 = 결정 하나", "문제 · 근거 · 권고 · [왜?] · [승인 요청]", C.accent1],
+    ["숫자와 AI 문장을 구분", "MES 배지와 AI 배지, 데이터 기준 시각 표시", C.accent2],
+    ["대화는 맥락을 이어받는다", "선택한 카드가 맥락. “왜?”만 물어도 통한다", C.accent6],
+    ["이상만 색으로", "알림은 예산 안에서 (ISA-101 · 18.2). 실행은 승인, 멈춤 버튼 상시", C.accent4],
+  ];
+  pts.forEach(([t, d, col], i) => {
+    const y = 1.35 + i * 1.32;
+    badge(s, 8.65, y + 0.03, String(i + 1), col, C.background1, 0.44);
+    txt(s, t, { x: 9.25, y, w: 3.45, h: 0.5, fontSize: 16, bold: true, valign: "middle" });
+    txt(s, d, { x: 9.25, y: y + 0.52, w: 3.45, h: 0.7, fontSize: 13, color: C.accent3 });
+  });
+  s.addNotes(
+    "[0:43] 웹 '오늘' 화면 시안입니다. 공장장·관리자가 아침에 여는 첫 화면입니다.\n" +
+    "화면의 단위는 데이터가 아니라 결정해야 할 일입니다. 'OEE 78%'가 아니라 'B-205 200개 부족, 조립2라인 우선 투입을 승인할까요?'입니다.\n" +
+    "청록 MES 배지는 시스템이 계산한 숫자, 보라 AI 배지는 AI가 쓴 문장입니다. '숫자는 MES, LLM은 해석' 원칙을 화면에서 보여주는 장치입니다.\n" +
+    "오른쪽 대화 패널은 선택한 카드의 맥락을 이어받습니다. 정상은 회색, 이상만 색으로(ISA-101), AI 알림에도 예산을 둡니다(ISA-18.2). 화면은 AI가 마음대로 그리지 않고 검증된 카드 부품을 골라 MES 조회 결과로 채웁니다(통제된 생성형 UI).\n" +
+    "시간이 있으면 HTML 시안을 열어 [왜?]를 눌러 보여주세요."
+  );
+}
 
 // ═════════════════════════════════════════════════════════════════════════
 // PART 4 · 아키텍처
 // ═════════════════════════════════════════════════════════════════════════
 const P4 = "PART 4 아키텍처";
-divider("PART 4", "아키텍처와 AI-ready MES", P4, "[0:43] 이제 엔지니어의 질문: 이걸 어떻게 만드나. 5분.");
+divider("PART 4", "아키텍처와 AI-ready MES", P4, "[0:44] 이제 엔지니어의 질문: 이걸 어떻게 만드나. 5분.");
 {
   const s = content("MES 위에 AI 공장장을 얹는 구조", P4);
   s.addImage({ path: path.join(IMG, "architecture.png"), x: 0.6, y: 1.25, w: 6.95, h: 5.56, altText: "AI 공장장 일반 아키텍처: 사용자 채널, AI 공장장 서비스, 도구 계층, 모델 서빙, AI 전용 저장소, 기존 MES, 현장의 7계층", objectName: nm("image") });
@@ -612,7 +673,7 @@ divider("PART 4", "아키텍처와 AI-ready MES", P4, "[0:43] 이제 엔지니�
     txt(s, d, { x: 8.7, y: y + 0.62, w: 3.9, h: 0.45, fontSize: 13, color: C.accent3 });
   });
   s.addNotes(
-    "[0:43] 중소기업 MES에 AI 공장장을 얹을 때의 일반적인 구성입니다. 모든 구성요소가 사내망 안에 있습니다.\n" +
+    "[0:44] 중소기업 MES에 AI 공장장을 얹을 때의 일반적인 구성입니다. 모든 구성요소가 사내망 안에 있습니다.\n" +
     "위에서부터: 사용자 채널, AI 공장장 서비스(Python, FastAPI, LangGraph), 도구 계층(MCP 서버: MES 조회, 문서 RAG, 솔버, 실행 요청), 모델 서빙(Ollama/vLLM), AI 전용 저장소, 기존 MES, 현장.\n" +
     "초록 선은 읽기, 빨간 선은 쓰기입니다. 읽기는 조회 템플릿으로만, 쓰기는 사람 승인을 거친 뒤 API로만. 점선은 MES 이벤트가 AI 공장장을 깨우는 경로입니다."
   );
