@@ -104,6 +104,19 @@ claude mcp add ai-plant-mes -- python /절대경로/demo/mes-mcp/mes_mcp_server.
 
 LangGraph에서는 `langchain-mcp-adapters`로 이 서버의 도구를 그대로 불러올 수 있습니다.
 
+## Java 버전
+
+같은 서버를 [공식 MCP Java SDK](https://github.com/modelcontextprotocol/java-sdk)로 만든 Java 버전이 [`../java/`](../java/)에 있습니다(`mcp-setup`, `mcp-server`, `mcp-demo`, `mcp-approve`). 도구 이름, 입력, 출력 형식이 같아서 **에이전트는 그대로 두고 서버만 바꿀 수 있습니다.**
+
+```bash
+# 파이썬 Ollama 에이전트 + Java MCP 서버
+MCP_SERVER="java -jar ../java/build/libs/demo.jar mcp-server" \
+MCP_MES_DB=../java/data/mcp-mes.db MCP_APPROVALS_DB=../java/data/mcp-approvals.db \
+python agent_ollama.py "오늘 출하 부족한 품목 있어?"
+```
+
+> 파이썬 MCP SDK는 서버 프로세스에 기본적으로 일부 환경 변수만 넘깁니다. `agent_ollama.py`는 현재 환경 변수를 모두 넘기도록 해 두었습니다(DB 경로 등).
+
 ## 실제 시스템으로 키울 때
 
 | 데모 | 실제 시스템 |

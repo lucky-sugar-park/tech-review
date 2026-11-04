@@ -4,6 +4,10 @@ import com.techreview.briefing.Ask;
 import com.techreview.briefing.Briefing;
 import com.techreview.briefing.SeedMes;
 import com.techreview.common.Cli;
+import com.techreview.mcp.McpApprove;
+import com.techreview.mcp.McpDemo;
+import com.techreview.mcp.MesApi;
+import com.techreview.mcp.MesMcpServer;
 import com.techreview.rag.Converter;
 import com.techreview.rag.DemoScenario;
 import com.techreview.rag.Enrich;
@@ -18,6 +22,7 @@ import java.util.Arrays;
  *
  * 아침 브리핑:  seed · briefing [--no-llm] · ask "질문" [--no-llm]
  * 지식 도우미:  convert · enrich [--offline] · index [--offline] · search "질문" · evaluate [--offline] · scenario [--offline]
+ * MCP 서버:    mcp-setup · mcp-server · mcp-demo · mcp-approve list|show|approve|reject|audit
  */
 public final class Main {
     private Main() {}
@@ -40,6 +45,13 @@ public final class Main {
                 case "search" -> Search.main(rest);
                 case "evaluate" -> Evaluate.main(rest);
                 case "scenario" -> DemoScenario.main(rest);
+                case "mcp-setup" -> {
+                    MesApi.setup();
+                    System.out.println("MCP 데모용 MES DB 생성: " + MesApi.DB_PATH + " · 승인 대기열 초기화");
+                }
+                case "mcp-server" -> MesMcpServer.main(rest);
+                case "mcp-demo" -> McpDemo.main(rest);
+                case "mcp-approve" -> McpApprove.main(rest);
                 default -> usage();
             }
         } catch (Cli.Exit e) {
@@ -64,6 +76,12 @@ public final class Main {
                   search "질문" [-k 3] [--doc-type 작업표준서] [--equipment 3호기] [--answer]
                   evaluate [--offline] [--detail]
                   scenario [--offline] [--pause]
+
+                [MES 도구 MCP 서버]
+                  mcp-setup                    MCP 데모용 MES DB 생성 (data/mcp-mes.db), 승인 대기열 초기화
+                  mcp-server                   MCP 서버 실행 (stdio, 보통은 MCP 클라이언트가 띄운다)
+                  mcp-demo                     LLM 없이 조회 → 제안 → 사람 승인 → MES 반영 흐름 보기
+                  mcp-approve list|show ID|approve ID --by 이름|reject ID --by 이름 --note 사유|audit
                 """);
     }
 }

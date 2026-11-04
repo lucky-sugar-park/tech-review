@@ -23,11 +23,11 @@ import org.sqlite.SQLiteConfig;
  * 실제 환경에서는 이 메서드들을 MES 조회 API나 MCP 서버로 노출하면 된다.
  */
 public final class MesTools {
-    public static final Path DB_PATH = Path.of(Ollama.env("MES_DB", "data/mes.db"));
+    public static Path DB_PATH = Path.of(Ollama.env("MES_DB", "data/mes.db"));   // MCP 데모는 자기 DB로 바꿔 쓴다
 
     private MesTools() {}
 
-    static List<Map<String, Object>> query(String sql, Object... params) {
+    public static List<Map<String, Object>> query(String sql, Object... params) {
         SQLiteConfig config = new SQLiteConfig();
         config.setReadOnly(true);   // 읽기 전용으로 연결해서 AI가 MES 데이터를 바꿀 수 없게 한다
         try (Connection c = config.createConnection("jdbc:sqlite:" + DB_PATH);

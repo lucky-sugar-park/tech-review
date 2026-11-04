@@ -87,7 +87,7 @@ public final class Indexer {
         Path sidecar = path.resolveSibling(path.getFileName() + ".enrich.json");   // enrich 결과 (원문은 그대로, 보강은 옆 파일)
         if (Files.exists(sidecar)) {
             JsonNode chunks = Json.read(read(sidecar)).path("chunks");
-            chunks.fields().forEachRemaining(e -> d.enrichment.put(e.getKey(), Json.MAPPER.convertValue(e.getValue(), Map.class)));
+            chunks.properties().forEach(e -> d.enrichment.put(e.getKey(), Json.MAPPER.convertValue(e.getValue(), Map.class)));
         }
         String title = meta.remove("title");
         if (title == null) {

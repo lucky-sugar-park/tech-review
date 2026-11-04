@@ -10,12 +10,16 @@
     python setup_demo.py
     python agent_ollama.py "오늘 출하 부족한 품목 있어? 있으면 조치를 제안해 줘"
     python approve.py list                    # AI가 올린 제안 확인 → 사람이 승인
+
+    # Java MCP 서버에 연결 (서버만 바꿔도 에이전트는 그대로)
+    MCP_SERVER="java -jar ../java/build/libs/demo.jar mcp-server" python agent_ollama.py "..."
 """
 
 import asyncio
 import json
 import os
 import re
+import shlex
 import sys
 import urllib.error
 import urllib.request
@@ -27,7 +31,9 @@ from mcp.client.stdio import StdioServerParameters, stdio_client
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
 MODEL = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
 MAX_STEPS = 6
-SERVER = StdioServerParameters(command=sys.executable, args=[str(Path(__file__).with_name("mes_mcp_server.py"))])
+# MCP_SERVER로 다른 MCP 서버를 쓸 수 있다. 예: MCP_SERVER="java -jar ../java/build/libs/demo.jar mcp-server"
+_cmd = shlex.split(os.environ["MCP_SERVER"]) if os.environ.get("MCP_SERVER") else [sys.executable, str(Path(__file__).with_name("mes_mcp_server.py"))]
+SERVER = StdioServerParameters(command=_cmd[0], args=_cmd[1:], env=dict(os.environ))   # MCP SDK는 기본으로 일부 환경 변수만 넘기므로 DB 경로 등을 명시적으로 전달
 SYSTEM = (
     "너는 중소 제조공장의 AI 공장장이다. 도구로 MES 데이터와 지식을 조회해 한국어로 답한다.\n"
     "- 숫자는 도구 결과에 있는 값만 쓴다. 계산이 필요하면 계산 결과를 주는 도구를 쓴다\n"

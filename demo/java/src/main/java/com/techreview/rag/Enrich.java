@@ -63,7 +63,7 @@ public final class Enrich {
     static Map<String, List<String>> loadGlossary() throws IOException {
         Map<String, List<String>> g = new LinkedHashMap<>();
         if (Files.exists(GLOSSARY)) {
-            Json.read(Files.readString(GLOSSARY)).fields().forEachRemaining(e -> {
+            Json.read(Files.readString(GLOSSARY)).properties().forEach(e -> {
                 if (!e.getKey().startsWith("_")) {
                     List<String> syns = new ArrayList<>();
                     e.getValue().forEach(v -> syns.add(v.asText()));

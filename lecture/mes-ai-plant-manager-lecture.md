@@ -490,7 +490,7 @@ sequenceDiagram
 
 > **처음 만들 도구는 거의 모두 조회 도구**이고, 이것만으로 브리핑·질의·지식 도우미(L1~L2)가 된다. 쓰기 도구는 MES 쪽이 준비된 업무부터 하나씩 연다. 도구 개발과 장표 K의 AI-ready MES는 같은 일의 앞뒤다.
 >
-> 데모: [MES 도구 MCP 서버](../demo/mes-mcp/): 조회 도구와 승인을 거쳐야만 실행되는 `propose_work_order_reorder`. `python demo_client.py`로 "제안 → MES 그대로 → 사람 승인 → 반영 → 재승인 차단"을 볼 수 있다.
+> 데모: [MES 도구 MCP 서버](../demo/mes-mcp/) (Java 버전: [`demo/java`](../demo/java/)의 `mcp-*` 명령): 조회 도구와 승인을 거쳐야만 실행되는 `propose_work_order_reorder`. `python demo_client.py`로 "제안 → MES 그대로 → 사람 승인 → 반영 → 재승인 차단"을 볼 수 있다.
 
 ### 장표 K: AI-ready MES 체크리스트 ⭐
 
