@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>문서 업로드 처리 흐름</title>
+<style>
+  :root {
+    --bg: #F6F7F9; --card: #FFFFFF; --ink: #1E293B; --muted: #64748B; --line: #CBD5E1;
+    --c1: #0E7490; --c1-soft: #E0F2F7;   /* 변환 */
+    --c2: #7C3AED; --c2-soft: #EDE9FE;   /* 보강 */
+    --c3: #D97706; --c3-soft: #FEF3C7;   /* 색인 */
+    --c4: #16A34A; --c4-soft: #DCFCE7;   /* 질문 */
+    --skip: #94A3B8; --warn: #DC2626; --code: #F1F5F9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F172A; --card: #1E293B; --ink: #E2E8F0; --muted: #94A3B8; --line: #334155;
+      --c1-soft: #0B3440; --c2-soft: #2E1F57; --c3-soft: #42300A; --c4-soft: #0E3A22; --code: #0B1220;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; line-height: 1.55; }
+  .page { max-width: 1180px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+
+  /* 전체 흐름 띠 */
+  .overview { display: grid; grid-template-columns: 0.8fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr; align-items: stretch; gap: 0; margin-bottom: 36px; }
+  .ov { background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 14px 14px 12px; }
+  .ov .n { font-size: 13px; font-weight: 700; color: var(--muted); }
+  .ov h3 { margin: 2px 0 6px; font-size: 18px; }
+  .ov p { margin: 0 0 8px; font-size: 13.5px; }
+  .ov .file { font-family: Consolas, "D2Coding", monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
+  .ov.up { border-style: dashed; }
+  .ov.s1 { border-color: var(--c1); background: var(--c1-soft); } .ov.s1 .n { color: var(--c1); }
+  .ov.s2 { border-color: var(--c2); background: var(--c2-soft); } .ov.s2 .n { color: var(--c2); }
+  .ov.s3 { border-color: var(--c3); background: var(--c3-soft); } .ov.s3 .n { color: var(--c3); }
+  .ov.s4 { border-color: var(--c4); background: var(--c4-soft); } .ov.s4 .n { color: var(--c4); }
+  .arrow { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 20px; font-weight: 700; }
+
+  /* 단계 상세 */
+  .step { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: var(--card); border-radius: 16px;
+          border: 1px solid var(--line); padding: 22px; margin-bottom: 22px; }
+  .step > header { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%;
+           color: #fff; font-weight: 700; flex: none; }
+  .step h2 { margin: 0; font-size: 21px; }
+  .step .cmd { font-family: Consolas, "D2Coding", monospace; font-size: 13px; color: var(--muted); }
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .box { border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 14px; background: var(--card); }
+  .box b { font-weight: 700; }
+  .box small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .down { text-align: center; color: var(--muted); font-size: 16px; line-height: 20px; height: 20px; }
+  .q { border-radius: 10px; border: 1.5px dashed var(--line); padding: 9px 12px; font-size: 14px; }
+  .q .yesno { display: flex; gap: 8px; margin-top: 7px; flex-wrap: wrap; }
+  .pill { font-size: 12.5px; border-radius: 999px; padding: 2px 10px; border: 1px solid var(--line); }
+  .pill.skip { color: var(--skip); }
+  .pill.go { font-weight: 700; }
+  .pill.bad { color: var(--warn); border-color: var(--warn); }
+  .s1c .box.key { border-color: var(--c1); background: var(--c1-soft); }
+  .s2c .box.key { border-color: var(--c2); background: var(--c2-soft); }
+  .s3c .box.key { border-color: var(--c3); background: var(--c3-soft); }
+  .s4c .box.key { border-color: var(--c4); background: var(--c4-soft); }
+  .s1c .pill.go { color: var(--c1); border-color: var(--c1); } .s2c .pill.go { color: var(--c2); border-color: var(--c2); }
+  .s3c .pill.go { color: var(--c3); border-color: var(--c3); } .s4c .pill.go { color: var(--c4); border-color: var(--c4); }
+
+  .example h4 { margin: 0 0 6px; font-size: 14px; color: var(--muted); }
+  pre { margin: 0 0 12px; background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+        font-family: Consolas, "D2Coding", monospace; font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .hl { background: rgba(250, 204, 21, .35); border-radius: 3px; }
+  .note { font-size: 13.5px; margin: 0; }
+  .note li { margin-bottom: 4px; }
+
+  /* 다시 올리면 */
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; font-size: 14px; }
+  th, td { border: 1px solid var(--line); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--code); }
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+  .pr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-size: 14px; }
+  .pr b { display: block; font-size: 15.5px; margin-bottom: 4px; }
+
+  @media (max-width: 900px) {
+    .overview { grid-template-columns: 1fr; }
+    .arrow { transform: rotate(90deg); height: 24px; }
+    .step { grid-template-columns: 1fr; }
+    .principles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>새 문서를 올리면 어떻게 처리되나</h1>
+  <p class="sub">예시: 생산기술팀이 <b>「C-310 커버 사출 작업표준서」(WI-INJ02-C310_Rev2.docx)</b>를 새로 올렸을 때.
+    프로그램 4개가 차례로 일하고, 단계마다 파일이 하나씩 생깁니다.</p>
+
+  <!-- 한눈에 보기 -->
+  <div class="overview">
+    <div class="ov up">
+      <div class="n">업로드</div>
+      <h3>📄 원본</h3>
+      <p>raw/ 폴더에 넣기</p>
+      <div class="file">raw/standards/<br>WI-INJ02-C310_Rev2.docx</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="ov s1">
+      <div class="n">① 변환</div>
+      <h3>읽기 좋은 글로</h3>
+      <p>Word를 제목·표가 살아 있는 마크다운으로</p>
+      <div class="file">convert.py<br>→ …docx.md</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="ov s2">
+      <div class="n">② 보강</div>
+      <h3>찾기 쉽게</h3>
+      <p>조각마다 설명·예상 질문·동의어를 붙임 (Ollama)</p>
+      <div class="file">enrich.py<br>→ …md.enrich.json</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="ov s3">
+      <div class="n">③ 색인</div>
+      <h3>검색 창고에 넣기</h3>
+      <p>조각을 숫자 벡터로 바꿔 저장 (Ollama)</p>
+      <div class="file">indexer.py<br>→ index.db</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="ov s4">
+      <div class="n">④ 질문·답변</div>
+      <h3>꺼내 쓰기</h3>
+      <p>질문과 가까운 조각을 찾아 근거와 함께 답 (Ollama)</p>
+      <div class="file">search.py</div>
+    </div>
+  </div>
+
+  <!-- ① 변환 -->
+  <section class="step s1c">
+    <header><span class="badge" style="background:var(--c1)">1</span><h2>변환: Word → 마크다운</h2>
+      <span class="cmd">python convert.py</span></header>
+    <div class="flow">
+      <div class="q">이 파일, 전에 변환한 적 있나? <small style="color:var(--muted)">(파일 내용으로 만든 '지문'(해시)을 비교)</small>
+        <div class="yesno"><span class="pill skip">지문이 같으면 → 건너뜀</span><span class="pill go">처음 보거나 바뀌었으면 → 변환</span></div></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>마크다운으로 바꾸기</b><small>Word의 '제목1·제목2' → <code>#</code>, <code>##</code> · 표 → 마크다운 표 · 머리말("사내 한정")은 버림</small></div>
+      <div class="down">↓</div>
+      <div class="box"><b>문서 정보(메타데이터) 붙이기</b><small>① 옆에 둔 .meta.json → ② 파일 이름 규칙(WI-INJ02-C310, Rev2) → ③ 폴더 이름(standards = 작업표준서)</small></div>
+      <div class="down">↓</div>
+      <div class="q">품질 점검: 너무 짧나? 제목이 없나? 표가 사라졌나? 그림뿐인 슬라이드가 있나?
+        <div class="yesno"><span class="pill go">문제 없음</span><span class="pill bad">문제 있음 → "검수 필요" 표시</span></div></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>저장</b><small>sources/converted/standards/WI-INJ02-C310_Rev2.docx.md</small></div>
+    </div>
+    <div class="example">
+      <h4>실제로 생기는 파일 (일부)</h4>
+<pre>---
+doc_id: <span class="hl">WI-INJ02-C310</span>
+title: C-310 커버 사출 작업표준서
+doc_type: <span class="hl">작업표준서</span>
+revision: <span class="hl">Rev.2</span>
+status: 유효
+equipment: 3호기
+item: C-310
+source_hash: 1e7bcba9b6f45207   ← 원본 지문
+---
+
+# C-310 커버 사출 작업표준서
+## 1. 사출 조건
+| 항목 | 설정값 | 허용 범위 |
+| --- | --- | --- |
+| 금형 온도 | 60 ℃ | ± 3 ℃ |
+...</pre>
+      <ul class="note">
+        <li>위쪽 <b>---</b> 사이가 문서 정보, 아래가 본문입니다.</li>
+        <li>사람이 열어 읽고 확인할 수 있는 <b>중간 결과물</b>입니다. 원본이 바뀌면 자동으로 다시 만들어집니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ② 보강 -->
+  <section class="step s2c">
+    <header><span class="badge" style="background:var(--c2)">2</span><h2>보강: 조각마다 '찾기 쉬운 설명' 붙이기</h2>
+      <span class="cmd">python enrich.py</span></header>
+    <div class="flow">
+      <div class="box"><b>문서를 조각(청크)으로 나누기</b><small>제목(#) 단위로 자르고, 표는 한 줄씩 자름 → 이 문서는 조각 8개</small></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>조각 하나씩 Ollama에게 부탁</b><small>"이 조각이 무슨 내용인지 한 문장, '이 설비' 같은 말을 실제 이름으로 푼 요약, 현장에서 물을 질문 3~5개, 키워드"
+        <br>+ Claude가 만든 <b>견본</b>을 함께 보여 줌 (examples/)</small></div>
+      <div class="down">↓</div>
+      <div class="q">숫자 검사: Ollama가 쓴 숫자가 원문에 있나?
+        <div class="yesno"><span class="pill go">있으면 → 사용</span><span class="pill bad">없으면 → 그 문장 버림</span></div></div>
+      <div class="down">↓</div>
+      <div class="box"><b>용어 사전으로 동의어 추가</b><small>glossary.json: 금형 온도 = 몰드 온도 = 형온, 버 = burr = 바리 …</small></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>저장 (원문 md는 그대로 두고 옆 파일에)</b><small>…docx.md.enrich.json</small></div>
+    </div>
+    <div class="example">
+      <h4>조각 하나와 붙는 보강 (예시)</h4>
+<pre><b>원문 조각</b>
+항목: 금형 온도 · 설정값: 60 ℃ · 허용 범위: ± 3 ℃
+
+<b>보강 (enrich.json)</b>
+context:    C-310 사출 조건 표 중 금형 온도 설정값이다.
+standalone: 3호기에서 C-310을 사출할 때 금형 온도는
+            60 ℃ ± 3 ℃로 설정한다.
+questions:  "C-310 형온 몇 도야?"
+            "금형 온도 허용 범위는?"
+keywords:   금형 온도, <span class="hl">몰드 온도, 형온</span>, C-310</pre>
+      <ul class="note">
+        <li>질문하는 사람은 "형온"이라고 말하는데 문서에는 "금형 온도"라고 적혀 있어도 찾을 수 있게 됩니다.</li>
+        <li>Ollama가 틀려도 <b>원문은 오염되지 않습니다.</b> 답변은 원문으로 합니다.</li>
+        <li>다음에 다시 돌리면 이미 만든 조각은 재사용하고, 바뀐 조각만 새로 만듭니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ③ 색인 -->
+  <section class="step s3c">
+    <header><span class="badge" style="background:var(--c3)">3</span><h2>색인: 검색 창고(index.db)에 넣기</h2>
+      <span class="cmd">python indexer.py</span></header>
+    <div class="flow">
+      <div class="q">문서 기록표와 비교: 이 문서(WI-INJ02-C310)는?
+        <div class="yesno"><span class="pill go">처음 봄 → 추가</span><span class="pill go">내용 바뀜 → 교체</span><span class="pill skip">그대로 → 건너뜀</span></div>
+        <div class="yesno"><span class="pill bad">원본 사라짐 → 삭제</span><span class="pill bad">status: 폐기 → 검색에서 뺌</span></div></div>
+      <div class="down">↓ (추가·교체할 때만)</div>
+      <div class="box"><b>검색용 글 만들기</b><small>[작업표준서] 제목 &gt; 1. 사출 조건 + 설비·품목 + 보강(설명·질문·키워드) + 원문 조각</small></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>임베딩: 글을 숫자 목록(벡터)으로</b><small>Ollama 임베딩 모델(bge-m3). 뜻이 비슷한 글은 비슷한 숫자가 됨</small></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>저장</b><small>이 문서의 옛 조각은 지우고 새 조각 8개를 넣음 · 기록표에 지문·개정판·모델 기록</small></div>
+    </div>
+    <div class="example">
+      <h4>화면 출력</h4>
+<pre>📚 인덱싱 09:12:05  임베딩: bge-m3
+  ➕ 추가  WI-INJ02-C310    새 문서
+  ── 문서 10건: 추가 1 · 갱신 0 · 유지 9 · 폐기 0 · 삭제 0
+     |  검색 가능한 청크 40개</pre>
+      <h4>문서 기록표 (documents 테이블)</h4>
+<pre>doc_id         revision  status  지문(해시)   임베딩 모델  조각
+WI-INJ02-C310  Rev.2     유효    9f3a…        bge-m3       8
+WI-ASSY2-B205  Rev.3     유효    1c7e…        bge-m3       5
+QS-C310-VIS    Rev.5     폐기    77b2…        bge-m3       0</pre>
+      <ul class="note">
+        <li>나머지 9건은 <b>지문이 같아서 건너뜁니다.</b> 문서가 1만 건이어도 바뀐 것만 처리합니다.</li>
+        <li>기록표 덕분에 "어느 개정판으로 답했는지"를 나중에 확인할 수 있습니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ④ 질문 -->
+  <section class="step s4c">
+    <header><span class="badge" style="background:var(--c4)">4</span><h2>질문·답변: 가까운 조각을 찾아 근거와 함께</h2>
+      <span class="cmd">python search.py "C-310 형온 몇 도야?" --answer</span></header>
+    <div class="flow">
+      <div class="box"><b>질문도 같은 모델로 벡터로 바꾸기</b><small>창고에 기록된 임베딩 모델을 자동으로 사용</small></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>두 가지 방법으로 찾아서 합치기</b><small>① 뜻이 가까운 조각 (벡터) ② 단어가 겹치는 조각 (키워드, BM25) → 순위를 합침
+        <br>폐기 문서는 이미 빠져 있음</small></div>
+      <div class="down">↓</div>
+      <div class="box key"><b>Ollama가 찾은 조각 '원문'만 보고 답하기</b><small>문장 끝에 근거 번호 [1] · 문서에 없으면 "찾지 못했습니다"</small></div>
+    </div>
+    <div class="example">
+      <h4>화면 출력</h4>
+<pre>🔎 C-310 형온 몇 도야?
+[1] C-310 커버 사출 작업표준서 · Rev.2 · 1. 사출 조건
+    항목: 금형 온도 · 설정값: 60 ℃ · 허용 범위: ± 3 ℃
+    출처: converted/standards/WI-INJ02-C310_Rev2.docx.md
+
+💬 C-310의 금형 온도는 60 ℃이고 허용 범위는 ± 3 ℃입니다. [1]</pre>
+      <ul class="note">
+        <li>"형온"은 문서에 없는 말이지만, ②에서 붙인 동의어 덕분에 찾습니다.</li>
+        <li>답에는 문서 이름, <b>개정판</b>, 위치가 함께 나와 사람이 확인할 수 있습니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <h2 style="font-size:21px;margin:30px 0 10px">같은 문서를 다시 올리면?</h2>
+  <table>
+    <tr><th style="width:24%">상황</th><th style="width:26%">① 변환</th><th style="width:22%">② 보강</th><th>③ 색인</th></tr>
+    <tr><td>똑같은 파일을 다시 올림</td><td>지문이 같아 건너뜀</td><td>재사용</td><td>건너뜀 (아무 일도 없음)</td></tr>
+    <tr><td>Rev.3으로 개정해서 올림</td><td>다시 변환</td><td>바뀐 조각만 새로</td><td>그 문서의 조각만 교체 → 이제 Rev.3으로 답함</td></tr>
+    <tr><td>원본 파일을 지움</td><td>변환본도 지움</td><td>—</td><td>창고에서도 삭제</td></tr>
+    <tr><td>문서를 폐기 (status: 폐기)</td><td>정보만 바뀜</td><td>—</td><td>원본은 남기고 검색에서만 뺌</td></tr>
+  </table>
+
+  <div class="principles">
+    <div class="pr"><b>원문은 그대로</b>Ollama가 만든 것은 옆에 붙이는 '찾기용 메모'일 뿐, 답변은 원문으로 합니다.</div>
+    <div class="pr"><b>숫자는 원문에서</b>Ollama가 원문에 없는 숫자를 쓰면 그 문장을 버립니다.</div>
+    <div class="pr"><b>바뀐 것만 다시</b>파일마다 지문을 기록해 두고, 달라진 것만 처리합니다.</div>
+  </div>
+</div>
+</body>
+</html>

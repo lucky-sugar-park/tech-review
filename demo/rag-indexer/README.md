@@ -5,6 +5,10 @@
 
 ## 흐름
 
+> 처음 보신다면 그림 설명부터: [새 문서를 올리면 어떻게 처리되나](docs/upload-flow.html) (예시 파일과 함께 단계별로 설명)
+>
+> ![새 문서 업로드 처리 흐름](docs/upload-flow.png)
+
 ```
 convert.py:  raw/ 원본 (DOCX·PPTX·TXT·PDF·DOC·PPT·HWP) ──▶ sources/converted/*.md (앞머리 메타데이터 + 품질 점검)
                                                                    │
