@@ -44,12 +44,13 @@ class SourceDoc:
     meta: dict
     body: str                          # 청킹할 본문 (md)
     is_record: bool = False            # DB 행에서 만든 문서인가
-    chunks: list = field(default_factory=list)
+    enrichment: dict = field(default_factory=dict)   # enrich.py가 만든 보강 정보 (청크 해시 → 필드)
 
     @property
-    def content_hash(self) -> str:     # 본문 + 메타데이터가 바뀌면 다시 색인
+    def content_hash(self) -> str:     # 본문 + 메타데이터 + 보강 정보가 바뀌면 다시 색인
         meta = json.dumps(self.meta, ensure_ascii=False, sort_keys=True)
-        return ragkit.sha256("\n".join([self.title, self.doc_type, self.revision, self.status, meta, self.body]))
+        enr = json.dumps(self.enrichment, ensure_ascii=False, sort_keys=True) if self.enrichment else ""
+        return ragkit.sha256("\n".join([self.title, self.doc_type, self.revision, self.status, meta, self.body, enr]))
 
 
 # ── 1. scan: 원천 읽기 ────────────────────────────────────────────────────
@@ -67,11 +68,13 @@ def parse_front_matter(text: str) -> tuple[dict, str]:
 
 def doc_from_markdown(path: Path, text: str, rel: str) -> SourceDoc:
     meta, body = parse_front_matter(text)
+    sidecar = path.with_name(path.name + ".enrich.json")   # enrich.py 결과 (원문은 그대로, 보강은 옆 파일)
+    enrichment = json.loads(sidecar.read_text(encoding="utf-8")).get("chunks", {}) if sidecar.exists() else {}
     title = meta.pop("title", None) or next((ln.lstrip("# ").strip() for ln in body.splitlines() if ln.startswith("# ")), path.stem)
     return SourceDoc(
         doc_id=meta.pop("doc_id", rel), path=rel, title=title,
         doc_type=meta.pop("doc_type", "일반"), revision=meta.pop("revision", "-"),
-        status=meta.pop("status", "유효"), meta=meta, body=body,
+        status=meta.pop("status", "유효"), meta=meta, body=body, enrichment=enrichment,
     )
 
 
@@ -181,10 +184,16 @@ def enrich(con, doc: SourceDoc, chunks: list[dict], contextualize: bool) -> None
                           f"[청크]\n{c['text']}\n\n이 청크가 문서 안에서 어떤 내용인지 검색에 도움이 되도록 한국어 한 문장으로만 써라.")
                 c["context"] = ragkit.generate(prompt).splitlines()[0][:200]
                 ragkit.cache_put(con, key, c["context"])
+        e = doc.enrichment.get(ragkit.sha256(c["text"]), {})   # enrich.py 보강: 원문은 그대로 두고 검색용 필드만 덧붙임
+        if e and not c["context"]:
+            c["context"] = e.get("context", "")
         c["embed_text"] = "\n".join(x for x in [
             f"[{doc.doc_type}] {doc.title} > {c['heading']}",   # 제목 경로
             facets,                                             # 설비·공정·품목
-            c["context"],                                       # LLM 맥락 문장 (선택)
+            c["context"],                                       # 맥락 문장 (LLM)
+            e.get("standalone", ""),                            # 지시어를 푼 요약 (enrich.py)
+            ("키워드: " + ", ".join(e["keywords"])) if e.get("keywords") else "",
+            ("예상 질문: " + " / ".join(e["questions"])) if e.get("questions") else "",
             c["text"],
         ] if x)
 

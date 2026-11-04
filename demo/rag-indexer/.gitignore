@@ -2,3 +2,4 @@ index.db
 workspace/
 converted/
 __pycache__/
+*.enrich.json

@@ -97,6 +97,48 @@ converter: builtin
 
 > 변환된 md는 원본에서 다시 만들 수 있는 **파생물**입니다. 직접 고치면 원본이 바뀔 때 덮어써지므로, 고칠 내용은 원본 문서에 반영하거나 별도 수정본으로 관리합니다.
 
+## 청크 보강: `enrich.py` — "다시 쓰지 말고, 덧붙인다"
+
+Claude가 만든 md가 검색을 크게 좋게 만드는 이유는 지시어 풀기, 동의어, 맥락 같은 **지식 재구성**에 있습니다. `enrich.py`는 이 일을 로컬 Ollama 모델이 **청크 단위의 좁은 작업**으로 하게 합니다.
+
+```
+md ──▶ 인덱서와 같은 규칙으로 청킹 ──▶ 문서 요약 (1회) ──▶ 청크마다 Ollama 구조화 출력 ──▶ 숫자 검증 ──▶ 문서.md.enrich.json
+                                                          (few-shot: examples/)       (원문에 없는 숫자 → 버림)        │
+                                                          (+ glossary.json 동의어)                                     ▼
+                                                                                              indexer.py가 임베딩 텍스트에 덧붙임
+```
+
+| 필드 | 내용 | 예 |
+|---|---|---|
+| `context` | 이 청크가 문서에서 어떤 내용인지 | "C-310 사출 조건 표 중 금형 온도 설정값이다." |
+| `standalone` | 지시어를 실제 이름으로 푼 요약 | "3호기에서 C-310을 사출할 때 금형 온도는 60 ℃ ± 3 ℃로 설정한다." |
+| `questions` | 현장 말투의 예상 질문 3~5개 | "C-310 형온 몇 도야?" |
+| `keywords` | 키워드와 동의어 (+ 용어 사전) | 몰드 온도, 형온, 금형 온도 |
+
+- **원문 md는 바꾸지 않습니다.** 답변은 원문으로 하고, 보강 필드는 검색에만 씁니다. 작은 모델이 틀려도 원문은 오염되지 않습니다.
+- **구조화 출력:** Ollama `format`에 JSON 스키마를 지정해 형식을 강제합니다.
+- **few-shot 견본:** `examples/enrich_examples.json`. **Claude로 만든 결과를 이 파일에 문서 유형별로 1~2개씩 넣으면** 로컬 모델이 그 수준을 따라 합니다.
+- **용어 사전:** `glossary.json`의 동의어(버 = burr = 바리 등)는 모델이 빠뜨려도 규칙으로 붙입니다.
+- **증분:** 같은 모델·프롬프트 버전으로 이미 만든 청크는 재사용합니다. 인덱싱은 배치 작업이므로 **큰 모델**(`--model`)을 권합니다.
+
+## 인덱싱 방식별 비교: `evaluate.py`
+
+같은 원본(`raw/` 3건)을 네 가지 방식으로 색인하고, 기존 문서 7건을 방해 문서로 함께 넣은 뒤 같은 질문(`eval/questions.json`, 현장 말투 12개)으로 검색 적중률을 잽니다.
+
+| 변형 | 만드는 방법 |
+|---|---|
+| `plain` | 문자열만 뽑아 300자씩 자름 (구조·메타데이터 없음) |
+| `converted` | `convert.py` 구조화 md |
+| `enriched` | `converted` + `enrich.py` |
+| `gold` | Claude가 만든 md (`gold/`, 비교 기준) |
+
+```bash
+python evaluate.py                     # Ollama 임베딩 + Ollama 보강 (실제 비교는 이것으로)
+python evaluate.py --offline --detail  # Ollama 없이 동작 확인
+```
+
+> ⚠️ **`--offline` 결과로 품질을 판단하지 마세요.** 오프라인 해시 임베딩은 의미를 거의 모르고, 보강도 규칙 기반이라 LLM 보강의 효과가 나타나지 않습니다. 또 지표가 "정답 문자열이 들어 있는 청크"를 세므로 **청크가 큰 `plain`이 덩치 덕분에 유리**하게 나옵니다 (참고: 오프라인 실행에서 Hit@3는 plain 75%, converted 67%, enriched 83%, gold 83%). 실제 비교는 bge-m3 같은 임베딩 모델과 Ollama 보강으로 실행하고, 질문셋은 자사 문서와 실제 현장 질문으로 20~30개 만들어 쓰는 것을 권합니다.
+
 ## 실행
 
 준비물: Python 3.10 이상. **필수 패키지는 없습니다**(표준 라이브러리만 사용). 변환 품질을 높이려면 `pip install docling` 또는 `pip install 'markitdown[all]'`을 선택 설치합니다. Ollama 모드를 쓰려면 Ollama를 설치하고 모델을 받아 둡니다.
@@ -107,7 +149,9 @@ cd demo/rag-indexer
 # 0) 원본 문서 → 마크다운 (raw/ → sources/converted/), 바뀐 것만 변환
 python convert.py
 python convert.py --engine builtin         # 내장 변환기만 사용
+python enrich.py --offline                 # 청크 보강 (Ollama: python enrich.py --model qwen3:14b)
 python indexer.py --offline                # 변환된 md까지 함께 색인 (문서 10건)
+python evaluate.py --offline --detail      # 인덱싱 방식별 검색 적중률 비교
 python search.py "C-310 금형 온도 설정값"
 python search.py "안전문 인터록 확인 방법" -k 1
 

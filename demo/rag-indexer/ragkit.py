@@ -137,6 +137,26 @@ def generate(prompt: str, model: str = LLM_MODEL) -> str:
     return re.sub(r"<think>.*?</think>", "", res.get("response", ""), flags=re.S).strip()
 
 
+def chat_json(messages: list[dict], schema: dict, model: str = LLM_MODEL) -> dict:
+    """Ollama 구조화 출력: JSON 스키마를 지정하면 작은 모델도 형식을 지킨다."""
+    try:
+        res = _post("/api/chat", {"model": model, "messages": messages, "format": schema, "stream": False,
+                                  "think": False, "options": {"temperature": 0, "num_ctx": 8192}}, timeout=300)
+    except (urllib.error.URLError, OSError) as exc:
+        raise OllamaUnavailable(f"Ollama({OLLAMA_HOST})에 연결할 수 없습니다: {exc}") from exc
+    content = re.sub(r"<think>.*?</think>", "", res["message"]["content"], flags=re.S).strip()
+    return json.loads(content)
+
+
+def numbers(text: str) -> set[str]:
+    """문장 속 숫자 (검증용). 1,000 → 1000, 0.30 → 0.3 으로 정규화."""
+    out = set()
+    for n in re.findall(r"\d[\d,]*(?:\.\d+)?", text):
+        n = n.replace(",", "")
+        out.add(n.rstrip("0").rstrip(".") if "." in n else n)
+    return out
+
+
 def cosine(a: list[float], b: list[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
     na = math.sqrt(sum(x * x for x in a)) or 1.0
