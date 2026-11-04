@@ -1,7 +1,7 @@
 # RAG 인덱싱을 동적으로 관리하는 시스템: 모범 사례 조사
 
 > 작성일: 2026-11-04
-> 관련 문서: [AI 공장장 보고서](./ai-plant-manager.md) · [강의안 (지식 도우미)](./lecture/mes-ai-plant-manager-lecture.md)
+> 관련 문서: [AI 공장장 보고서](./ai-plant-manager.md) · [강의안 (지식 도우미)](./lecture/mes-ai-plant-manager-lecture.md) · [증분 인덱서 데모](./demo/rag-indexer/)
 > 전제: 사내 서버에서 Ollama로 RAG를 구축하는 중소 제조기업. 대상 문서는 MES 사용 매뉴얼, 작업표준서, 검사 기준서, 설비 매뉴얼, 불량·정비 이력.
 
 ---
