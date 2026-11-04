@@ -1,0 +1,2 @@
+# MCP Python SDK (1.x의 FastMCP, 2.x의 MCPServer 모두 지원)
+mcp>=1.2
