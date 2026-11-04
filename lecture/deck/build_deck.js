@@ -789,6 +789,88 @@ divider("PART 4", "아키텍처와 AI-ready MES", P4, "[0:44] 이제 엔지니�
   );
 }
 {
+  const s = content("AI 공장장의 실력은 도구가 정한다", P4);
+  const layers = [
+    ["AI 에이전트", "LangGraph · 공장장실 · 메신저 봇", C.text1, C.background1],
+    ["MCP 도구 계층", "업무 단위 도구 · 계산은 코드가", C.accent1, C.text2],
+    ["제조 공통 모델", "설비 · 품목 · 라인 · 작업지시 · LOT", C.accent2, C.background1],
+    ["어댑터", "MES · ERP · 설비 수집 · 문서", C.background2, C.text1],
+  ];
+  layers.forEach(([t, d, f, col], i) => {
+    const y = 1.35 + i * 1.3;
+    card(s, 0.6, y, 4.6, 1.05, f);
+    txt(s, t, { x: 0.85, y: y + 0.12, w: 4.2, h: 0.42, fontSize: 18, bold: true, color: col });
+    txt(s, d, { x: 0.85, y: y + 0.56, w: 4.2, h: 0.38, fontSize: 13, color: col });
+    if (i < layers.length - 1) arrowD(s, 2.9, y + 1.07, 0.2);
+  });
+  txt(s, "AI에게 DB를 직접 열어 주지 않는다", { x: 0.6, y: 6.6, w: 4.6, h: 0.3, fontSize: 13, italic: true, color: C.accent3 });
+  const kinds = [
+    ["조회", "생산 실적 · 출하 충족 · 설비 상태 · LOT · 재고", "위험 낮음 · L1", false],
+    ["이벤트 구독", "실적 마감 · 알람 · 불량 급증 → AI를 깨움", "위험 낮음 · L1", false],
+    ["계산", "출하 충족 · 재계획 시나리오(솔버) · 4M 상관", "위험 낮음 · L2", false],
+    ["지식", "문서 검색(RAG) · 사례 · 용어 사전", "위험 낮음 · L1~L2", false],
+    ["제안·실행", "작업지시 순서 변경 · 발주 · 보전 요청", "위험 높음 · L3 승인 필수", true],
+    ["소통", "메신저 알림 · 담당자 호출 · 사안 기록", "위험 중간 · L2~L3", false],
+  ];
+  kinds.forEach(([t, d, r, hot], i) => {
+    const col = i % 2, row = Math.floor(i / 2);
+    const x = 5.6 + col * 3.65, y = 1.35 + row * 1.75;
+    card(s, x, y, 3.45, 1.55, hot ? "FEE2E2" : C.background2, hot ? C.accent4 : undefined);
+    txt(s, t, { x: x + 0.25, y: y + 0.15, w: 3.0, h: 0.42, fontSize: 18, bold: true });
+    txt(s, d, { x: x + 0.25, y: y + 0.6, w: 3.0, h: 0.5, fontSize: 12.5, color: C.accent3 });
+    txt(s, r, { x: x + 0.25, y: y + 1.12, w: 3.0, h: 0.3, fontSize: 12, bold: true, color: hot ? C.accent4 : C.accent2 });
+  });
+  txt(s, "실시간 제어(설비 조작·레시피 변경)는 도구로 만들지 않는다 → PLC·MES의 영역", { x: 5.6, y: 6.6, w: 7.1, h: 0.3, fontSize: 13, italic: true, color: C.accent3 });
+  s.addNotes(
+    "[0:46] AI 공장장의 실력은 모델보다 도구가 정합니다. 데모에서도 실제 일을 한 것은 mes_tools.py였고 LLM은 해석만 했습니다.\n" +
+    "층위: AI에게 SQL이나 DB를 직접 주지 않고, '품목별 출하 충족 조회'처럼 업무 의미가 있는 도구를 줍니다. 그 아래 제조 공통 모델이 MES의 ITEM_CD와 ERP의 MATNR처럼 다른 코드를 하나로 맞추고, 어댑터가 각 시스템에 붙습니다. 도구는 MCP 서버로 노출해 어떤 에이전트든 같은 도구를 씁니다.\n" +
+    "종류는 여섯 가지: 조회, 이벤트 구독, 계산, 지식, 제안·실행, 소통. 위험한 것은 제안·실행 하나이고, 이것만 승인이 필수입니다. 처음엔 10~15개 조회 도구로 시작하면 브리핑·질의·지식 도우미가 다 됩니다."
+  );
+}
+{
+  const s = content("지시 도구는 두 단계: AI는 제안, 사람이 승인", P4);
+  const flow = [
+    ["AI 에이전트", "상황 판단", C.background2],
+    ["propose_*", "변경 미리보기", C.background2],
+    ["승인 대기열", "MES는 아직 그대로", "FEF3C7"],
+    ["사람 승인", "승인함 · 메신저", C.background2],
+    ["MES 쓰기 API", "실행 + 기록", C.background2],
+  ];
+  flow.forEach(([t, d, f], i) => {
+    const x = 0.6 + i * 2.5;
+    card(s, x, 1.4, 2.1, 1.25, f, i === 2 ? C.accent1 : undefined);
+    txt(s, t, { x: x + 0.15, y: 1.55, w: 1.8, h: 0.45, fontSize: 16, bold: true, align: "center" });
+    txt(s, d, { x: x + 0.15, y: 2.02, w: 1.8, h: 0.45, fontSize: 13, color: C.accent3, align: "center" });
+    if (i < flow.length - 1) arrowR(s, x + 2.14, 2.02, 0.32);
+  });
+  const rules = [
+    ["변경 미리보기", "변경 전·후, 되돌리기 가능 여부, 위험 등급을 보여 주고 승인받는다"],
+    ["스냅숏 비교", "제안 뒤 누가 바꿨으면 승인해도 실행하지 않는다"],
+    ["멱등성", "승인 ID = 요청 ID. 두 번 눌러도 한 번만 반영"],
+    ["감사 로그", "누가 제안하고 누가 승인했나, 어떤 근거였나"],
+  ];
+  rules.forEach(([t, d], i) => {
+    const x = 0.6 + i * 3.08;
+    card(s, x, 3.0, 2.86, 1.6, C.background1, HEX_BORDER);
+    badge(s, x + 0.2, 3.18, String(i + 1), C.accent2, C.background1, 0.42);
+    txt(s, t, { x: x + 0.75, y: 3.18, w: 2.0, h: 0.42, fontSize: 16, bold: true, valign: "middle" });
+    txt(s, d, { x: x + 0.2, y: 3.75, w: 2.5, h: 0.8, fontSize: 13, color: C.accent3 });
+  });
+  card(s, 0.6, 4.85, 12.1, 1.85, C.text1);
+  txt(s, [
+    { text: "API가 없는 중소기업이라면", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "조회: 읽기 전용 DB 뷰를 만들어 어댑터가 읽는다 (가장 흔하고 빠름)", options: { color: C.background1, breakLine: true } },
+    { text: "쓰기: DB에 직접 쓰지 않고, 승인된 지시를 담당자 할 일로 보내 사람이 MES에 입력 → API가 생기면 교체", options: { color: C.background1, breakLine: true } },
+    { text: "데모 demo/mes-mcp: 제안 → MES 그대로 → 사람 승인 → 반영 → 재승인 차단", options: { color: "CBD5E1" } },
+  ], { x: 0.9, y: 4.95, w: 11.6, h: 1.65, fontSize: 15, valign: "middle", paraSpaceAfter: 4 });
+  s.addNotes(
+    "[0:46] 위험한 단 하나, 지시 도구의 규칙입니다. AI는 propose 도구로 변경 미리보기를 만들어 승인 대기열에 올리기만 합니다. 이때 MES는 아무것도 바뀌지 않습니다. 사람이 승인함이나 메신저에서 승인하면 그때 MES 쓰기 API가 실행됩니다. LangGraph의 interrupt, Claude Code의 권한 확인과 같은 구조입니다.\n" +
+    "승인 도구는 AI에게 주지 않습니다. 그래서 AI가 판단을 잘못해도 MES는 사람 승인 전까지 그대로입니다.\n" +
+    "규칙 네 가지: 변경 미리보기, 제안 시점 스냅숏과 비교, 멱등성, 감사 로그. 이것이 바로 다음 장 체크리스트 3·4번(쓰기 API의 승인·감사, 멱등성)입니다.\n" +
+    "중소기업은 API가 없는 경우가 많습니다. 조회는 읽기 전용 DB 뷰로, 쓰기는 승인된 지시를 담당자 할 일로 보내 사람이 입력하게 하고 API가 생기면 바꿉니다. demo/mes-mcp에서 이 흐름을 직접 볼 수 있습니다."
+  );
+}
+{
   const s = content("AI-ready MES 체크리스트", P4);
   const items = [
     ["조회 API 표준화", "get_line_status처럼 의미 있는 이름 → MCP로 노출"],
@@ -811,7 +893,7 @@ divider("PART 4", "아키텍처와 AI-ready MES", P4, "[0:44] 이제 엔지니�
     txt(s, d, { x: x + 0.25, y: y + 0.85, w: 3.5, h: 0.65, fontSize: 13, color: C.accent3 });
   });
   s.addNotes(
-    "[0:46] 오늘의 실무 결과물입니다. 이 아홉 가지를 갖추면 어떤 AI를 붙이든 쉬워집니다.\n" +
+    "[0:47] 오늘의 실무 결과물입니다. 이 아홉 가지를 갖추면 어떤 AI를 붙이든 쉬워집니다.\n" +
     "1번 조회 API는 아침 브리핑을 바로 가능하게 하고, 2번 이벤트는 '데이터가 깨우는' 브리핑과 알람 진단을, 3·4번은 AI 제안을 안전하게 실행하게 합니다(L3의 조건). 5·6번은 AI 판단 품질의 상한을 올리고, 7번은 RAG의 원료, 8번은 보안, 9번은 AI가 '왜'에 답하기 위한 원료입니다.\n" +
     "오늘 돌아가서 여러분 MES에서 몇 개가 갖춰져 있는지 세어 보세요."
   );
