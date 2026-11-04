@@ -6,6 +6,9 @@
 ## 흐름
 
 ```
+convert.py:  raw/ 원본 (DOCX·PPTX·TXT·PDF·DOC·PPT·HWP) ──▶ sources/converted/*.md (앞머리 메타데이터 + 품질 점검)
+                                                                   │
+indexer.py:                                                        ▼
 scan ──▶ plan ──▶ chunk ──▶ enrich ──▶ embed ──▶ store
 원천 읽기  기록표와   유형별     맥락 보강    Ollama      청크 교체
 (md·csv·  비교       청킹       (제목 경로·  (또는 오프   + 기록표
@@ -50,14 +53,63 @@ acl: 생산
 ---
 ```
 
-PDF·DOCX는 [Docling](https://github.com/docling-project/docling)이 설치되어 있으면 md로 변환해 `converted/`에 저장한 뒤 색인합니다(사람이 검수할 수 있는 중간 산출물). 메타데이터는 `파일명.pdf.meta.json` 옆 파일에 둡니다.
+## 원본 문서를 마크다운으로: `convert.py`
+
+인덱싱 대상은 엄밀히는 **청크**이고, 마크다운은 원본과 청크 사이의 **중간 산출물**입니다. 사람이 md를 직접 쓰지 않고, `convert.py`가 `raw/`의 원본을 `sources/converted/`에 마크다운으로 만들어 두면 인덱서가 그대로 색인합니다.
+
+| 원본 (`raw/`, 가상 데이터) | 변환 결과 |
+|---|---|
+| `standards/WI-INJ02-C310_Rev2.docx` + `.meta.json` | Word 제목 스타일 → `#`, `##`, 표 → 마크다운 표, 머리말("사내 한정")은 제외. 메타데이터는 옆 파일에서 |
+| `training/보전교육_사출기_일상점검.pptx` | 슬라이드 1장 = `## 슬라이드 N: 제목`, 표, **발표자 노트** 포함. 그림만 있는 슬라이드는 검수 대상으로 표시 |
+| `notices/품질공지_2026-10.txt` (cp949) | 인코딩 자동 판별, 페이지마다 반복되는 머리말과 페이지 번호 제거, `1.` → `##`, `가.` → 목록 |
+
+**변환기 선택 (`--engine auto`):** Docling → MarkItDown → 내장 변환기 순으로 쓸 수 있는 것을 고르고, 실패하면 다음 변환기로 넘어갑니다. 내장 변환기는 표준 라이브러리만으로 DOCX·PPTX·TXT를 처리하므로 **아무것도 설치하지 않아도 동작**합니다. 구형 DOC·PPT는 LibreOffice(`soffice`)로 DOCX·PPTX로 바꾼 뒤 처리하고, HWP는 한컴오피스에서 DOCX·PDF로 일괄 변환하거나 `ureca_document_parser`를 설치하면 처리합니다.
+
+**메타데이터 결정 순서:** ① 원본 옆 `파일명.확장자.meta.json` ② 파일명 규칙(`WI-INJ02-C310_Rev2` → doc_id, Rev.2) ③ 폴더 이름(`standards/` → 작업표준서) ④ 문서 속성·첫 제목(제목).
+
+**증분 변환:** 원본 해시를 앞머리 `source_hash`에 기록해 두고 원본이 바뀐 파일만 다시 변환합니다. 원본이 사라지면 변환본도 지우므로, 다음 인덱싱에서 인덱스에서도 빠집니다.
+
+**품질 점검:** 내용이 너무 짧음, 제목 구조 없음, 표 누락 의심, 그림 위주 슬라이드, 내장 추출 대비 내용 누락 의심. 걸린 문서는 앞머리에 `review: 필요 - 사유`를 남기고 검수 목록으로 출력합니다.
+
+변환 결과 예시 (`sources/converted/standards/WI-INJ02-C310_Rev2.docx.md`):
+
+```markdown
+---
+doc_id: WI-INJ02-C310
+title: C-310 커버 사출 작업표준서
+doc_type: 작업표준서
+revision: Rev.2
+status: 유효
+equipment: 3호기
+item: C-310
+source: raw/standards/WI-INJ02-C310_Rev2.docx
+source_hash: 1e7bcba9b6f45207
+converter: builtin
+---
+
+# C-310 커버 사출 작업표준서
+## 1. 사출 조건
+| 항목 | 설정값 | 허용 범위 |
+| --- | --- | --- |
+| 금형 온도 | 60 ℃ | ± 3 ℃ |
+...
+```
+
+> 변환된 md는 원본에서 다시 만들 수 있는 **파생물**입니다. 직접 고치면 원본이 바뀔 때 덮어써지므로, 고칠 내용은 원본 문서에 반영하거나 별도 수정본으로 관리합니다.
 
 ## 실행
 
-준비물: Python 3.10 이상. **필수 패키지는 없습니다**(표준 라이브러리만 사용). Ollama 모드를 쓰려면 Ollama를 설치하고 모델을 받아 둡니다.
+준비물: Python 3.10 이상. **필수 패키지는 없습니다**(표준 라이브러리만 사용). 변환 품질을 높이려면 `pip install docling` 또는 `pip install 'markitdown[all]'`을 선택 설치합니다. Ollama 모드를 쓰려면 Ollama를 설치하고 모델을 받아 둡니다.
 
 ```bash
 cd demo/rag-indexer
+
+# 0) 원본 문서 → 마크다운 (raw/ → sources/converted/), 바뀐 것만 변환
+python convert.py
+python convert.py --engine builtin         # 내장 변환기만 사용
+python indexer.py --offline                # 변환된 md까지 함께 색인 (문서 10건)
+python search.py "C-310 금형 온도 설정값"
+python search.py "안전문 인터록 확인 방법" -k 1
 
 # 1) 시나리오 데모: 개정, 사례 추가, 폐기, 삭제를 순서대로 보여줌
 python demo_scenario.py --offline          # Ollama 없이 (강의장 백업)

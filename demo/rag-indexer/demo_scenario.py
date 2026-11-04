@@ -46,7 +46,7 @@ def main():
     if WORK.exists():
         shutil.rmtree(WORK)
     src = WORK / "sources"
-    shutil.copytree(indexer.SOURCE_DIR, src)
+    shutil.copytree(indexer.SOURCE_DIR, src, ignore=shutil.ignore_patterns("converted"))   # 변환본은 제외 (샘플 7건 기준)
     con = ragkit.connect(WORK / "index.db")
 
     def step(n, title):

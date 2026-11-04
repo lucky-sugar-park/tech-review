@@ -2,7 +2,8 @@
 
 흐름:  scan(원천 읽기) → plan(문서 기록표와 비교) → chunk(유형별 청킹) → enrich(맥락 보강) → embed → store
 
-- 원천: sources/ 아래 md·txt(앞머리에 메타데이터), csv(DB 행 1건 = 문서 1건), pdf·docx(Docling 설치 시)
+- 원천: sources/ 아래 md·txt(앞머리에 메타데이터), csv(DB 행 1건 = 문서 1건)
+  DOCX·PPTX·TXT 등 원본은 convert.py가 raw/ → sources/converted/*.md로 변환해 둔다
 - 문서 기록표(documents)에 doc_id, 내용 해시, 개정판, 상태, 임베딩 모델, 청킹 버전을 남긴다
 - 내용 해시와 설정이 같으면 건너뛰고, 다르면 그 문서의 청크만 교체한다
 - 원천에서 사라진 문서는 삭제하고, status가 '폐기'인 문서는 청크를 지워 검색에서 뺀다
@@ -30,7 +31,6 @@ import ragkit
 CHUNKER_VERSION = "md-heading-v1"   # 청킹 규칙을 바꾸면 이 값을 올린다 → 전체 재색인
 MAX_CHARS = 600
 SOURCE_DIR = ragkit.BASE / "sources"
-CONVERTED_DIR = ragkit.BASE / "converted"   # PDF·DOCX를 변환한 md (사람이 검수하는 중간 산출물)
 
 
 @dataclass
@@ -91,19 +91,6 @@ def docs_from_csv(path: Path, rel: str) -> list[SourceDoc]:
     return docs
 
 
-def convert_with_docling(path: Path, rel: str) -> str | None:
-    """PDF·DOCX를 Docling으로 md 변환하고 converted/에 저장한다. Docling이 없으면 None."""
-    try:
-        from docling.document_converter import DocumentConverter
-    except ImportError:
-        return None
-    md = DocumentConverter().convert(str(path)).document.export_to_markdown()
-    out = CONVERTED_DIR / (rel + ".md")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(md, encoding="utf-8")
-    return md
-
-
 def scan(source_dir: Path) -> tuple[list[SourceDoc], list[str]]:
     docs, warnings = [], []
     for path in sorted(source_dir.rglob("*")):
@@ -115,15 +102,8 @@ def scan(source_dir: Path) -> tuple[list[SourceDoc], list[str]]:
             docs.append(doc_from_markdown(path, path.read_text(encoding="utf-8"), rel))
         elif suffix == ".csv":
             docs += docs_from_csv(path, rel)
-        elif suffix in (".pdf", ".docx"):
-            md = convert_with_docling(path, rel)
-            if md is None:
-                warnings.append(f"{rel}: Docling이 없어 건너뜀 (pip install docling)")
-                continue
-            sidecar = path.with_name(path.name + ".meta.json")   # 메타데이터는 옆 파일에 (Bedrock KB 방식)
-            front = json.loads(sidecar.read_text(encoding="utf-8")) if sidecar.exists() else {}
-            header = "---\n" + "\n".join(f"{k}: {v}" for k, v in front.items()) + "\n---\n"
-            docs.append(doc_from_markdown(path, header + md, rel))
+        elif suffix in (".pdf", ".docx", ".pptx", ".xlsx", ".doc", ".ppt", ".hwp", ".hwpx"):
+            warnings.append(f"{rel}: 원본 문서는 convert.py로 먼저 마크다운으로 변환하세요 (raw/ → sources/converted/)")
     # 같은 doc_id가 두 번 나오면 (복사본) 첫 번째만 쓴다
     seen, unique = {}, []
     for d in docs:

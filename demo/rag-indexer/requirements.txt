@@ -1,3 +1,7 @@
 # 필수 패키지 없음 (표준 라이브러리만 사용)
-# PDF·DOCX를 색인하려면 선택 설치:
+# 선택: 변환 품질 향상 (convert.py가 설치된 것을 자동으로 사용)
 # docling>=2.0
+# markitdown[all]>=0.1
+# 선택: raw/ 샘플을 다시 만들 때 (make_samples.py)
+# python-docx
+# python-pptx
