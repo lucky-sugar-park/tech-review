@@ -1,6 +1,6 @@
 # AI 공장장의 서비스, 화면, 상호작용 설계 제안
 
-> 작성일: 2026-10-21
+> 작성일: 2026-10-21 · 추가: 2026-11-04 (화면 시안 ⑤ 공장장실 메뉴 구조, ⑥ 대화 중심 화면, ⑦ 설비 페이지 → [공장장실 구상](./ai-plant-manager-portal.md))
 > 관련 문서: [AI 공장장 보고서](./ai-plant-manager.md) · [강의안](./lecture/mes-ai-plant-manager-lecture.md) · [화면 시안 (HTML)](./ux/ai-plant-manager-mockup.html)
 > 성격: 사례 조사를 바탕으로 한 **설계 제안**이다. 사례 정보는 대부분 벤더 자료와 업계 기사이며, 화면 시안은 개념을 보여주기 위한 것이다.
 
