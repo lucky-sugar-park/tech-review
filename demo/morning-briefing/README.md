@@ -213,3 +213,5 @@ Windows에서도 같은 명령을 그대로 씁니다(PowerShell, cmd 모두 질
 4. **실제 MES에 붙이려면** `mes_tools.py`의 SQL을 MES 조회 API나 MCP 서버 호출로 바꾸면 된다.
 
 > 모든 회사명, 품목, 수치는 강의용 가상 데이터입니다.
+
+> Java 버전: [`../java/`](../java/) (같은 동작, `java -jar demo.jar briefing`, `ask`)

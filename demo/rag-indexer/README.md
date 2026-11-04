@@ -233,3 +233,5 @@ Windows(PowerShell, cmd)에서도 명령은 같습니다. `python`이 안 되면
 | 직접 구현 | LlamaIndex IngestionPipeline, LangChain Indexing API, CocoIndex 등 (보고서 §3) |
 
 > 모든 문서, 회사, 수치는 데모용 가상 데이터입니다.
+
+> Java 버전: [`../java/`](../java/) (같은 동작, `java -jar demo.jar convert`, `enrich`, `index`, `search`, `evaluate`, `scenario`)
