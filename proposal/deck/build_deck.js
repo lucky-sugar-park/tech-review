@@ -127,6 +127,127 @@ pres.addSection({ title: S1 });
 }
 
 // ═════════════════════════════════════════════════════════════════════════
+// 1-2. 왜 해야 하는가 · 대표 시나리오
+// ═════════════════════════════════════════════════════════════════════════
+const S1B = "왜 해야 하는가";
+pres.addSection({ title: S1B });
+{
+  const s = content("왜 해야 하는가: 할지 말지가 아니라, 누가 주도하느냐의 문제", S1B);
+  const why = [
+    ["직원은 이미 쓰고 있다", "절반 가까이가 승인되지 않은 AI를 쓴다. 막을 수 없다면 더 편하고 안전한 공식 경로를 줘야 한다", "회사 데이터가 계속 외부로 흘러간다"],
+    ["범용 AI는 우리 회사를 모른다", "모델은 누구나 같은 것을 산다. 차이는 ERP·MES 데이터와 업무 지식을 AI에 연결하는 능력에서 난다", "AI 활용 수준이 경쟁사와 같아진다"],
+    ["IT가 다 만들어 줄 수 없다", "부서마다 수십 개의 작은 반복 업무가 있다. 업무를 아는 사람이 직접 만들어야 속도가 난다", "작은 비효율이 그대로 남는다"],
+    ["노하우가 사람과 함께 떠난다", "숙련자의 판단 기준과 대응 사례를 에이전트와 지식으로 담으면 퇴직·이동 후에도 남는다", "같은 시행착오를 반복한다"],
+    ["부서별 개별 도입은 더 비싸다", "기반은 하나, 활용은 부서별로. 시스템 연결·보안·재사용을 한 번에 해결한다", "중복 계약, 제각각인 보안 기준"],
+  ];
+  txt(s, "이유", { x: 1.3, y: 1.22, w: 3.6, h: 0.3, fontSize: 12, bold: true, color: C.accent3 });
+  txt(s, "설명", { x: 5.0, y: 1.22, w: 4.4, h: 0.3, fontSize: 12, bold: true, color: C.accent3 });
+  txt(s, "하지 않으면", { x: 9.7, y: 1.22, w: 3.0, h: 0.3, fontSize: 12, bold: true, color: C.accent4 });
+  why.forEach(([t, d, risk], i) => {
+    const y = 1.58 + i * 0.86;
+    card(s, 0.6, y, 12.1, 0.76, C.background2);
+    badge(s, 0.75, y + 0.15, String(i + 1), C.accent2, C.background1, 0.46);
+    txt(s, t, { x: 1.3, y, w: 3.6, h: 0.76, fontSize: 16, bold: true, valign: "middle" });
+    txt(s, d, { x: 5.0, y, w: 4.5, h: 0.76, fontSize: 12.5, valign: "middle" });
+    txt(s, risk, { x: 9.7, y, w: 2.9, h: 0.76, fontSize: 12.5, color: C.accent4, valign: "middle" });
+  });
+  card(s, 0.6, 5.98, 12.1, 0.62, C.text1);
+  txt(s, [
+    { text: "지금 하지 않아도 AI는 쓰인다. ", options: { bold: true, color: C.accent1 } },
+    { text: "다만 회사 밖에서, 제각각, 아무것도 남기지 않고 쓰일 뿐이다", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.98, w: 11.6, h: 0.62, fontSize: 16, valign: "middle" });
+  s.addNotes(
+    "본론에 앞서, 왜 회사가 이 일을 해야 하는지부터 말씀드리겠습니다. 결론은 '할지 말지'의 문제가 아니라 '누가 주도하느냐'의 문제라는 것입니다.\n" +
+    "첫째, 직원들은 이미 쓰고 있습니다. 막을 수 없다면 더 좋은 공식 길을 줘야 합니다.\n" +
+    "둘째, AI 모델은 경쟁사도 똑같이 삽니다. 차이는 우리 ERP, MES 데이터와 우리 업무 지식을 AI에 연결하는 능력에서 납니다. 이건 밖에서 사 올 수 없고 우리가 만들어야 합니다.\n" +
+    "셋째, 현업의 작은 반복 업무를 IT가 다 만들어 줄 수 없습니다. 업무를 아는 사람이 직접 만들어야 합니다.\n" +
+    "넷째, 숙련자의 노하우는 사람과 함께 떠납니다. 에이전트와 지식으로 담으면 남습니다.\n" +
+    "다섯째, 부서마다 따로 AI를 계약하면 오히려 비쌉니다. 기반은 하나로, 활용은 부서별로 가야 합니다.\n" +
+    "(가능하면 우리 회사 숫자로 바꿔 말씀드립니다: 5년 내 퇴직 예정 숙련 인력, IT 개발 요청 대기 건수, 부서별로 이미 따로 결제 중인 AI 서비스.)"
+  );
+}
+{
+  const s = content("대표 시나리오: 오전 9시, 고객 클레임 메일이 도착했다", S1B);
+  const steps = [
+    ["09:10", "메일 감지", "고객사 메일 “커넥터 단자 변형 3건, LOT 2611-A” → 품질팀의 클레임 대응 에이전트가 시작", "사건 트리거"],
+    ["09:12", "LOT 추적", "MES: 11/3 2라인 프레스 3호기, 금형 교체 직후 생산분. 같은 조건 LOT 4개 중 2개(1,200개)가 미출하(ERP)", "MES·ERP 도구"],
+    ["09:15", "사례 검색", "2024년 비슷한 클레임 2건과 그때의 대책을 찾는다. 고객·품질 데이터는 대외비라 사내 모델로 처리", "지식 · 사내 모델"],
+    ["09:20", "정리·제안", "원인 후보, 영향 범위, 8D 초안(D1~D4) + 제안 ① 2개 LOT 출하 보류 ② 고객 1차 회신 초안", "초안 · 제안"],
+    ["09:40", "사람이 승인", "담당자가 근거를 확인하고 회신 문구를 고쳐 승인 → MES 출하 보류 등록, 회신 발송", "승인함 · 기록"],
+  ];
+  steps.forEach(([tm, t, d, tag], i) => {
+    const y = 1.3 + i * 0.97;
+    const hot = i === 4;
+    card(s, 0.6, y, 8.6, 0.85, hot ? "FEF3C7" : C.background2, hot ? C.accent1 : undefined);
+    txt(s, tm, { x: 0.8, y, w: 0.9, h: 0.85, fontSize: 17, bold: true, color: C.accent2, valign: "middle" });
+    txt(s, t, { x: 1.75, y, w: 1.45, h: 0.85, fontSize: 15, bold: true, valign: "middle" });
+    txt(s, d, { x: 3.2, y, w: 4.3, h: 0.85, fontSize: 12, valign: "middle" });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 7.6, y: y + 0.24, w: 1.45, h: 0.38, rectRadius: 0.19, fill: { color: hot ? C.accent1 : C.accent2 }, line: { type: "none" }, objectName: nm("pill") });
+    txt(s, tag, { x: 7.6, y: y + 0.24, w: 1.45, h: 0.38, fontSize: 11, bold: true, color: hot ? C.text2 : C.background1, align: "center", valign: "middle" });
+  });
+  card(s, 9.45, 1.3, 3.25, 4.73, C.text1);
+  txt(s, [
+    { text: "30분 동안 AI가 한 일", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "시스템 3곳 조회, 사례 검색, 영향 범위 계산, 보고서·회신 초안", options: { color: C.background1, breakLine: true } },
+    { text: " ", options: { breakLine: true } },
+    { text: "사람이 한 일", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "근거 확인, 문구 수정, 승인 2건", options: { color: C.background1, breakLine: true } },
+    { text: " ", options: { breakLine: true } },
+    { text: "그 뒤", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "대책은 사례 지식으로 쌓이고, 다른 공장 품질팀이 갤러리에서 이 에이전트를 가져다 쓴다", options: { color: C.background1 } },
+  ], { x: 9.7, y: 1.5, w: 2.85, h: 4.4, fontSize: 13.5 });
+  source(s, "설명용 예시 시나리오. 시각과 수치는 가상이며 파일럿에서 실측한다. MES 조회와 '제안 → 승인 → 실행' 흐름은 데모로 구조를 확인했다");
+  s.addNotes(
+    "이 플랫폼이 실제로 어떻게 쓰이는지, 가장 그럴싸한 장면 하나로 보여 드리겠습니다. 고객 품질 클레임입니다.\n" +
+    "오전 9시 10분, 고객사에서 커넥터 단자 변형 불량 메일이 옵니다. 품질팀이 만들어 둔 클레임 대응 에이전트가 메일을 감지해 바로 시작합니다.\n" +
+    "2분 뒤, MES에서 LOT를 추적합니다. 프레스 3호기 금형 교체 직후 생산분이고, 같은 조건으로 만든 LOT 중 두 개가 아직 창고에 있다는 것을 ERP에서 확인합니다.\n" +
+    "이어서 2년 전 비슷한 클레임 두 건과 그때의 대책을 찾습니다. 고객과 품질 데이터는 대외비라 사내 모델에서만 처리합니다.\n" +
+    "9시 20분, 담당자에게 원인 후보, 영향 범위, 8D 보고서 초안, 그리고 제안 두 건이 옵니다. 재고 출하 보류와 고객 1차 회신입니다.\n" +
+    "9시 40분, 담당자가 근거를 확인하고 문구를 고쳐 승인합니다. 그때 비로소 MES에 보류가 걸리고 회신이 나갑니다.\n" +
+    "AI가 결정한 것은 없습니다. 찾고, 맞추고, 초안을 쓰는 일을 했을 뿐입니다. 시각과 수치는 설명용 예시이고 파일럿에서 실제로 재겠습니다."
+  );
+}
+{
+  const s = content("지금과 무엇이 달라지나: 사람은 찾는 일 대신 판단을 한다", S1B);
+  const H = (t) => hdr(t);
+  const rows = [
+    [H("구분"), H("지금"), H("플랫폼 이후 (예시)")],
+    ["고객 1차 회신", "다음 날 (LOT 추적과 영향 범위 파악에 하루)", { text: "당일 오전", options: { bold: true, color: HEX.accent2 } }],
+    ["미출하 재고 보류", "영향 범위가 확정된 뒤", { text: "첫 30분 안에 제안 → 사람이 승인", options: { bold: true, color: HEX.accent2 } }],
+    ["담당자의 일", "부서마다 묻고, 시스템을 오가며 복사·붙여넣기", { text: "근거 확인과 판단, 회신 문구 다듬기", options: { bold: true, color: HEX.accent2 } }],
+    ["과거 사례 활용", "기억하는 사람이 있으면", { text: "매번 자동으로 찾아 근거로 붙임", options: { bold: true, color: HEX.accent2 } }],
+    ["남는 것", "담당자 메일함", { text: "실행·승인 기록, 대책이 담긴 사례 지식", options: { bold: true, color: HEX.accent2 } }],
+  ];
+  s.addTable(rows, { x: 0.6, y: 1.35, w: 7.7, colW: [1.8, 2.95, 2.95], rowH: [0.48, 0.78, 0.7, 0.78, 0.7, 0.7], fontSize: 13, color: HEX.dk1,
+    border: { type: "solid", pt: 0.75, color: BORDER }, valign: "middle", margin: [0, 0.1, 0, 0.1], objectName: nm("table") });
+  card(s, 8.6, 1.35, 4.1, 4.14, C.background2);
+  txt(s, "왜 이 시나리오인가", { x: 8.85, y: 1.5, w: 3.7, h: 0.45, fontSize: 17, bold: true });
+  const pts = [
+    ["자주 일어나는 공통의 고통", "품질·생산·물류·영업이 함께 움직인다"],
+    ["여러 시스템을 넘나든다", "MES·ERP·메일·사례 문서"],
+    ["플랫폼 기능이 한 장면에", "트리거·도구·지식·사내 모델·승인·공유"],
+    ["바로 잴 수 있다", "첫 회신 시간, 보류 판단 시간"],
+  ];
+  pts.forEach(([t, d], i) => {
+    const y = 2.05 + i * 0.84;
+    s.addShape(pres.shapes.OVAL, { x: 8.88, y: y + 0.1, w: 0.2, h: 0.2, fill: { color: C.accent2 }, line: { type: "none" }, objectName: nm("dot") });
+    txt(s, t, { x: 9.2, y, w: 3.4, h: 0.4, fontSize: 14, bold: true, valign: "middle" });
+    txt(s, d, { x: 9.2, y: y + 0.38, w: 3.4, h: 0.35, fontSize: 12, color: C.accent3 });
+  });
+  card(s, 0.6, 5.75, 12.1, 0.8, C.text1);
+  txt(s, [
+    { text: "AI는 찾고, 맞추고, 초안을 쓴다. 판단과 승인은 사람이 한다. ", options: { bold: true, color: C.accent1 } },
+    { text: "같은 사람이 더 빨리, 더 근거 있게 대응한다", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.75, w: 11.6, h: 0.8, fontSize: 16, valign: "middle" });
+  s.addNotes(
+    "지금과 비교하면 이렇습니다. 고객 1차 회신이 다음 날에서 당일 오전으로 당겨집니다. 아직 창고에 있는 재고는 영향 범위가 확정되기 전, 첫 30분 안에 보류가 제안됩니다.\n" +
+    "가장 큰 변화는 담당자의 일입니다. 부서마다 물어보고 시스템을 오가며 복사하던 시간이, 근거를 확인하고 판단하는 시간으로 바뀝니다. 그리고 대응 기록과 대책이 회사의 지식으로 남습니다.\n" +
+    "이 장면을 고른 이유는, 자주 일어나는 공통의 고통이고, 여러 시스템을 넘나들고, 플랫폼의 모든 기능이 한 장면에 나오며, 파일럿에서 바로 효과를 잴 수 있기 때문입니다.\n" +
+    "이제 이 일이 왜 지금 필요한지, 데이터로 말씀드리겠습니다."
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════
 // 2. 문제
 // ═════════════════════════════════════════════════════════════════════════
 const S2 = "문제";
@@ -452,7 +573,7 @@ pres.addSection({ title: S4 });
     { text: "활성 사용자 300명이 주 1.4시간만 실제로 아끼면 된다", options: { bold: true, color: C.background1, breakLine: true } },
     { text: "외부 조사 보고치는 주 2.2~3.8시간. 자동화 업무 30개를 넣으면 주 0.5시간", options: { color: "CBD5E1" } },
   ], { x: 8.35, y: 3.6, w: 4.15, h: 2.05, fontSize: 14, valign: "middle", paraSpaceAfter: 4 });
-  source(s, "가정: 대상 600명 중 활성 120→300→360명, 시간당 4만 원, 절감 시간의 50%만 가치로 계산, 자동화 업무 1개 연 0.16억. 비용은 개략 추정 (근거 문서 6장)");
+  source(s, "가정: 대상 600명 중 활성 120→300→360명, 시간당 4만 원, 절감 시간의 50%만 가치로 계산, 자동화 업무 1개 연 0.16억. 비용은 개략 추정 (근거 문서 8장)");
   s.addNotes(
     "투자와 효과입니다. 숫자를 부풀리지 않으려고 보수적으로 계산했습니다. 아낀 시간의 절반만 가치로 셌습니다.\n" +
     "기준 시나리오에서 1~2년차는 투자 구간이고, 3년차에 누적 손익분기, 그 이후 매년 5억 원 이상의 순효과가 납니다.\n" +
@@ -629,7 +750,7 @@ QA.forEach((items, page) => {
     txt(s, "Q. " + q, { x: x + 0.25, y: y + 0.12, w: 5.5, h: 0.4, fontSize: 15, bold: true, color: C.accent2 });
     txt(s, a, { x: x + 0.25, y: y + 0.55, w: 5.5, h: 1.05, fontSize: 13 });
   });
-  s.addNotes("부록: 예상 질문과 답변. 근거 문서 12장에 같은 내용이 있다. 질문이 나오면 해당 카드를 띄워 답한다.");
+  s.addNotes("부록: 예상 질문과 답변. 근거 문서 14장에 같은 내용이 있다. 질문이 나오면 해당 카드를 띄워 답한다.");
 });
 
 (async () => {
