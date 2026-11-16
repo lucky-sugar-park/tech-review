@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에이전트 스튜디오 화면 시안</title>
+<style>
+  :root {
+    --bg: #E9ECEF; --panel: #FFFFFF; --line: #D5DAE0; --text: #1E293B; --muted: #64748B;
+    --teal: #0F766E; --teal-soft: #E6F4F1; --amber: #F59E0B; --amber-soft: #FEF3C7; --red: #DC2626; --red-soft: #FEE2E2;
+    --indigo: #4F46E5; --indigo-soft: #EEF2FF; --green: #16A34A; --chip: #F1F5F9; --navy: #0F1B33;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; font-size: 14px; }
+  .tabs { display: flex; gap: 6px; padding: 12px 16px 0; flex-wrap: wrap; }
+  .tab { border: 1px solid var(--line); background: #F8FAFC; padding: 8px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font: inherit; color: var(--muted); }
+  .tab.on { background: var(--panel); color: var(--text); font-weight: 700; }
+  .view { display: none; padding: 0 16px 16px; }
+  .view.on { display: block; }
+  .frame { background: var(--panel); border: 1px solid var(--line); border-radius: 0 10px 10px 10px; overflow: hidden; }
+  .note { color: var(--muted); font-size: 12px; padding: 8px 2px; }
+
+  .topbar { display: flex; align-items: center; gap: 14px; padding: 10px 16px; background: var(--navy); color: #fff; flex-wrap: wrap; }
+  .brand { font-weight: 800; }
+  .who { margin-left: auto; font-size: 13px; color: #CBD5E1; }
+  .app { display: grid; grid-template-columns: 170px 1fr 400px; min-height: 700px; }
+  .nav { border-right: 1px solid var(--line); padding: 12px 8px; background: #F8FAFC; }
+  .nav div { padding: 9px 10px; border-radius: 6px; margin-bottom: 2px; display: flex; justify-content: space-between; color: var(--muted); cursor: pointer; }
+  .nav div.on { background: #E2E8F0; color: var(--text); font-weight: 700; }
+  .count { background: var(--red); color: #fff; font-size: 11px; border-radius: 99px; padding: 0 7px; }
+  .main { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .head h2 { margin: 0; font-size: 20px; }
+  .head .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .pill { display: inline-block; border-radius: 99px; padding: 2px 9px; font-size: 12px; font-weight: 700; }
+  .p-draft { background: var(--chip); color: var(--muted); }
+  .p-sec { background: var(--red-soft); color: var(--red); }
+  .p-ok { background: #DCFCE7; color: #166534; }
+  .p-ap { background: var(--amber-soft); color: #92400E; }
+  .p-read { background: var(--teal-soft); color: var(--teal); }
+  .step { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .step h3 { margin: 0 0 8px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .num { width: 22px; height: 22px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 12px; display: grid; place-items: center; flex: none; }
+  .goal { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #FBFCFD; line-height: 1.6; }
+  .plan { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .plan b { color: var(--indigo); font-weight: 700; }
+  .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tool { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .tool small { display: block; color: var(--muted); font-size: 11.5px; }
+  .tool.add { border-style: dashed; color: var(--muted); justify-content: center; cursor: pointer; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 13px; }
+  .rules div { display: flex; justify-content: space-between; border-bottom: 1px solid #EEF1F4; padding: 5px 0; gap: 8px; }
+  .rules span { color: var(--muted); }
+  .runmode { display: flex; gap: 8px; flex-wrap: wrap; }
+  .opt { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  .opt.on { border-color: var(--teal); background: var(--teal-soft); font-weight: 700; color: var(--teal); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  .btn.pri { background: var(--teal); border-color: var(--teal); color: #fff; font-weight: 700; }
+  .btn.amb { background: var(--amber); border-color: var(--amber); color: var(--navy); font-weight: 700; }
+
+  .side { border-left: 1px solid var(--line); background: #FBFCFD; display: flex; flex-direction: column; }
+  .side-h { padding: 12px 14px; border-bottom: 1px solid var(--line); font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+  .log { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.55; overflow: auto; }
+  .ev { color: var(--muted); font-size: 12px; }
+  .ev b { color: var(--text); }
+  .res { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+  .t th, .t td { border-bottom: 1px solid #EEF1F4; padding: 5px 4px; text-align: right; }
+  .t th:first-child, .t td:first-child, .t td:last-child, .t th:last-child { text-align: left; }
+  .t th { color: var(--muted); font-weight: 700; }
+  .diff { color: var(--red); font-weight: 700; }
+  .meta { border-top: 1px solid var(--line); padding: 10px 14px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+
+  /* 승인함 */
+  .inbox { padding: 18px 20px; display: grid; gap: 12px; max-width: 980px; }
+  .ap { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .ap-h { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; background: var(--amber-soft); font-size: 13px; flex-wrap: wrap; }
+  .ap-b { padding: 12px 14px; display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; font-size: 13.5px; }
+  .ap-b b { color: var(--muted); }
+  .mail { background: #F8FAFC; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; white-space: pre-line; line-height: 1.6; }
+  .ap-f { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); align-items: center; flex-wrap: wrap; }
+  .ok { background: var(--green); color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+  .hist { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .hist th, .hist td { border-bottom: 1px solid #EEF1F4; padding: 8px 6px; text-align: left; }
+  .hist th { color: var(--muted); }
+
+  /* 갤러리 */
+  .gal { padding: 18px 20px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filters span { background: var(--chip); border-radius: 99px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+  .filters span.on { background: var(--navy); color: #fff; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ac { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .ac h4 { margin: 0; font-size: 15px; }
+  .ac .d { color: var(--muted); font-size: 13px; line-height: 1.5; flex: 1; }
+  .ac .m { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); gap: 6px; flex-wrap: wrap; }
+  .dept { font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 6px; }
+  .d-acc { background: var(--indigo-soft); color: var(--indigo); } .d-mfg { background: var(--teal-soft); color: var(--teal); }
+  .d-qa { background: var(--red-soft); color: var(--red); } .d-dev { background: var(--amber-soft); color: #92400E; } .d-all { background: #DCFCE7; color: #166534; }
+
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 1fr; } .nav { display: none; } .side { border-left: 0; border-top: 1px solid var(--line); }
+    .tools, .rules { grid-template-columns: 1fr; } .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+  <button class="tab on" data-v="build">① 에이전트 만들기</button>
+  <button class="tab" data-v="inbox">② 승인함 · 실행 기록</button>
+  <button class="tab" data-v="gallery">③ 에이전트 갤러리</button>
+</div>
+
+<!-- ① 에이전트 만들기 -->
+<section class="view on" id="build">
+  <div class="frame">
+    <div class="topbar"><span class="brand">🧩 에이전트 스튜디오</span><span style="color:#CBD5E1">사내 AI 에이전트 플랫폼 (가칭)</span><span class="who">회계팀 김OO · 권한: 회계 · 데이터 등급 대외비까지</span></div>
+    <div class="app">
+      <nav class="nav">
+        <div>홈</div>
+        <div class="on">내 에이전트</div>
+        <div>갤러리</div>
+        <div>승인함 <span class="count">3</span></div>
+        <div>실행 기록</div>
+        <div>도구 · 지식</div>
+        <div>관리</div>
+      </nav>
+      <main class="main">
+        <div class="head">
+          <div><h2>월말 거래처 대사</h2><div class="sub">주요 거래처 매출 채권과 거래처 회신 잔액을 비교해 차이를 정리한다 · 템플릿: 회계 > 대사</div></div>
+          <div><span class="pill p-draft">초안</span> <span class="pill p-sec">대외비 데이터 → 사내 모델</span></div>
+        </div>
+
+        <div class="step">
+          <h3><span class="num">1</span>목표 (말로 적기)</h3>
+          <div class="goal">매월 말일, 주요 거래처 50곳의 ERP 매출 채권 잔액과 거래처가 메일로 보낸 회신 잔액을 비교해 줘. 차이가 나는 곳은 원인 후보를 찾고, 거래처에 보낼 확인 메일 초안을 만들어 줘.</div>
+          <ol class="plan">
+            <li><b>AI가 단계로 정리</b> ERP에서 거래처별 채권 잔액 조회 → 메일함에서 회신 잔액 추출 → 비교</li>
+            <li>차이 거래처의 최근 전표·입금 내역으로 원인 후보 찾기 (미반영 입금, 반품, 기간 차이)</li>
+            <li>대사 보고서(엑셀)와 확인 메일 초안 작성 → <b>메일 발송은 승인 후</b></li>
+          </ol>
+        </div>
+
+        <div class="step">
+          <h3><span class="num">2</span>도구 (사내 시스템 연결)</h3>
+          <div class="tools">
+            <div class="tool"><div>ERP 매출 채권 조회<small>거래처별 잔액 · 전표 · 입금</small></div><span class="pill p-read">조회</span></div>
+            <div class="tool"><div>메일함 읽기<small>“잔액 확인” 회신 메일만</small></div><span class="pill p-read">조회</span></div>
+            <div class="tool"><div>엑셀 보고서 만들기<small>대사 결과표</small></div><span class="pill p-read">생성</span></div>
+            <div class="tool"><div>거래처 메일 발송<small>확인 요청 메일</small></div><span class="pill p-ap">승인 필요</span></div>
+            <div class="tool add">＋ 도구 추가 (전사 도구 목록에서 선택)</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <h3><span class="num">3</span>지식 (참고 문서)</h3>
+          <div class="runmode"><span class="opt on">📄 회계 규정 · Rev.7</span><span class="opt on">📄 대사 업무 매뉴얼 · Rev.2</span><span class="opt">＋ 문서 추가</span></div>
+        </div>
+
+        <div class="step">
+          <h3><span class="num">4</span>규칙</h3>
+          <div class="rules">
+            <div><span>사용 모델</span><b>사내 모델 (대외비 자동)</b></div>
+            <div><span>데이터 범위</span><b>만든 사람 권한까지</b></div>
+            <div><span>승인자</span><b>회계팀장 박OO</b></div>
+            <div><span>1회 실행 비용 한도</span><b>2,000원</b></div>
+            <div><span>숫자 검증</span><b>ERP 조회값만 사용</b></div>
+            <div><span>실패 시</span><b>담당자에게 알림</b></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <h3><span class="num">5</span>실행 방식</h3>
+          <div class="runmode"><span class="opt">💬 대화로 실행</span><span class="opt on">🗓 예약: 매월 말일 09:00</span><span class="opt">⚡ 이벤트: 회신 메일 도착 시</span></div>
+        </div>
+
+        <div class="actions"><button class="btn pri" id="test">▶ 시험 실행</button><button class="btn">저장</button><button class="btn amb">팀·전사 공유 요청</button></div>
+      </main>
+
+      <aside class="side">
+        <div class="side-h"><span>시험 실행 결과</span><span class="pill p-ok">완료 · 1분 12초</span></div>
+        <div class="log" id="log">
+          <div class="ev">09:00:02 <b>ERP 매출 채권 조회</b> · 거래처 50곳 잔액</div>
+          <div class="ev">09:00:20 <b>메일함 읽기</b> · 회신 48건 (2곳 미회신)</div>
+          <div class="ev">09:00:41 비교 · 차이 3곳 · 원인 후보 탐색</div>
+          <div class="res">
+            <b>대사 결과: 일치 45곳 · 차이 3곳 · 미회신 2곳</b>
+            <table class="t">
+              <tr><th>거래처</th><th>장부</th><th>회신</th><th>차이</th><th>원인 후보</th></tr>
+              <tr><td>가온자동차</td><td>412,500</td><td>398,000</td><td class="diff">14,500</td><td>10/30 입금 미반영</td></tr>
+              <tr><td>나래모빌리티</td><td>186,200</td><td>191,700</td><td class="diff">−5,500</td><td>반품 전표 대기</td></tr>
+              <tr><td>다온케미칼</td><td>73,000</td><td>70,800</td><td class="diff">2,200</td><td>환율 적용일 차이</td></tr>
+            </table>
+            <div class="ev" style="margin-top:6px">단위: 천 원 · 숫자는 ERP 조회값 · 근거: 대사 업무 매뉴얼 Rev.2 4.2절</div>
+          </div>
+          <div class="res">📎 대사결과_2026-10.xlsx 생성<br>✉ 확인 메일 초안 3건 → <b>승인함으로 보냄</b> (발송 전)</div>
+        </div>
+        <div class="meta"><span>모델: 사내 qwen3 (대외비)</span><span>도구 호출 7회</span><span>비용: 0원 (사내)</span><span>기록 ID R-1031-0042</span></div>
+      </aside>
+    </div>
+  </div>
+  <div class="note">설계 포인트: 목표는 말로 적고 AI가 단계로 정리한다. 도구마다 '조회 / 승인 필요'가 표시되고, 대외비 데이터를 쓰면 사내 모델이 자동 선택된다. 시험 실행 결과가 오른쪽에 바로 보이고, 외부로 나가는 일(메일 발송)은 승인함으로 간다. (시안용 가상 데이터)</div>
+</section>
+
+<!-- ② 승인함 · 실행 기록 -->
+<section class="view" id="inbox">
+  <div class="frame">
+    <div class="topbar"><span class="brand">🧩 에이전트 스튜디오</span><span class="who">회계팀장 박OO · 승인함</span></div>
+    <div class="inbox">
+      <div class="ap">
+        <div class="ap-h"><span>승인 요청 · 월말 거래처 대사 (김OO) · 10/31 09:01</span><span class="pill p-ap">외부 발송 · 위험 중</span></div>
+        <div class="ap-b">
+          <b>할 일</b><div>가온자동차에 잔액 확인 메일 발송 (3건 중 1)</div>
+          <b>근거</b><div>장부 412,500 vs 회신 398,000 (천 원) · 10/30 입금 14,500 미반영 추정 · ERP 조회 09:00</div>
+          <b>메일 초안</b><div class="mail">가온자동차 재무팀 담당자님께,
+10월 말 기준 채권 잔액 확인 회신에 감사드립니다.
+당사 장부 잔액은 412,500천 원으로, 회신하신 398,000천 원과 14,500천 원 차이가 있습니다.
+10/30 송금하신 금액의 반영 시점 차이로 보이며, 송금 내역을 확인해 주시면 정리하겠습니다.</div>
+          <b>AI 표시</b><div>AI 작성 초안임을 메일 하단에 표시 (AI 기본법 대응)</div>
+        </div>
+        <div class="ap-f"><button class="ok" id="approve">✓ 승인 후 발송</button><button class="btn">✎ 수정 후 발송</button><button class="btn">✕ 거절</button><span class="ev" id="apres"></span></div>
+      </div>
+      <h3 style="margin:8px 0 0">실행 기록</h3>
+      <table class="hist">
+        <tr><th>시각</th><th>에이전트</th><th>실행</th><th>모델</th><th>결과</th><th>비용</th></tr>
+        <tr><td>10/31 09:00</td><td>월말 거래처 대사</td><td>예약</td><td>사내 (대외비)</td><td>차이 3곳 · 승인 대기 3</td><td>0원</td></tr>
+        <tr><td>10/31 08:40</td><td>사내 규정 Q&A</td><td>대화 · 이OO</td><td>클라우드 (일반)</td><td>답변 · 근거 2건</td><td>12원</td></tr>
+        <tr><td>10/31 07:00</td><td>아침 생산 브리핑</td><td>이벤트 (실적 마감)</td><td>사내 (대외비)</td><td>주의 3건</td><td>0원</td></tr>
+        <tr><td>10/30 16:12</td><td>8D 보고서 초안</td><td>대화 · 최OO</td><td>사내 (대외비)</td><td>초안 생성 · 검토 중</td><td>0원</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="note">설계 포인트: 외부로 나가거나 시스템을 바꾸는 일은 승인자에게 근거와 초안이 함께 도착한다. 모든 실행이 모델·비용·결과와 함께 기록된다.</div>
+</section>
+
+<!-- ③ 갤러리 -->
+<section class="view" id="gallery">
+  <div class="frame">
+    <div class="topbar"><span class="brand">🧩 에이전트 스튜디오</span><span style="color:#CBD5E1">에이전트 갤러리: 검증된 에이전트를 가져다 쓰기</span></div>
+    <div class="gal">
+      <div class="filters"><span class="on">전체</span><span>회계</span><span>제조</span><span>품질</span><span>개발</span><span>일상 업무</span></div>
+      <div class="cards">
+        <div class="ac"><h4>월말 거래처 대사</h4><div class="d">ERP 채권과 거래처 회신 잔액 비교, 차이 원인 후보, 확인 메일 초안</div><div class="m"><span class="dept d-acc">회계</span><span>사용 12명 · ★4.6</span><button class="btn">가져오기</button></div></div>
+        <div class="ac"><h4>아침 생산 브리핑</h4><div class="d">MES 실적 마감 시 생산·출하·재고 요약과 주의 사항. 숫자는 MES 조회값</div><div class="m"><span class="dept d-mfg">제조</span><span>사용 38명 · ★4.8</span><button class="btn">가져오기</button></div></div>
+        <div class="ac"><h4>8D 보고서 초안</h4><div class="d">불량 내역·검사 데이터·과거 사례로 8D 초안. 원인 확정은 품질 엔지니어</div><div class="m"><span class="dept d-qa">품질</span><span>사용 9명 · ★4.4</span><button class="btn">가져오기</button></div></div>
+        <div class="ac"><h4>장애 로그 분석</h4><div class="d">서버·앱 로그에서 오류 패턴과 최근 배포 연관성 정리</div><div class="m"><span class="dept d-dev">개발</span><span>사용 15명 · ★4.5</span><button class="btn">가져오기</button></div></div>
+        <div class="ac"><h4>사내 규정 Q&A</h4><div class="d">취업규칙·출장·경비 규정을 근거 조항과 함께 답변</div><div class="m"><span class="dept d-all">일상</span><span>사용 412명 · ★4.7</span><button class="btn">가져오기</button></div></div>
+        <div class="ac"><h4>회의록 요약 · 할 일</h4><div class="d">회의 녹취·메모에서 결정 사항과 담당자별 할 일 정리</div><div class="m"><span class="dept d-all">일상</span><span>사용 287명 · ★4.6</span><button class="btn">가져오기</button></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="note">설계 포인트: 추진 조직의 검토를 거친 에이전트만 갤러리에 올라간다. 가져오면 내 권한 범위로 실행된다. 사용자 수와 평점으로 효과가 큰 에이전트가 드러난다. (시안용 가상 수치)</div>
+</section>
+
+<script>
+  const tabs = document.querySelectorAll(".tab");
+  function show(v) {
+    tabs.forEach(t => t.classList.toggle("on", t.dataset.v === v));
+    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === v));
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.v)));
+  document.querySelectorAll(".nav div").forEach(n => n.addEventListener("click", () => {
+    if (n.textContent.startsWith("승인함") || n.textContent.startsWith("실행 기록")) show("inbox");
+    if (n.textContent.startsWith("갤러리")) show("gallery");
+  }));
+  document.querySelectorAll(".runmode .opt").forEach(o => o.addEventListener("click", () => {
+    if (o.closest(".step").querySelector("h3").textContent.includes("실행 방식")) {
+      o.parentElement.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === o));
+    }
+  }));
+  document.getElementById("test").addEventListener("click", () => {
+    const log = document.getElementById("log");
+    log.style.opacity = 0.3; setTimeout(() => (log.style.opacity = 1), 400);
+  });
+  document.getElementById("approve").addEventListener("click", () => {
+    document.getElementById("apres").textContent = "✓ 승인됨 · 발송 완료 10/31 09:14 · 감사 로그 기록";
+    document.getElementById("approve").disabled = true;
+  });
+</script>
+</body>
+</html>

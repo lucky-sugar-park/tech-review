@@ -1,6 +1,6 @@
 # 경영진 보고 덱 생성
 
-`../ai-agent-platform-proposal.pptx`(16장, 발표자 노트 포함)를 만드는 스크립트입니다. 숫자와 출처는 근거 문서 `../ai-agent-platform-proposal.md`와 같아야 합니다.
+`../ai-agent-platform-proposal.pptx`(19장, 발표자 노트 포함)를 만드는 스크립트입니다. 숫자와 출처는 근거 문서 `../ai-agent-platform-proposal.md`와 같아야 합니다.
 
 ```bash
 npm install pptxgenjs
