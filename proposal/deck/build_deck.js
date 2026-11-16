@@ -105,7 +105,7 @@ pres.addSection({ title: S1 });
 {
   const s = content("한 장 요약: 6개월 파일럿으로 시작해 성과로 확대를 결정한다", S1);
   const boxes = [
-    ["문제", "직원 45~49%가 승인되지 않은 AI를 이미 사용\n회사 데이터 유출 위험, 노하우는 개인에 머묾\nERP·MES와 단절돼 반쪽짜리 활용", C.accent4],
+    ["문제", "범용 AI와 그때그때 대화, 단계 연결은 사람이 직접\n사람 수만큼 느는 범용 AI 비용, 결과는 개인에 머묾\n가장 큰 한계: 회계·제조·품질·생산 데이터를 못 씀", C.accent4],
     ["제안", "직원이 화면에서 AI 에이전트를 만들고·실행하고·공유\n사내 시스템은 표준 도구(MCP)로 연결\n대외비는 사내 모델, 시스템 변경은 사람 승인", C.accent2],
     ["효과", "활성 사용자 주 2~4시간 절감 보고 (외부 조사)\n기준 시나리오: 3년차 누적 손익분기, 이후 연 5억 원+\n섀도 AI를 통제된 공식 경로로 흡수", C.accent5],
     ["요청", "1단계 파일럿 승인: 6개월, 약 3.4억 원\n제조·품질·회계 3개 부서 + 전사 규정 Q&A\n6개월 뒤 정해 둔 지표로 확대 여부 결정", C.accent1],
@@ -119,7 +119,7 @@ pres.addSection({ title: S1 });
   });
   s.addNotes(
     "한 장으로 요약하면 이렇습니다.\n" +
-    "문제: 직원 절반 가까이가 승인되지 않은 AI를 이미 쓰고 있고, 회사 데이터가 그쪽으로 흘러갑니다. 잘 쓰는 사람의 노하우는 개인에게 머물고, ERP나 MES와 연결되지 않아 효과도 반쪽입니다.\n" +
+    "문제: 직원들은 범용 AI를 쓰고 있지만, 그때그때 대화하고 단계는 사람이 직접 잇습니다. 비용은 사람 수만큼 늘고, 무엇보다 회계·제조·품질·생산 데이터를 쓸 수 없어 한계가 분명합니다.\n" +
     "제안: 직원이 직접 에이전트를 만드는 사내 플랫폼. 사내 시스템은 표준으로 연결하고, 대외비는 사내 모델에서만 처리하고, 시스템을 바꾸는 일은 사람이 승인합니다.\n" +
     "효과: 외부 조사 기준 주 2~4시간 절감. 보수적으로 계산해도 기준 시나리오에서 3년차에 누적 손익분기입니다.\n" +
     "요청: 6개월 파일럿만 먼저 승인해 주십시오. 지표로 확대를 결정하겠습니다."
@@ -134,7 +134,7 @@ pres.addSection({ title: S1B });
 {
   const s = content("왜 해야 하는가: 할지 말지가 아니라, 누가 주도하느냐의 문제", S1B);
   const why = [
-    ["직원은 이미 쓰고 있다", "절반 가까이가 승인되지 않은 AI를 쓴다. 막을 수 없다면 더 편하고 안전한 공식 경로를 줘야 한다", "회사 데이터가 계속 외부로 흘러간다"],
+    ["직원은 이미 쓰고 있다", "범용 AI를 그때그때 대화로 쓰고, 일의 연결은 사람이 한다. 승인되지 않은 도구도 절반 가까이 쓴다", "비효율이 굳고, 데이터가 계속 외부로 흘러간다"],
     ["범용 AI는 우리 회사를 모른다", "모델은 누구나 같은 것을 산다. 차이는 ERP·MES 데이터와 업무 지식을 AI에 연결하는 능력에서 난다", "AI 활용 수준이 경쟁사와 같아진다"],
     ["IT가 다 만들어 줄 수 없다", "부서마다 수십 개의 작은 반복 업무가 있다. 업무를 아는 사람이 직접 만들어야 속도가 난다", "작은 비효율이 그대로 남는다"],
     ["노하우가 사람과 함께 떠난다", "숙련자의 판단 기준과 대응 사례를 에이전트와 지식으로 담으면 퇴직·이동 후에도 남는다", "같은 시행착오를 반복한다"],
@@ -282,34 +282,102 @@ pres.addSection({ title: S2 });
   );
 }
 {
-  const s = content("개인 단위의 AI 활용은 조직의 힘이 되지 않는다", S2);
-  const probs = [
-    ["재사용 안 됨", "잘 쓰는 사람의 프롬프트와 노하우가 개인 PC에 머문다. 같은 일을 부서마다 따로 시도한다"],
-    ["사내 시스템과 단절", "ERP·MES·그룹웨어 데이터에 닿지 못해 복사·붙여넣기로 일한다. 답의 근거를 확인할 수 없다"],
-    ["통제 불가", "누가 어떤 데이터를 어디에 넣었는지 모른다. 비용도, 품질도 관리되지 않는다"],
+  const s = content("지금의 방식: AI와 그때그때 대화하고, 연결은 사람이 한다", S2);
+  txt(s, "지금: 직원이 직접 판단하고 단계를 잇는다 (사람 = 오케스트레이터)", { x: 0.6, y: 1.25, w: 7.6, h: 0.35, fontSize: 14, bold: true, color: C.accent3 });
+  const steps = [
+    ["ERP·MES 화면에서 조회하고 엑셀로 내려받기", "사람"],
+    ["필요한 부분만 복사하고 민감 정보 지우기", "사람"],
+    ["범용 AI 대화창에 붙여넣고 상황 설명", "AI"],
+    ["답을 확인하고 모자란 데이터는 다시 조회", "사람"],
+    ["다음 질문으로 이어 가기 (맥락 다시 설명)", "사람"],
+    ["결과를 메일·보고서·시스템에 다시 옮기기", "사람"],
   ];
-  probs.forEach(([t, d], i) => {
-    const y = 1.4 + i * 1.3;
-    badge(s, 0.6, y + 0.12, String(i + 1), C.accent4, C.background1);
-    txt(s, t, { x: 1.3, y, w: 5.6, h: 0.5, fontSize: 19, bold: true, valign: "middle" });
-    txt(s, d, { x: 1.3, y: y + 0.5, w: 5.6, h: 0.7, fontSize: 14, color: C.accent3 });
+  steps.forEach(([d, who], i) => {
+    const col = i % 3, row = Math.floor(i / 3);
+    const x = 0.6 + col * 2.6, y = 1.75 + row * 1.95;
+    const ai = who === "AI";
+    card(s, x, y, 2.3, 1.6, ai ? "EEF2FF" : C.background2, ai ? C.accent6 : undefined);
+    badge(s, x + 0.15, y + 0.15, String(i + 1), ai ? C.accent6 : C.accent3, C.background1, 0.4);
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 1.45, y: y + 0.2, w: 0.7, h: 0.3, rectRadius: 0.15, fill: { color: ai ? C.accent6 : "CBD5E1" }, line: { type: "none" }, objectName: nm("pill") });
+    txt(s, who, { x: x + 1.45, y: y + 0.2, w: 0.7, h: 0.3, fontSize: 11, bold: true, color: ai ? C.background1 : C.text1, align: "center", valign: "middle" });
+    txt(s, d, { x: x + 0.15, y: y + 0.68, w: 2.0, h: 0.85, fontSize: 13 });
+    if (col < 2) arrowR(s, x + 2.32, y + 0.8, 0.26);
   });
-  card(s, 7.3, 1.4, 5.4, 3.75, C.background2);
-  txt(s, "국내 기업: 도입은 했지만 정착은 못 했다", { x: 7.6, y: 1.6, w: 4.9, h: 0.4, fontSize: 15, bold: true });
-  const bars = [["AI 도입 기업", 69.5, C.accent3], ["업무 표준으로 정착", 12.5, C.accent4]];
-  bars.forEach(([l, v, col], i) => {
-    const y = 2.3 + i * 1.15;
-    txt(s, l, { x: 7.6, y, w: 4.9, h: 0.35, fontSize: 13, color: C.accent3 });
-    s.addShape(pres.shapes.RECTANGLE, { x: 7.6, y: y + 0.4, w: 4.2 * v / 70, h: 0.45, fill: { color: col }, line: { type: "none" }, objectName: nm("bar") });
-    txt(s, `${v}%`, { x: 7.7 + 4.2 * v / 70, y: y + 0.4, w: 1.0, h: 0.45, fontSize: 18, bold: true, valign: "middle" });
-  });
-  txt(s, "기업 관계자 2,078명 조사 (조코딩AX파트너스)", { x: 7.6, y: 4.65, w: 4.9, h: 0.3, fontSize: 11, color: C.accent3 });
-  card(s, 0.6, 5.4, 12.1, 1.0, "FEF3C7");
-  txt(s, "필요한 것은 더 좋은 챗봇이 아니라, 사내 시스템에 연결되고 조직이 함께 쌓아 가는 '에이전트 기반'이다", { x: 0.9, y: 5.4, w: 11.6, h: 1.0, fontSize: 17, bold: true, valign: "middle" });
+  arrowD(s, 7.75, 3.37, 0.36);
+  txt(s, "다음 단계마다 반복", { x: 5.6, y: 3.4, w: 2.05, h: 0.3, fontSize: 11, italic: true, color: C.accent3, align: "right" });
+  card(s, 8.6, 1.25, 4.1, 4.1, C.text1);
+  txt(s, [
+    { text: "에이전트 플랫폼에서는", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: " ", options: { fontSize: 6, breakLine: true } },
+    { text: "사람: 목표를 정하고, 결과를 승인한다", options: { bold: true, color: C.background1, breakLine: true } },
+    { text: " ", options: { fontSize: 6, breakLine: true } },
+    { text: "에이전트: 도구로 ERP·MES를 직접 조회하고, 단계를 이어 초안과 제안까지 만든다", options: { color: C.background1, breakLine: true } },
+    { text: " ", options: { fontSize: 6, breakLine: true } },
+    { text: "정해진 시각이나 사건에 맞춰 스스로 실행한다", options: { color: C.background1, breakLine: true } },
+    { text: " ", options: { fontSize: 6, breakLine: true } },
+    { text: "잘 된 방식은 저장돼 누구나 같은 품질로 다시 쓴다", options: { color: C.background1 } },
+  ], { x: 8.85, y: 1.45, w: 3.65, h: 3.8, fontSize: 14 });
+  card(s, 0.6, 5.6, 12.1, 0.85, "FEF3C7");
+  txt(s, [
+    { text: "AI가 하는 일은 여섯 단계 중 하나뿐이다. ", options: { bold: true, color: C.text1 } },
+    { text: "데이터를 찾고, 옮기고, 잇는 나머지 다섯 단계는 여전히 사람이 한다", options: { color: C.text1 } },
+  ], { x: 0.9, y: 5.6, w: 11.6, h: 0.85, fontSize: 16, valign: "middle" });
+  source(s, "실무 흐름을 단순화한 예시");
   s.addNotes(
-    "회사 차원의 문제는 세 가지입니다. 첫째, 재사용이 안 됩니다. 잘 쓰는 사람의 노하우가 개인 PC에 머뭅니다. 둘째, 사내 시스템과 단절돼 있어 ERP나 MES 데이터를 복사해 붙여 넣으며 일합니다. 셋째, 통제가 안 됩니다.\n" +
-    "국내 조사에서도 AI를 도입했다는 기업은 70% 가까이지만, 업무 표준으로 자리 잡은 곳은 12.5%에 불과합니다. 대한상의 조사에서도 필요성 공감은 78%인데 실제 활용은 30%대입니다.\n" +
-    "결국 필요한 것은 더 좋은 챗봇이 아니라, 사내 시스템에 연결되고 조직이 함께 쌓아 가는 기반입니다."
+    "직원들이 범용 AI를 업무에 쓰고 있는 것은 맞습니다. 문제는 쓰는 방식입니다.\n" +
+    "지금은 이렇습니다. ERP나 MES 화면에서 조회하고 엑셀로 내려받습니다. 필요한 부분만 복사하고 민감한 정보를 지웁니다. 그걸 AI 대화창에 붙여넣고 상황을 설명합니다. 답을 보고, 모자라면 다시 시스템에 가서 조회합니다. 다음 질문을 할 때는 맥락을 다시 설명합니다. 마지막으로 결과를 메일이나 보고서, 시스템에 다시 옮깁니다.\n" +
+    "여섯 단계 중 AI가 하는 일은 하나뿐입니다. 판단하고 단계를 잇는 오케스트레이터는 여전히 사람입니다.\n" +
+    "에이전트 플랫폼에서는 사람이 목표를 정하고 결과를 승인합니다. 조회하고, 잇고, 초안을 만드는 일은 에이전트가 합니다."
+  );
+}
+{
+  const s = content("범용 AI 방식의 세 가지 한계: 비효율, 비용, 그리고 데이터", S2);
+  const cols = [
+    { x: 0.6, w: 3.75, n: "1", h: "비효율", t: "사람이 일을 잇는다", col: C.accent3,
+      b: ["매번 맥락을 다시 설명하고 결과를 옮긴다", "사람마다 방식과 결과가 다르고 재현되지 않는다", "정해진 시각·사건에 스스로 돌지 않는다"],
+      foot: "국내: AI 도입 69.5% vs 업무 표준 정착 12.5%\n(조코딩AX파트너스, 2,078명)" },
+    { x: 4.55, w: 3.75, n: "2", h: "비용", t: "범용 AI를 범용으로 쓴다", col: C.accent1,
+      b: ["쓰는 만큼이 아니라 사람 수만큼 구독료가 나간다", "단순 반복 작업도 고가 모델과 긴 대화로 처리한다", "부서마다 따로 결제해 중복된다"],
+      foot: "예: 1인 월 4만 원 × 300명 = 연 1.4억 원\n(회사 실제 결제 금액으로 확인)" },
+  ];
+  cols.forEach((c) => {
+    card(s, c.x, 1.3, c.w, 4.2, C.background2);
+    badge(s, c.x + 0.25, 1.48, c.n, c.col, C.background1, 0.44);
+    txt(s, c.h, { x: c.x + 0.8, y: 1.48, w: 2.6, h: 0.44, fontSize: 19, bold: true, valign: "middle" });
+    txt(s, c.t, { x: c.x + 0.25, y: 2.05, w: c.w - 0.45, h: 0.4, fontSize: 15, bold: true, color: c.col });
+    txt(s, c.b.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < c.b.length - 1 } })),
+      { x: c.x + 0.25, y: 2.5, w: c.w - 0.45, h: 1.85, fontSize: 13, paraSpaceAfter: 6 });
+    txt(s, c.foot, { x: c.x + 0.25, y: 4.55, w: c.w - 0.45, h: 0.8, fontSize: 11.5, color: C.accent3 });
+  });
+  // 3. 데이터: 가장 큰 한계
+  const x = 8.5, w = 4.2;
+  card(s, x, 1.3, w, 4.2, C.background1, C.accent4);
+  badge(s, x + 0.25, 1.48, "3", C.accent4, C.background1, 0.44);
+  txt(s, "데이터", { x: x + 0.8, y: 1.48, w: 1.3, h: 0.44, fontSize: 19, bold: true, valign: "middle" });
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 2.4, y: 1.55, w: 1.55, h: 0.32, rectRadius: 0.16, fill: { color: C.accent4 }, line: { type: "none" }, objectName: nm("pill") });
+  txt(s, "가장 큰 한계", { x: x + 2.4, y: 1.55, w: 1.55, h: 0.32, fontSize: 11.5, bold: true, color: C.background1, align: "center", valign: "middle" });
+  txt(s, "우리 회사 데이터를 쓸 수 없다", { x: x + 0.25, y: 2.05, w: w - 0.45, h: 0.4, fontSize: 15, bold: true, color: C.accent4 });
+  const chips = ["회계 · 전표·채권", "제조 · 공정·설비", "품질 · 검사·클레임", "생산 · 실적·LOT"];
+  chips.forEach((t, i) => {
+    const cx = x + 0.25 + (i % 2) * 1.88, cy = 2.5 + Math.floor(i / 2) * 0.42;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: cy, w: 1.8, h: 0.34, rectRadius: 0.08, fill: { color: "FEE2E2" }, line: { type: "none" }, objectName: nm("chip") });
+    txt(s, t, { x: cx, y: cy, w: 1.8, h: 0.34, fontSize: 10, bold: true, color: C.accent4, align: "center", valign: "middle" });
+  });
+  const b3 = ["“이번 달 왜 불량이 늘었나”, “어느 거래처 잔액이 안 맞나” 같은 우리 회사의 질문에 답하지 못한다",
+    "통째로 붙여 넣으면 보안 위험, 일부만 넣으면 틀린 답", "답에 나온 숫자의 근거를 확인할 수 없다"];
+  txt(s, b3.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < b3.length - 1 } })),
+    { x: x + 0.25, y: 3.4, w: w - 0.45, h: 2.0, fontSize: 13, paraSpaceAfter: 6 });
+  card(s, 0.6, 5.75, 12.1, 0.8, C.text1);
+  txt(s, [
+    { text: "필요한 것은 더 똑똑한 범용 AI가 아니라, ", options: { color: C.background1 } },
+    { text: "우리 데이터에 연결되고 스스로 단계를 이어 가는 업무용 에이전트", options: { bold: true, color: C.accent1 } },
+  ], { x: 0.9, y: 5.75, w: 11.6, h: 0.8, fontSize: 16, valign: "middle" });
+  s.addNotes(
+    "이 방식에는 세 가지 한계가 있습니다.\n" +
+    "첫째, 비효율입니다. 사람이 매번 맥락을 설명하고 결과를 옮깁니다. 사람마다 방식이 달라 결과도 다르고, 잘 된 방식이 재현되지 않습니다. 국내 조사에서도 AI를 도입한 기업은 70%에 가깝지만 업무 표준으로 정착한 곳은 12.5%입니다.\n" +
+    "둘째, 비용입니다. 범용 AI 구독료는 쓰는 만큼이 아니라 사람 수만큼 나갑니다. 단순 반복 작업도 고가 모델과 긴 대화로 처리합니다. 예를 들어 1인 월 4만 원씩 300명이면 연 1.4억 원입니다. 실제 결제 금액은 확인해서 말씀드리겠습니다.\n" +
+    "셋째, 그리고 가장 큰 한계는 데이터입니다. 범용 AI는 우리 회계, 제조, 생산, 품질 데이터를 볼 수 없습니다. 그래서 '이번 달 왜 불량이 늘었나', '어느 거래처 잔액이 안 맞나' 같은, 정작 우리 회사에 필요한 질문에는 답하지 못합니다. 데이터를 통째로 붙여 넣으면 보안 문제가 되고, 일부만 넣으면 틀린 답이 나옵니다.\n" +
+    "그래서 필요한 것은 더 똑똑한 범용 AI가 아니라, 우리 데이터에 연결되고 스스로 단계를 이어 가는 업무용 에이전트입니다."
   );
 }
 {
@@ -728,7 +796,7 @@ pres.addSection({ title: S7 });
 const QA = [
   [
     ["비용 근거는 무엇인가?", "인건비 1인 연 1.4억, GPU 서버, 모델 사용료를 개략 추정했다. 가정과 계산식은 근거 문서와 계산 엑셀에 모두 공개했고, 견적으로 확정한다"],
-    ["왜 상용 제품(Copilot 등)을 쓰지 않나?", "사용자 수만큼 구독료가 늘고, 사내 ERP·MES 연결과 대외비 통제가 어렵다. 문서·메일 중심 부서에는 상용 도구를 선택적으로 함께 쓴다(혼합)"],
+    ["이미 범용 AI(ChatGPT·Copilot)를 쓰는데?", "범용 AI는 대화 도구라 단계 연결은 사람 몫이고, 회계·제조·품질·생산 데이터에 닿지 못한다. 플랫폼은 범용 AI를 버리는 게 아니라 그 위에 우리 데이터와 업무 절차를 잇는 층이다"],
     ["파일럿이 실패하면?", "6개월 뒤 다섯 가지 지표(활성 사용률 60%, 주 1.5시간 절감 등)에 못 미치면 확대하지 않는다. 손실은 파일럿 비용(약 3.4억)으로 제한된다"],
     ["데이터 유출은 안전한가?", "대외비는 사내 모델에서만 처리하고, 에이전트는 실행한 사람의 권한만큼만 본다. 모든 실행은 기록된다. 오히려 지금의 섀도 AI가 더 위험하다"],
     ["AI가 틀리면 누가 책임지나?", "숫자는 시스템 조회값만 쓰고 AI는 해석만 한다. 답마다 근거를 표시하고, 시스템 변경과 외부 발송은 사람이 승인한다. 결정과 책임은 승인한 사람에게 있다"],
