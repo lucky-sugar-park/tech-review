@@ -105,7 +105,7 @@ pres.addSection({ title: S1 });
 {
   const s = content("한 장 요약: 6개월 파일럿으로 시작해 성과로 확대를 결정한다", S1);
   const boxes = [
-    ["문제", "범용 AI와 그때그때 대화, 단계 연결은 사람이 직접\n사람 수만큼 느는 범용 AI 비용, 결과는 개인에 머묾\n가장 큰 한계: 회계·제조·품질·생산 데이터를 못 씀", C.accent4],
+    ["문제", "범용 AI와 그때그때 대화, 단계 연결은 사람이 직접\n사람 수만큼 느는 범용 AI 비용, 결과는 개인에 머묾\n가장 큰 한계: 회계·제조·품질·생산 데이터를 못 씀\n(범용 MCP 도구는 많아도 우리 데이터용은 없음)", C.accent4],
     ["제안", "직원이 화면에서 AI 에이전트를 만들고·실행하고·공유\n사내 시스템은 표준 도구(MCP)로 연결\n대외비는 사내 모델, 시스템 변경은 사람 승인", C.accent2],
     ["효과", "활성 사용자 주 2~4시간 절감 보고 (외부 조사)\n기준 시나리오: 3년차 누적 손익분기, 이후 연 5억 원+\n섀도 AI를 통제된 공식 경로로 흡수", C.accent5],
     ["요청", "1단계 파일럿 승인: 6개월, 약 3.4억 원\n제조·품질·회계 3개 부서 + 전사 규정 Q&A\n6개월 뒤 정해 둔 지표로 확대 여부 결정", C.accent1],
@@ -378,6 +378,65 @@ pres.addSection({ title: S2 });
     "둘째, 비용입니다. 범용 AI 구독료는 쓰는 만큼이 아니라 사람 수만큼 나갑니다. 단순 반복 작업도 고가 모델과 긴 대화로 처리합니다. 예를 들어 1인 월 4만 원씩 300명이면 연 1.4억 원입니다. 실제 결제 금액은 확인해서 말씀드리겠습니다.\n" +
     "셋째, 그리고 가장 큰 한계는 데이터입니다. 범용 AI는 우리 회계, 제조, 생산, 품질 데이터를 볼 수 없습니다. 그래서 '이번 달 왜 불량이 늘었나', '어느 거래처 잔액이 안 맞나' 같은, 정작 우리 회사에 필요한 질문에는 답하지 못합니다. 데이터를 통째로 붙여 넣으면 보안 문제가 되고, 일부만 넣으면 틀린 답이 나옵니다.\n" +
     "그래서 필요한 것은 더 똑똑한 범용 AI가 아니라, 우리 데이터에 연결되고 스스로 단계를 이어 가는 업무용 에이전트입니다."
+  );
+}
+{
+  const s = content("MCP 도구는 넘쳐나지만, 우리 회사 데이터를 여는 도구는 없다", S2);
+  // 왼쪽: 공개된 범용 MCP 도구
+  card(s, 0.6, 1.3, 5.6, 3.3, C.background2);
+  txt(s, "공개된 범용 MCP 도구: 이미 많다", { x: 0.85, y: 1.42, w: 5.2, h: 0.4, fontSize: 16, bold: true, color: C.accent5 });
+  const generic = [
+    ["협업", "메일 · 메신저 · 캘린더"], ["문서", "클라우드 드라이브 · 위키"], ["개발", "코드 저장소 · 이슈 관리"],
+    ["일반", "웹 검색 · 파일 · 범용 DB 질의"],
+  ];
+  generic.forEach(([k, v], i) => {
+    const y = 1.95 + i * 0.6;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.85, y, w: 5.1, h: 0.48, rectRadius: 0.08, fill: { color: C.background1 }, line: { color: BORDER, width: 0.75 }, objectName: nm("chip") });
+    txt(s, "✓", { x: 0.95, y, w: 0.35, h: 0.48, fontSize: 15, bold: true, color: C.accent5, valign: "middle" });
+    txt(s, k, { x: 1.3, y, w: 0.9, h: 0.48, fontSize: 13, bold: true, valign: "middle" });
+    txt(s, v, { x: 2.2, y, w: 3.7, h: 0.48, fontSize: 13, color: C.accent3, valign: "middle" });
+  });
+  txt(s, "누구나 쓰는 공통 업무용. 경쟁사도 똑같이 쓴다", { x: 0.85, y: 4.3, w: 5.2, h: 0.28, fontSize: 11.5, italic: true, color: C.accent3 });
+  // 가운데 화살표
+  txt(s, "vs", { x: 6.2, y: 2.6, w: 0.6, h: 0.5, fontSize: 18, bold: true, color: C.accent3, align: "center", valign: "middle" });
+  // 오른쪽: 우리 업무에 필요한 도구
+  card(s, 6.8, 1.3, 5.9, 3.3, C.background1, C.accent4);
+  txt(s, "우리 업무에 필요한 도구: 어디에도 없다", { x: 7.05, y: 1.42, w: 5.5, h: 0.4, fontSize: 16, bold: true, color: C.accent4 });
+  const ours = [
+    ["회계", "거래처별 채권·전표 조회 (우리 계정 체계)"], ["생산", "LOT 추적·실적·작업지시 (우리 LOT 규칙)"],
+    ["품질", "검사 결과·클레임·불량 이력 (우리 판정 기준)"], ["제조", "설비 알람·가동, 계획 변경 제안 (승인 필요)"],
+  ];
+  ours.forEach(([k, v], i) => {
+    const y = 1.95 + i * 0.6;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 7.05, y, w: 5.4, h: 0.48, rectRadius: 0.08, fill: { color: "FEE2E2" }, line: { type: "none" }, objectName: nm("chip") });
+    txt(s, "✕", { x: 7.15, y, w: 0.35, h: 0.48, fontSize: 15, bold: true, color: C.accent4, valign: "middle" });
+    txt(s, k, { x: 7.5, y, w: 0.75, h: 0.48, fontSize: 13, bold: true, valign: "middle" });
+    txt(s, v, { x: 8.25, y, w: 4.15, h: 0.48, fontSize: 12.5, valign: "middle" });
+  });
+  txt(s, "직접 만들어야 한다. 그래서 이것이 차별화 요소다", { x: 7.05, y: 4.3, w: 5.5, h: 0.28, fontSize: 11.5, bold: true, color: C.accent4 });
+  // 왜 없나
+  const why = [
+    ["시스템이 회사마다 다르다", "같은 ERP·MES라도 커스터마이징, 코드 체계, 테이블이 다르다"],
+    ["업무 규칙이 들어가야 한다", "어떤 LOT를 같은 조건으로 볼지, 대사 차이를 무엇으로 볼지는 우리 기준"],
+    ["권한과 승인이 필요하다", "누가 무엇을 볼 수 있는지, 쓰기는 제안 → 승인. 범용 도구는 모른다"],
+  ];
+  why.forEach(([t, d], i) => {
+    const x = 0.6 + i * 4.1;
+    badge(s, x, 4.82, String(i + 1), C.accent3, C.background1, 0.36);
+    txt(s, t, { x: x + 0.45, y: 4.78, w: 3.5, h: 0.42, fontSize: 14, bold: true, valign: "middle" });
+    txt(s, d, { x: x + 0.45, y: 5.2, w: 3.5, h: 0.6, fontSize: 11.5, color: C.accent3 });
+  });
+  card(s, 0.6, 5.9, 12.1, 0.68, C.text1);
+  txt(s, [
+    { text: "우리 데이터를 여는 도구가 회사의 AI 자산이다. ", options: { bold: true, color: C.accent1 } },
+    { text: "한 번 만들면 모든 에이전트가 재사용하고, 모델을 바꿔도 남는다", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.9, w: 11.6, h: 0.68, fontSize: 14, valign: "middle" });
+  source(s, "실현 가능성: MES 조회·제안 도구 10개를 MCP 서버(Python·Java)로 만들어 검증했다 (demo/mes-mcp)");
+  s.addNotes(
+    "무엇보다 강조드리고 싶은 점입니다. AI와 시스템을 잇는 표준인 MCP 도구는 이미 넘쳐납니다. 메일, 메신저, 클라우드 드라이브, 코드 저장소, 웹 검색. 누구나 가져다 쓸 수 있고, 경쟁사도 똑같이 씁니다.\n" +
+    "그런데 우리 업무에 정작 필요한 도구, 거래처별 채권 조회, LOT 추적, 검사·클레임 이력, 설비 알람과 계획 변경 제안 같은 도구는 어디에도 없습니다.\n" +
+    "없는 이유가 있습니다. 같은 ERP, 같은 MES라도 회사마다 커스터마이징과 코드 체계가 다르고, 어떤 LOT를 같은 조건으로 볼지 같은 우리만의 업무 규칙이 들어가야 하며, 누가 무엇을 볼 수 있는지와 승인 절차가 필요합니다. 범용 도구는 이것을 모릅니다.\n" +
+    "그래서 이 도구는 우리가 직접 만들어야 하고, 바로 그것이 회사의 AI 자산이자 차별화 요소입니다. 한 번 만들면 모든 에이전트가 재사용하고, AI 모델을 바꿔도 그대로 남습니다. 저희는 이미 MES 조회와 승인 흐름을 담은 도구 10개를 MCP 서버로 만들어 검증했습니다."
   );
 }
 {
