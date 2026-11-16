@@ -57,6 +57,35 @@
   .opt.on { border-color: var(--teal); background: var(--teal-soft); font-weight: 700; color: var(--teal); }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 14px; font: inherit; cursor: pointer; }
+
+  /* 만들기 절차 Workflow */
+  .flow { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 12px; background: #FBFCFD; overflow-x: auto; }
+  .flow-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+  .flow-h b { font-size: 14px; }
+  .flow-h span { color: var(--muted); font-size: 12px; }
+  .phases { display: grid; grid-template-columns: 5fr 1fr 2fr; gap: 6px; min-width: 760px; margin-bottom: 6px; }
+  .phase { font-size: 11.5px; font-weight: 700; text-align: center; padding: 3px 0; border-radius: 6px; }
+  .ph-def { background: var(--teal-soft); color: var(--teal); }
+  .ph-chk { background: var(--indigo-soft); color: var(--indigo); }
+  .ph-run { background: var(--amber-soft); color: #92400E; }
+  .wf { display: grid; grid-template-columns: repeat(8, 1fr); min-width: 760px; list-style: none; margin: 0; padding: 0; }
+  .wf li { position: relative; text-align: center; cursor: pointer; padding: 0 2px; }
+  .wf li::before { content: ""; position: absolute; top: 13px; left: -50%; width: 100%; height: 2px; background: var(--line); z-index: 0; }
+  .wf li:first-child::before { display: none; }
+  .wf li.done::before, .wf li.cur::before { background: var(--teal); }
+  .wf .dot { position: relative; z-index: 1; width: 28px; height: 28px; margin: 0 auto 5px; border-radius: 50%; display: grid; place-items: center;
+             font-size: 12px; font-weight: 800; background: #fff; border: 2px solid var(--line); color: var(--muted); }
+  .wf li.done .dot { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .wf li.cur .dot { background: var(--amber); border-color: var(--amber); color: var(--navy); box-shadow: 0 0 0 4px var(--amber-soft); }
+  .wf .lb { font-size: 12.5px; font-weight: 700; }
+  .wf li.todo .lb { color: var(--muted); }
+  .wf .cap { font-size: 11px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+  .wf .who-tag { display: inline-block; margin-top: 4px; font-size: 10.5px; padding: 1px 6px; border-radius: 99px; background: var(--chip); color: var(--muted); }
+  .wf .who-tag.ai { background: var(--indigo-soft); color: var(--indigo); }
+  .wf .who-tag.ap { background: var(--amber-soft); color: #92400E; }
+  .wf li:hover .lb { text-decoration: underline; }
+  .flash { animation: flash 1.2s ease-out; }
+  @keyframes flash { 0% { box-shadow: 0 0 0 3px var(--amber); } 100% { box-shadow: 0 0 0 0 transparent; } }
   .btn.pri { background: var(--teal); border-color: var(--teal); color: #fff; font-weight: 700; }
   .btn.amb { background: var(--amber); border-color: var(--amber); color: var(--navy); font-weight: 700; }
 
@@ -133,7 +162,23 @@
           <div><span class="pill p-draft">초안</span> <span class="pill p-sec">대외비 데이터 → 사내 모델</span></div>
         </div>
 
-        <div class="step">
+
+        <div class="flow" aria-label="에이전트 만들기 절차">
+          <div class="flow-h"><b>만들기 절차</b><span>6 / 8 단계 완료 · 단계를 누르면 해당 항목으로 이동</span></div>
+          <div class="phases"><div class="phase ph-def">정의하기 · 직원이 화면에서</div><div class="phase ph-chk">검증하기</div><div class="phase ph-run">운영 · 공유하기</div></div>
+          <ol class="wf">
+            <li class="done" data-go="s1"><div class="dot">✓</div><div class="lb">목표</div><div class="cap">말로 적으면<br>AI가 단계로 정리</div><span class="who-tag ai">AI 보조</span></li>
+            <li class="done" data-go="s2"><div class="dot">✓</div><div class="lb">도구</div><div class="cap">ERP·메일 등<br>조회 / 승인 필요</div><span class="who-tag">직원</span></li>
+            <li class="done" data-go="s3"><div class="dot">✓</div><div class="lb">지식</div><div class="cap">규정·매뉴얼<br>개정판 지정</div><span class="who-tag">직원</span></li>
+            <li class="done" data-go="s4"><div class="dot">✓</div><div class="lb">규칙</div><div class="cap">모델·권한·승인자<br>비용 한도</div><span class="who-tag ai">등급별 자동</span></li>
+            <li class="done" data-go="s5"><div class="dot">✓</div><div class="lb">실행 방식</div><div class="cap">대화·예약·이벤트<br>중에서 선택</div><span class="who-tag">직원</span></li>
+            <li class="done" data-go="log"><div class="dot">✓</div><div class="lb">시험 실행</div><div class="cap">결과와 근거 확인<br>(발송은 안 함)</div><span class="who-tag ai">AI 실행</span></li>
+            <li class="cur" data-go="acts"><div class="dot">7</div><div class="lb">저장 · 운영</div><div class="cap">예약 실행 시작<br>발송은 승인 후</div><span class="who-tag ap">팀장 승인</span></li>
+            <li class="todo" data-go="acts"><div class="dot">8</div><div class="lb">공유</div><div class="cap">검토를 거쳐<br>팀·전사 갤러리</div><span class="who-tag ap">검토 후 공개</span></li>
+          </ol>
+        </div>
+
+        <div class="step" id="s1">
           <h3><span class="num">1</span>목표 (말로 적기)</h3>
           <div class="goal">매월 말일, 주요 거래처 50곳의 ERP 매출 채권 잔액과 거래처가 메일로 보낸 회신 잔액을 비교해 줘. 차이가 나는 곳은 원인 후보를 찾고, 거래처에 보낼 확인 메일 초안을 만들어 줘.</div>
           <ol class="plan">
@@ -143,7 +188,7 @@
           </ol>
         </div>
 
-        <div class="step">
+        <div class="step" id="s2">
           <h3><span class="num">2</span>도구 (사내 시스템 연결)</h3>
           <div class="tools">
             <div class="tool"><div>ERP 매출 채권 조회<small>거래처별 잔액 · 전표 · 입금</small></div><span class="pill p-read">조회</span></div>
@@ -154,12 +199,12 @@
           </div>
         </div>
 
-        <div class="step">
+        <div class="step" id="s3">
           <h3><span class="num">3</span>지식 (참고 문서)</h3>
           <div class="runmode"><span class="opt on">📄 회계 규정 · Rev.7</span><span class="opt on">📄 대사 업무 매뉴얼 · Rev.2</span><span class="opt">＋ 문서 추가</span></div>
         </div>
 
-        <div class="step">
+        <div class="step" id="s4">
           <h3><span class="num">4</span>규칙</h3>
           <div class="rules">
             <div><span>사용 모델</span><b>사내 모델 (대외비 자동)</b></div>
@@ -171,12 +216,12 @@
           </div>
         </div>
 
-        <div class="step">
+        <div class="step" id="s5">
           <h3><span class="num">5</span>실행 방식</h3>
           <div class="runmode"><span class="opt">💬 대화로 실행</span><span class="opt on">🗓 예약: 매월 말일 09:00</span><span class="opt">⚡ 이벤트: 회신 메일 도착 시</span></div>
         </div>
 
-        <div class="actions"><button class="btn pri" id="test">▶ 시험 실행</button><button class="btn">저장</button><button class="btn amb">팀·전사 공유 요청</button></div>
+        <div class="actions" id="acts"><button class="btn pri" id="test">▶ 시험 실행</button><button class="btn">저장</button><button class="btn amb">팀·전사 공유 요청</button></div>
       </main>
 
       <aside class="side">
@@ -201,7 +246,7 @@
       </aside>
     </div>
   </div>
-  <div class="note">설계 포인트: 목표는 말로 적고 AI가 단계로 정리한다. 도구마다 '조회 / 승인 필요'가 표시되고, 대외비 데이터를 쓰면 사내 모델이 자동 선택된다. 시험 실행 결과가 오른쪽에 바로 보이고, 외부로 나가는 일(메일 발송)은 승인함으로 간다. (시안용 가상 데이터)</div>
+  <div class="note">설계 포인트: 상단 절차 표시줄로 지금 어느 단계인지, 어디서 사람이 승인하는지 한눈에 보인다. 목표는 말로 적고 AI가 단계로 정리한다. 도구마다 '조회 / 승인 필요'가 표시되고, 대외비 데이터를 쓰면 사내 모델이 자동 선택된다. 시험 실행 결과가 오른쪽에 바로 보이고, 외부로 나가는 일(메일 발송)은 승인함으로 간다. (시안용 가상 데이터)</div>
 </section>
 
 <!-- ② 승인함 · 실행 기록 -->
@@ -269,6 +314,12 @@
     if (o.closest(".step").querySelector("h3").textContent.includes("실행 방식")) {
       o.parentElement.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === o));
     }
+  }));
+  document.querySelectorAll(".wf li").forEach(li => li.addEventListener("click", () => {
+    const el = document.getElementById(li.dataset.go);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
   }));
   document.getElementById("test").addEventListener("click", () => {
     const log = document.getElementById("log");
