@@ -1,7 +1,7 @@
 # 사내 AI 에이전트 플랫폼 도입 제안 (경영진 보고 근거 문서)
 
 > 작성일: 2026-11-16 · 수정: 2026-11-17 (비용 재산정: 파일럿 1억 원 이하, 1년차 5억 원 이하 · 효과를 처리 능력·품질 중심으로)
-> 보고 자료: [슬라이드 v2](./ai-agent-platform-proposal-v2.pptx) (25장, 최신: 문제점 분석 및 제안 요약, 시나리오 3가지, MCP 설명, 기대 효과, 투자·구축 방식은 부록) · [슬라이드 v1](./ai-agent-platform-proposal.pptx) (24장, 이전 비용 가정: 파일럿 3.4억 원) · [투자 효과 계산 엑셀](./ai-agent-platform-roi.xlsx) · [화면 시안](./ux/agent-studio-mockup.html)
+> 보고 자료: [슬라이드 v2](./ai-agent-platform-proposal-v2.pptx) (24장, 최신: 문제점 분석 및 제안 요약, 시나리오 3가지, MCP 설명, 구조와 보안, 기대 효과 · 투자·구축 방식·리스크·검증은 부록) · [슬라이드 v1](./ai-agent-platform-proposal.pptx) (24장, 이전 비용 가정: 파일럿 3.4억 원) · [투자 효과 계산 엑셀](./ai-agent-platform-roi.xlsx) · [화면 시안](./ux/agent-studio-mockup.html)
 > 전제: 직원 500~2,000명 규모 제조 기업 (계산 기준 1,000명) · LLM은 **혼합 운영** (민감 데이터는 사내 모델, 일반 업무는 클라우드 모델)
 > 관련 자료: [AI 오케스트레이션 동향](../ai-orchestration-2026.md) · [AI 공장장](../ai-plant-manager.md) · [공장장실 구상](../ai-plant-manager-portal.md) · 데모: [아침 브리핑](../demo/morning-briefing/) · [지식 도우미](../demo/rag-indexer/) · [MES 도구 MCP 서버](../demo/mes-mcp/)
 
