@@ -375,58 +375,55 @@ const S2 = "문제";
 pres.addSection({ title: S2 });
 {
   const s = content("직원들은 이미 AI를 쓰고 있다. 다만 통제되지 않은 방식으로, 비효율적으로", S2, { fontSize: 24 });
-  // ① 현황 수치
-  const stats = [
-    ["45%", "업무에 AI를 정기적으로 쓰는 직원", "Verizon DBIR 2026", C.accent2],
-    ["49%", "회사가 승인하지 않은 AI를 쓰는 직원", "BlackFog 2026", C.accent1],
-    ["33%", "승인 안 된 도구에 회사 자료를 넣어 본 직원", "BlackFog 2026", C.accent4],
-    ["43%", "침해 사고 조직 중 섀도 AI 관련 사고", "IBM 2026", C.accent4],
-  ];
-  stats.forEach(([n, d, src, col], i) => {
-    const x = 0.6 + i * 3.05;
-    card(s, x, 1.18, 2.9, 0.82, C.background2);
-    txt(s, n, { x: x + 0.12, y: 1.18, w: 1.15, h: 0.82, fontSize: 28, bold: true, color: col, valign: "middle" });
-    txt(s, [{ text: d, options: { breakLine: true } }, { text: src, options: { fontSize: 9.5, color: HEX.accent3 } }],
-      { x: x + 1.25, y: 1.18, w: 1.6, h: 0.82, fontSize: 10.5, valign: "middle" });
+  // 왼쪽: 핵심 숫자 하나
+  txt(s, "49%", { x: 0.6, y: 1.35, w: 4.4, h: 1.25, fontSize: 80, bold: true, color: C.accent4, valign: "middle" });
+  txt(s, "회사가 승인하지 않은 AI를\n업무에 쓰는 직원", { x: 0.6, y: 2.6, w: 4.4, h: 0.75, fontSize: 18, bold: true });
+  txt(s, "업무에 AI를 정기적으로 쓰는 직원 45% · 승인 안 된 도구에 회사 자료를 넣어 본 직원 33%", { x: 0.6, y: 3.4, w: 4.3, h: 0.55, fontSize: 12, color: C.accent3 });
+  s.addShape(pres.shapes.LINE, { x: 5.35, y: 1.45, w: 0, h: 2.5, line: { color: BORDER, width: 1 }, objectName: nm("div") });
+  // 오른쪽: 6단계 중 1단계
+  txt(s, [{ text: "AI는 6단계 중 1단계", options: { color: HEX.accent6 } }, { text: ", 나머지는 사람이 잇는다" }],
+    { x: 5.75, y: 1.35, w: 6.95, h: 0.5, fontSize: 20, bold: true });
+  txt(s, "범용 AI로 거래처 잔액 확인, 불량 원인 조사를 할 때", { x: 5.75, y: 1.85, w: 6.95, h: 0.32, fontSize: 12.5, color: C.accent3 });
+  const steps = ["조회", "복사", "AI 대화", "재조회", "이어 묻기", "옮기기"];
+  const cx0 = 6.25, gap = 1.2, cy = 2.75, d = 0.62;
+  s.addShape(pres.shapes.LINE, { x: cx0, y: cy, w: gap * 5, h: 0, line: { color: "CBD5E1", width: 2 }, objectName: nm("track") });
+  steps.forEach((t, i) => {
+    const cx = cx0 + i * gap, ai = i === 2;
+    s.addShape(pres.shapes.OVAL, { x: cx - d / 2, y: cy - d / 2, w: d, h: d, fill: { color: ai ? HEX.accent6 : "FFFFFF" },
+      line: { color: ai ? HEX.accent6 : "94A3B8", width: 1.5 }, objectName: nm("node") });
+    txt(s, ai ? "AI" : "사람", { x: cx - d / 2, y: cy - d / 2, w: d, h: d, fontSize: ai ? 13 : 11, bold: true, color: ai ? C.background1 : C.accent3, align: "center", valign: "middle" });
+    txt(s, t, { x: cx - 0.6, y: cy + 0.38, w: 1.2, h: 0.32, fontSize: 12.5, bold: ai, color: ai ? C.accent6 : C.text1, align: "center" });
   });
-  // ② 지금의 방식: 6단계
-  txt(s, "지금의 방식: AI는 6단계 중 1단계, 나머지는 사람이 잇는다", { x: 0.6, y: 2.1, w: 12.1, h: 0.32, fontSize: 14, bold: true });
-  const steps = [
-    ["조회", "시스템마다 따로 접속"], ["복사", "민감 정보 유출 위험"], ["AI 대화", "우리 데이터를 모름"],
-    ["재조회", "근거 찾아 다시 조회"], ["이어 묻기", "맥락을 매번 다시 설명"], ["옮기기", "손으로 옮기다 오류"],
+  txt(s, "조회하고, 복사하고, 다시 찾고, 옮기는 일은 여전히 사람 몫", { x: 5.75, y: 3.5, w: 6.95, h: 0.4, fontSize: 13, color: C.accent3, align: "center" });
+  // 하단: 세 단어
+  s.addShape(pres.shapes.LINE, { x: 0.6, y: 4.2, w: 12.1, h: 0, line: { color: BORDER, width: 1 }, objectName: nm("hr") });
+  const words = [
+    ["느리다", "사람이 5단계를 손으로 잇는다", HEX.accent3, false],
+    ["반쪽이다", "AI가 회계·생산·품질 데이터를 못 본다", HEX.accent4, true],
+    ["위험하다", "무엇이 밖으로 나갔는지 기록이 없다", HEX.accent3, false],
   ];
-  steps.forEach(([t, pain], i) => {
-    const x = 0.6 + i * 2.02, ai = i === 2;
-    s.addText(`${i + 1} ${t}${ai ? " (AI)" : ""}`, { shape: pres.shapes.CHEVRON, x, y: 2.47, w: 2.1, h: 0.5, fill: { color: ai ? HEX.accent6 : "64748B" },
-      line: { type: "none" }, fontSize: 13, bold: true, color: "FFFFFF", align: "center", valign: "middle", margin: 0, objectName: nm("step") });
-    txt(s, "⚠ " + pain, { x: x + 0.1, y: 3.0, w: 1.85, h: 0.36, fontSize: 11, bold: true, color: ai ? C.accent6 : C.accent4, align: "center", valign: "middle" });
-  });
-  // ③ 세 가지 한계
-  const lim = [
-    ["느리다", "비효율", "6단계 중 5단계를 사람이 손으로 잇는다 · 사람마다 결과가 다르고 재현되지 않는다 · AI 도입 69.5% vs 업무 정착 12.5%", HEX.accent3, false],
-    ["반쪽이다", "데이터 · 가장 큰 한계", "회계·제조·품질·생산 데이터를 못 본다 · “이번 달 왜 불량이 늘었나” 같은 우리 회사의 질문에 답하지 못한다 · 숫자의 근거를 확인할 수 없다", HEX.accent4, true],
-    ["위험하다", "통제 · 비용", "무엇이 밖으로 나갔는지 기록이 없다 · 쓰는 만큼이 아니라 사람 수만큼 구독료 · 부서마다 따로 결제해 중복", HEX.accent1, false],
-  ];
-  lim.forEach(([w, tag, d, col, hot], i) => {
+  words.forEach(([w, d2, col, hot], i) => {
     const x = 0.6 + i * 4.1;
-    card(s, x, 3.52, 3.9, 2.12, hot ? C.background1 : C.background2, hot ? C.accent4 : undefined);
-    txt(s, w, { x: x + 0.22, y: 3.6, w: 2.0, h: 0.6, fontSize: 26, bold: true, color: col, valign: "middle" });
-    txt(s, tag, { x: x + 2.0, y: 3.68, w: 1.75, h: 0.45, fontSize: 11.5, bold: true, color: col, align: "right", valign: "middle" });
-    txt(s, d.split(" · ").map((t, k, a) => ({ text: t, options: { bullet: true, breakLine: k < a.length - 1 } })),
-      { x: x + 0.22, y: 4.22, w: 3.5, h: 1.38, fontSize: 12.5, paraSpaceAfter: 4 });
+    if (i > 0) s.addShape(pres.shapes.LINE, { x: x - 0.1, y: 4.4, w: 0, h: 1.1, line: { color: BORDER, width: 1 }, objectName: nm("vdiv") });
+    txt(s, w, { x: x + 0.15, y: 4.35, w: 2.4, h: 0.65, fontSize: 30, bold: true, color: col, valign: "middle" });
+    if (hot) {
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 2.45, y: 4.5, w: 1.3, h: 0.34, rectRadius: 0.17, fill: { color: C.accent4 }, line: { type: "none" }, objectName: nm("pill") });
+      txt(s, "가장 큰 한계", { x: x + 2.45, y: 4.5, w: 1.3, h: 0.34, fontSize: 11, bold: true, color: C.background1, align: "center", valign: "middle" });
+    }
+    txt(s, d2, { x: x + 0.15, y: 5.02, w: 3.7, h: 0.45, fontSize: 14.5, bold: hot, color: hot ? C.accent4 : C.text1 });
   });
-  card(s, 0.6, 5.8, 12.1, 0.72, C.text1);
+  card(s, 0.6, 5.82, 12.1, 0.7, C.text1);
   txt(s, [
-    { text: "금지로는 못 막는다(임원 65%도 사용). ", options: { color: C.background1 } },
+    { text: "금지로는 못 막는다. ", options: { color: C.background1 } },
     { text: "필요한 것은 우리 데이터에 연결되고 통제되는 업무용 에이전트다", options: { bold: true, color: C.accent1 } },
-  ], { x: 0.9, y: 5.8, w: 11.6, h: 0.72, fontSize: 15, valign: "middle" });
-  source(s, "출처: Verizon 2026 DBIR·IBM 2026(2차 보도), BlackFog 2026, TrustedTech·Censuswide, 조코딩AX파트너스(2,078명). 조사마다 정의가 달라 방향성 지표로 본다");
+  ], { x: 0.9, y: 5.82, w: 11.6, h: 0.7, fontSize: 16, valign: "middle" });
+  source(s, "출처: BlackFog 2026(500명 이상 기업), Verizon 2026 DBIR(2차 보도). 조사마다 정의가 달라 방향성 지표로 본다");
   s.addNotes(
     "직원들은 이미 AI를 쓰고 있습니다. 문제는 통제되지 않은 방식으로, 비효율적으로 쓴다는 것입니다.\n" +
-    "위의 숫자부터 보시면, 업무에 AI를 정기적으로 쓰는 직원이 45%로 1년 만에 3배가 됐고, 절반 가까이가 회사가 승인하지 않은 도구를 씁니다. 3명 중 1명은 회사 자료를 거기에 넣어 봤고, 침해 사고를 겪은 조직의 43%가 섀도 AI 관련 사고였습니다.\n" +
-    "가운데는 지금 일하는 방식입니다. 시스템에서 조회하고, 복사하고, AI에 묻고, 근거를 확인하러 다시 조회하고, 맥락을 다시 설명하며 이어 묻고, 결과를 손으로 옮깁니다. 여섯 단계 중 AI가 하는 것은 하나뿐이고, 그마저 우리 데이터를 모른 채 답합니다.\n" +
-    "그래서 세 가지 한계가 생깁니다. 느립니다. 사람이 다섯 단계를 잇습니다. 반쪽입니다. 이것이 가장 큰 한계로, 회계·제조·품질·생산 데이터를 볼 수 없어 정작 우리 회사의 질문에는 답하지 못합니다. 그리고 위험합니다. 무엇이 밖으로 나갔는지 기록이 없고, 비용은 사람 수만큼 늘어납니다.\n" +
-    "임원의 65%도 승인되지 않은 AI를 씁니다. 금지로는 막을 수 없습니다. 필요한 것은 우리 데이터에 연결되고 통제되는 업무용 에이전트입니다."
+    "왼쪽 숫자 하나만 기억해 주십시오. 직원의 49%가 회사가 승인하지 않은 AI를 업무에 씁니다. 3명 중 1명은 회사 자료를 거기에 넣어 봤습니다. (참고: IBM 보고에 따르면 침해 사고 조직의 43%가 섀도 AI 관련 사고를 겪었고, 임원의 65%도 승인되지 않은 AI를 씁니다.)\n" +
+    "오른쪽은 그렇게 쓰는 방식입니다. 조회하고, 복사하고, AI에 묻고, 다시 조회하고, 맥락을 다시 설명하고, 손으로 옮깁니다. 여섯 단계 중 AI가 하는 것은 하나뿐입니다.\n" +
+    "그래서 세 가지 문제가 생깁니다. 느리고, 위험하고, 무엇보다 반쪽입니다. AI가 우리 회계·생산·품질 데이터를 볼 수 없어 정작 우리 회사의 질문에는 답하지 못합니다. 비용도 쓰는 만큼이 아니라 사람 수만큼 나갑니다.\n" +
+    "금지로는 막을 수 없습니다. 필요한 것은 우리 데이터에 연결되고 통제되는 업무용 에이전트입니다."
   );
 }
 {
@@ -756,46 +753,38 @@ const S4B = "기대 효과";
 pres.addSection({ title: S4B });
 {
   const s = content("기대 효과: 같은 인원으로 더 많은 일을, 더 좋은 품질로", S4B);
+  txt(s, "핵심은 인력 감축이 아니라 처리 능력 확대다", { x: 0.6, y: 1.18, w: 12.1, h: 0.42, fontSize: 18, bold: true, color: C.accent2 });
   const cols = [
-    ["더 많은 일", "같은 인원이 더 많은 건을 처리한다", C.accent2, [
-      "대사: 주요 50곳 표본 → 전체 거래처 전수 대사",
-      "영업: 1인이 하루에 회신하는 납기 문의 건수 증가",
-      "업무량이 늘어도 증원 없이 대응, 숙련자 퇴직 공백 완화"]],
-    ["더 좋은 품질", "매번 같은 절차, 근거 있는 결과", C.accent6, [
-      "숫자는 시스템 조회값, 근거 문서 표시 → 옮겨 적기 오류 감소",
-      "과거 사례·체크리스트 자동 적용 → 영향 범위·검토 누락 감소",
-      "잘 된 방식이 갤러리로 퍼져 사람·부서 간 품질 편차 감소"]],
-    ["더 빠른 대응", "기다리는 시간이 사라진다", C.accent1, [
-      "클레임 1차 회신: 다음 날 → 당일 오전",
-      "납기 회신: 반나절~하루 → 30분 안",
-      "아낀 시간(주 2~4시간 보고)은 판단·개선 업무로"]],
+    ["더 많은 일", C.accent2, HEX.accent2, "50곳 → 전체", "회계 대사: 표본 점검에서 전수 점검으로", "업무가 늘어도 증원 없이 대응"],
+    ["더 좋은 품질", C.accent6, HEX.accent6, "모든 숫자에 근거", "시스템 조회값과 근거 문서를 함께 표시", "옮겨 적기 오류와 검토 누락이 준다"],
+    ["더 빠른 대응", C.accent1, HEX.accent1, "하루 → 30분", "영업 납기 회신 (클레임 회신은 당일 오전)", "기다리는 시간이 사라진다"],
   ];
-  cols.forEach(([t, sub, col, items], i) => {
+  cols.forEach(([t, col, hex, big, cap, line], i) => {
     const x = 0.6 + i * 4.1;
-    card(s, x, 1.3, 3.9, 3.3, C.background2);
-    s.addShape(pres.shapes.RECTANGLE, { x, y: 1.3, w: 3.9, h: 0.09, fill: { color: col }, line: { type: "none" }, objectName: nm("bar") });
-    txt(s, t, { x: x + 0.25, y: 1.5, w: 3.4, h: 0.5, fontSize: 24, bold: true, color: col });
-    txt(s, sub, { x: x + 0.25, y: 2.02, w: 3.45, h: 0.35, fontSize: 13.5, bold: true });
-    txt(s, items.map((it, k) => ({ text: it, options: { bullet: true, breakLine: k < items.length - 1 } })),
-      { x: x + 0.25, y: 2.45, w: 3.5, h: 2.05, fontSize: 13, paraSpaceAfter: 6 });
+    card(s, x, 1.8, 3.9, 3.05, C.background2);
+    s.addShape(pres.shapes.RECTANGLE, { x, y: 1.8, w: 3.9, h: 0.1, fill: { color: col }, line: { type: "none" }, objectName: nm("bar") });
+    txt(s, t, { x: x + 0.3, y: 2.05, w: 3.3, h: 0.45, fontSize: 18, bold: true, color: col });
+    txt(s, big, { x: x + 0.3, y: 2.6, w: 3.4, h: 0.85, fontSize: 32, bold: true, valign: "middle" });
+    txt(s, cap, { x: x + 0.3, y: 3.45, w: 3.4, h: 0.4, fontSize: 12.5, color: C.accent3 });
+    s.addShape(pres.shapes.LINE, { x: x + 0.3, y: 4.0, w: 3.3, h: 0, line: { color: BORDER, width: 1 }, objectName: nm("hr") });
+    txt(s, line, { x: x + 0.3, y: 4.1, w: 3.4, h: 0.6, fontSize: 15, bold: true, valign: "middle" });
   });
-  txt(s, "파일럿에서 재는 지표", { x: 0.6, y: 4.78, w: 3.0, h: 0.35, fontSize: 14, bold: true, color: C.accent3 });
-  ["1인당 처리 건수", "처리 리드타임", "오류·재작업률", "점검 범위 (전수 비율)", "절감 시간"].forEach((k, i) => {
-    const x = 0.6 + i * 2.44;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 5.15, w: 2.3, h: 0.45, rectRadius: 0.1, fill: { color: "FFFFFF" }, line: { color: BORDER, width: 1 }, objectName: nm("kpi") });
-    txt(s, k, { x, y: 5.15, w: 2.3, h: 0.45, fontSize: 13, bold: true, align: "center", valign: "middle" });
-  });
+  txt(s, [
+    { text: "파일럿에서 잴 지표   ", options: { bold: true, color: HEX.dk1 } },
+    { text: "1인당 처리 건수  ·  처리 리드타임  ·  오류·재작업률  ·  점검 범위  ·  절감 시간" },
+  ], { x: 0.6, y: 5.08, w: 12.1, h: 0.4, fontSize: 13.5, color: C.accent3 });
   card(s, 0.6, 5.82, 12.1, 0.7, C.text1);
   txt(s, [
-    { text: "핵심은 인력 감축이 아니라 처리 능력 확대다. ", options: { bold: true, color: C.accent1 } },
-    { text: "재무 계산(부록)은 보수적으로 시간 절감만 넣어도 2년차에 누적 손익분기", options: { color: C.background1 } },
-  ], { x: 0.9, y: 5.82, w: 11.6, h: 0.7, fontSize: 15, valign: "middle" });
+    { text: "재무 계산(부록)은 시간 절감만 넣어도 ", options: { color: C.background1 } },
+    { text: "2년차에 누적 손익분기", options: { bold: true, color: C.accent1 } },
+  ], { x: 0.9, y: 5.82, w: 11.6, h: 0.7, fontSize: 16, valign: "middle" });
+  source(s, "전·후 수치는 대표 시나리오의 설명용 예시이며 파일럿에서 실측한다");
   s.addNotes(
-    "효과를 시간 절감으로만 보시면 안 됩니다. 핵심은 같은 인원으로 더 많은 일을, 더 좋은 품질로 처리하는 것입니다.\n" +
-    "더 많은 일: 지금 회계팀은 시간이 없어 주요 거래처 50곳만 표본으로 대사합니다. 에이전트가 있으면 전체 거래처를 전수 대사할 수 있습니다. 영업 담당 한 명이 하루에 회신할 수 있는 납기 문의도 늘어납니다. 업무량이 늘어도 사람을 늘리지 않고 대응할 수 있고, 숙련자가 떠난 공백도 줄어듭니다.\n" +
-    "더 좋은 품질: 숫자는 시스템에서 바로 가져오고 근거를 표시하니 옮겨 적다 생기는 오류가 줄어듭니다. 과거 사례와 체크리스트가 매번 자동으로 적용돼 누락이 줄고, 잘 하는 사람의 방식이 퍼져 사람마다 다른 품질이 고르게 됩니다.\n" +
-    "더 빠른 대응: 클레임 회신은 당일 오전으로, 납기 회신은 30분 안으로 당겨집니다.\n" +
-    "파일럿에서는 이 다섯 가지 지표를 직접 재겠습니다. 그리고 부록의 재무 계산은 보수적으로 시간 절감만 넣었는데도 2년차에 누적 손익분기입니다."
+    "효과를 시간 절감으로만 보시면 안 됩니다. 핵심은 인력 감축이 아니라 처리 능력 확대입니다. 같은 인원으로 더 많은 일을, 더 좋은 품질로 처리합니다.\n" +
+    "더 많은 일: 지금 회계팀은 시간이 없어 주요 거래처 50곳만 표본으로 대사합니다. 에이전트가 있으면 전체 거래처를 전수 대사합니다. 업무가 늘어도 사람을 늘리지 않고 대응할 수 있고, 숙련자가 떠난 공백도 줄어듭니다.\n" +
+    "더 좋은 품질: 모든 숫자에 근거가 붙습니다. 시스템에서 바로 가져온 값과 근거 문서를 함께 보여 주니 옮겨 적다 생기는 오류와 검토 누락이 줄고, 잘 하는 사람의 방식이 퍼져 품질이 고르게 됩니다.\n" +
+    "더 빠른 대응: 영업 납기 회신이 하루에서 30분으로, 클레임 회신은 당일 오전으로 당겨집니다.\n" +
+    "파일럿에서는 처리 건수, 리드타임, 오류율, 점검 범위, 절감 시간을 직접 재겠습니다. 그리고 부록의 재무 계산은 보수적으로 시간 절감만 넣었는데도 2년차에 누적 손익분기입니다."
   );
 }
 
