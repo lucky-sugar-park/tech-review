@@ -73,9 +73,9 @@ function arrowR(slide, x, y, w, color = C.accent3) {
 function arrowD(slide, x, y, h, color = C.accent3) {
   slide.addShape(pres.shapes.LINE, { x, y, w: 0, h, line: { color, width: 2, endArrowType: "triangle" }, objectName: nm("arrow") });
 }
-function content(title, section) {
+function content(title, section, o = {}) {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: section });
-  s.addText(title, { placeholder: "title" });
+  s.addText(o.fontSize ? [{ text: title, options: { fontSize: o.fontSize } }] : title, { placeholder: "title", ...o });
   return s;
 }
 function source(slide, text) {
@@ -101,22 +101,22 @@ pres.addSection({ title: S1 });
   s.addNotes(
     "오늘 드릴 말씀은 하나입니다. 직원들은 이미 AI를 쓰고 있습니다. 문제는 쓰느냐가 아니라, 회사가 통제하고 쌓아 가는 방식으로 쓰느냐입니다.\n" +
     "그래서 직원 누구나 화면에서 자기 업무용 AI 에이전트를 만들고 실행하고 공유하는 사내 플랫폼을 제안합니다. 회계, 영업, 생산, 보전, 품질, 구매, 개발, 일상 업무까지 하나의 기반 위에서 씁니다.\n" +
-    "결론부터 말씀드리면, 오늘 요청드리는 것은 전체 투자가 아니라 6개월 약 3.4억 원 규모의 1단계 파일럿 승인입니다."
+    "결론부터 말씀드리면, 오늘 요청드리는 것은 전체 투자가 아니라 6개월, 1억 원 이하(약 0.95억 원) 규모의 1단계 파일럿 승인입니다."
   );
 }
 {
-  const s = content("한 장 요약: 현행 → 제안", S1);
+  const s = content("한 장 요약: 문제점 분석 및 제안", S1);
   const T = HEX.accent2, R = HEX.accent4;
   txt(s, [
     { text: "직원이 " }, { text: "자기 업무용 AI 에이전트", options: { bold: true, color: T } }, { text: "를 직접 만들고, " },
     { text: "회사 데이터", options: { bold: true, color: T } }, { text: "에 연결해, " },
     { text: "통제된 방식", options: { bold: true, color: T } }, { text: "으로 쓰게 한다" },
   ], { x: 0.6, y: 1.18, w: 12.1, h: 0.42, fontSize: 19, valign: "middle" });
-  txt(s, "지금 하지 않아도 AI는 쓰인다. 다만 회사 밖에서, 제각각, 아무것도 남기지 않고 쓰일 뿐이다 → 1단계 파일럿(6개월, 약 3.4억 원) 승인을 요청함",
+  txt(s, "지금 하지 않아도 AI는 쓰인다. 다만 통제되지 않은 방식으로, 비효율적으로 쓰일 뿐이다 → 1단계 파일럿(6개월, 1억 원 이하) 승인 요청",
     { x: 0.6, y: 1.6, w: 12.1, h: 0.3, fontSize: 12, bold: true, color: C.accent4 });
 
   const L = { x: 0.6, w: 5.85 }, Rt = { x: 6.85, w: 5.85 };
-  [[L, "현행 (AS-IS)", C.accent4], [Rt, "제안 (TO-BE)", C.text2]].forEach(([c, t, col]) => {
+  [[L, "현행 문제점 (AS-IS)", C.accent4], [Rt, "제안 (TO-BE)", C.text2]].forEach(([c, t, col]) => {
     s.addShape(pres.shapes.RECTANGLE, { x: c.x, y: 2.0, w: c.w, h: 0.46, fill: { color: col }, line: { type: "none" }, objectName: nm("hdr") });
     txt(s, t, { x: c.x, y: 2.0, w: c.w, h: 0.46, fontSize: 18, bold: true, color: C.background1, align: "center", valign: "middle" });
     s.addShape(pres.shapes.RECTANGLE, { x: c.x, y: 2.46, w: c.w, h: 3.5, fill: { color: "F8FAFC" }, line: { color: BORDER, width: 0.75 }, objectName: nm("panel") });
@@ -162,8 +162,8 @@ pres.addSection({ title: S1 });
     });
 
   // 효과 · 요청
-  [[L, "효과", C.accent5, "활성 사용자 주 2~4시간 절감 보고 · 기준 시나리오 3년차 누적 손익분기, 이후 연 5억 원+"],
-   [Rt, "요청", C.accent1, "1단계 파일럿 6개월 약 3.4억 원 · 3개 부서 + 전사 Q&A · 정해 둔 지표로 확대 결정"]].forEach(([c, t, col, d]) => {
+  [[L, "효과", C.accent5, "같은 인원으로 더 많은 일을, 더 좋은 품질로 · 처리 시간 단축 · 시간 절감만 따져도 2년차 누적 손익분기"],
+   [Rt, "요청", C.accent1, "1단계 파일럿 6개월 약 0.95억 원(1억 이하) · 3개 부서 + 전사 Q&A · 지표로 확대 결정"]].forEach(([c, t, col, d]) => {
     card(s, c.x, 6.08, c.w, 0.56, C.background2);
     s.addShape(pres.shapes.OVAL, { x: c.x + 0.18, y: 6.27, w: 0.18, h: 0.18, fill: { color: col }, line: { type: "none" }, objectName: nm("dot") });
     txt(s, t, { x: c.x + 0.45, y: 6.08, w: 0.6, h: 0.56, fontSize: 14, bold: true, valign: "middle" });
@@ -174,8 +174,8 @@ pres.addSection({ title: S1 });
     "현행: 직원들은 범용 AI를 쓰고 있지만 그때그때 대화하고, 조회하고 복사하고 옮기는 연결은 사람이 합니다. 무엇보다 회계·제조·품질·생산 데이터를 쓸 수 없습니다. 범용 MCP 도구는 많지만 우리 데이터를 여는 도구는 없습니다. 섀도 AI와 사람 수만큼 느는 구독료로 통제와 비용 관리가 안 되고, 잘 쓰는 노하우는 개인에게 머뭅니다.\n" +
     "제안: 직원이 자기 업무용 에이전트를 직접 만들어 씁니다. 사내 시스템은 표준 도구로 연결해 회사 자산으로 만들고, 대외비는 사내 모델, 시스템 변경은 사람 승인으로 하나의 기반에서 통제합니다. 잘 만든 에이전트는 갤러리로 퍼집니다.\n" +
     "아래 그림처럼, 지금은 사람이 여섯 단계를 잇고 AI는 그중 하나만 합니다. 제안 이후에는 사람은 목표를 정하고 승인만 하고, 그 사이는 에이전트가 잇습니다.\n" +
-    "효과는 외부 조사 기준 주 2~4시간 절감, 기준 시나리오 3년차 누적 손익분기입니다. 오늘 요청드리는 것은 6개월 약 3.4억 원의 1단계 파일럿입니다.\n" +
-    "지금 하지 않아도 AI는 쓰입니다. 다만 회사 밖에서, 제각각, 아무것도 남기지 않고 쓰일 뿐입니다."
+    "효과는 시간 절감에 그치지 않습니다. 같은 인원으로 더 많은 일을, 더 좋은 품질로 처리합니다. 보수적으로 시간 절감만 따져도 2년차에 누적 손익분기입니다. 오늘 요청드리는 것은 6개월, 1억 원 이하의 1단계 파일럿입니다.\n" +
+    "지금 하지 않아도 AI는 쓰입니다. 다만 통제되지 않은 방식으로, 비효율적으로, 아무것도 남기지 않고 쓰일 뿐입니다."
   );
 }
 
@@ -374,7 +374,7 @@ pres.addSection({ title: S1B });
 const S2 = "문제";
 pres.addSection({ title: S2 });
 {
-  const s = content("직원들은 이미 AI를 쓰고 있다. 다만 회사 밖에서", S2);
+  const s = content("직원들은 이미 AI를 쓰고 있다. 다만 통제되지 않은 방식으로, 비효율적으로", S2, { fontSize: 24 });
   const stats = [
     ["45%", "업무 기기에서 AI를\n정기적으로 쓰는 직원\n(전년 15%의 3배)", "Verizon DBIR 2026", C.accent2],
     ["49%", "회사가 승인하지 않은\nAI 도구를 쓰는 직원\n(500명 이상 기업)", "BlackFog 2026", C.accent1],
@@ -395,7 +395,7 @@ pres.addSection({ title: S2 });
   ], { x: 0.9, y: 5.25, w: 11.6, h: 1.2, fontSize: 15, valign: "middle" });
   source(s, "출처: Verizon 2026 DBIR·IBM 2026(2차 보도), BlackFog 2026, TrustedTech·Censuswide. 조사마다 정의가 달라 방향성 지표로 본다");
   s.addNotes(
-    "직원들은 이미 AI를 쓰고 있습니다. 문제는 회사 밖에서 쓴다는 것입니다.\n" +
+    "직원들은 이미 AI를 쓰고 있습니다. 문제는 통제되지 않은 방식으로, 비효율적으로 쓴다는 것입니다.\n" +
     "업무 기기에서 AI를 정기적으로 쓰는 직원이 45%로 1년 만에 3배가 됐고, 승인되지 않은 도구를 쓰는 직원이 절반 가까이 됩니다. 3명 중 1명은 연구 자료나 데이터를 거기에 넣어 봤다고 답했습니다.\n" +
     "IBM 보고에 따르면 침해 사고를 겪은 조직의 43%가 섀도 AI 관련 사고를 겪었고, 평균 피해가 일반 사고보다 큽니다.\n" +
     "흥미로운 점은 임원이 직원보다 두 배 더 많이 승인되지 않은 도구를 쓴다는 것입니다. 금지로는 막을 수 없습니다. 더 좋은 공식 길을 줘야 합니다.\n" +
@@ -403,52 +403,47 @@ pres.addSection({ title: S2 });
   );
 }
 {
-  const s = content("지금의 방식: AI와 그때그때 대화하고, 연결은 사람이 한다", S2);
-  txt(s, "지금: 직원이 직접 판단하고 단계를 잇는다 (사람 = 오케스트레이터)", { x: 0.6, y: 1.25, w: 7.6, h: 0.35, fontSize: 14, bold: true, color: C.accent3 });
+  const s = content("지금의 방식: AI는 6단계 중 1단계, 나머지는 사람이 잇는다", S2, { fontSize: 26 });
+  txt(s, "예: 거래처 잔액 확인, 불량 원인 조사 같은 일을 지금 범용 AI로 할 때", { x: 0.6, y: 1.18, w: 12.1, h: 0.32, fontSize: 13, color: C.accent3 });
   const steps = [
-    ["ERP·MES 화면에서 조회하고 엑셀로 내려받기", "사람"],
-    ["필요한 부분만 복사하고 민감 정보 지우기", "사람"],
-    ["범용 AI 대화창에 붙여넣고 상황 설명", "AI"],
-    ["답을 확인하고 모자란 데이터는 다시 조회", "사람"],
-    ["다음 질문으로 이어 가기 (맥락 다시 설명)", "사람"],
-    ["결과를 메일·보고서·시스템에 다시 옮기기", "사람"],
+    ["조회", "사람", "시스템마다 따로 접속하고 내려받는다"],
+    ["복사", "사람", "민감 정보가 외부 AI로 나갈 위험"],
+    ["AI 대화", "AI", "우리 데이터를 모른 채 일반론으로 답한다"],
+    ["재조회", "사람", "근거를 확인하려고 다시 시스템으로"],
+    ["이어 묻기", "사람", "단계마다 맥락을 처음부터 다시 설명"],
+    ["옮기기", "사람", "손으로 옮기다 오류, 결과는 개인 PC에"],
   ];
-  steps.forEach(([d, who], i) => {
-    const col = i % 3, row = Math.floor(i / 3);
-    const x = 0.6 + col * 2.6, y = 1.75 + row * 1.95;
-    const ai = who === "AI";
-    card(s, x, y, 2.3, 1.6, ai ? "EEF2FF" : C.background2, ai ? C.accent6 : undefined);
-    badge(s, x + 0.15, y + 0.15, String(i + 1), ai ? C.accent6 : C.accent3, C.background1, 0.4);
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 1.45, y: y + 0.2, w: 0.7, h: 0.3, rectRadius: 0.15, fill: { color: ai ? C.accent6 : "CBD5E1" }, line: { type: "none" }, objectName: nm("pill") });
-    txt(s, who, { x: x + 1.45, y: y + 0.2, w: 0.7, h: 0.3, fontSize: 11, bold: true, color: ai ? C.background1 : C.text1, align: "center", valign: "middle" });
-    txt(s, d, { x: x + 0.15, y: y + 0.68, w: 2.0, h: 0.85, fontSize: 13 });
-    if (col < 2) arrowR(s, x + 2.32, y + 0.8, 0.26);
+  steps.forEach(([t, who, pain], i) => {
+    const x = 0.6 + i * 2.02, ai = who === "AI";
+    s.addText(`${i + 1}  ${t}`, { shape: pres.shapes.CHEVRON, x, y: 1.6, w: 2.1, h: 0.7, fill: { color: ai ? HEX.accent6 : "64748B" },
+      line: { type: "none" }, fontSize: 15, bold: true, color: "FFFFFF", align: "center", valign: "middle", margin: 0, objectName: nm("step") });
+    txt(s, who === "AI" ? "AI가 하는 단계" : "사람이 하는 단계", { x, y: 2.36, w: 2.0, h: 0.28, fontSize: 11, bold: true, color: ai ? C.accent6 : C.accent3, align: "center" });
+    card(s, x + 0.08, 2.72, 1.86, 1.15, ai ? "EEF2FF" : "FEE2E2");
+    txt(s, [{ text: "⚠ ", options: { color: ai ? HEX.accent6 : HEX.accent4 } }, { text: pain }],
+      { x: x + 0.18, y: 2.72, w: 1.68, h: 1.15, fontSize: 13, bold: true, color: ai ? C.accent6 : C.accent4, valign: "middle" });
   });
-  arrowD(s, 7.75, 3.37, 0.36);
-  txt(s, "다음 단계마다 반복", { x: 5.6, y: 3.4, w: 2.05, h: 0.3, fontSize: 11, italic: true, color: C.accent3, align: "right" });
-  card(s, 8.6, 1.25, 4.1, 4.1, C.text1);
+  const big = [
+    ["느리다", "6단계 중 5단계를 사람이 손으로 잇는다"],
+    ["반쪽이다", "AI는 회계·생산·품질 데이터를 못 본다"],
+    ["위험하다", "무엇이 밖으로 나갔는지 기록이 없다"],
+  ];
+  big.forEach(([w, d], i) => {
+    const x = 0.6 + i * 4.1;
+    card(s, x, 4.12, 3.9, 1.42, C.background1, C.accent4);
+    txt(s, w, { x: x + 0.25, y: 4.2, w: 3.4, h: 0.65, fontSize: 30, bold: true, color: C.accent4, valign: "middle" });
+    txt(s, d, { x: x + 0.25, y: 4.85, w: 3.5, h: 0.55, fontSize: 14, bold: true, valign: "middle" });
+  });
+  card(s, 0.6, 5.8, 12.1, 0.72, "FEF3C7");
   txt(s, [
-    { text: "에이전트 플랫폼에서는", options: { bold: true, color: C.accent1, breakLine: true } },
-    { text: " ", options: { fontSize: 6, breakLine: true } },
-    { text: "사람: 목표를 정하고, 결과를 승인한다", options: { bold: true, color: C.background1, breakLine: true } },
-    { text: " ", options: { fontSize: 6, breakLine: true } },
-    { text: "에이전트: 도구로 ERP·MES를 직접 조회하고, 단계를 이어 초안과 제안까지 만든다", options: { color: C.background1, breakLine: true } },
-    { text: " ", options: { fontSize: 6, breakLine: true } },
-    { text: "정해진 시각이나 사건에 맞춰 스스로 실행한다", options: { color: C.background1, breakLine: true } },
-    { text: " ", options: { fontSize: 6, breakLine: true } },
-    { text: "잘 된 방식은 저장돼 누구나 같은 품질로 다시 쓴다", options: { color: C.background1 } },
-  ], { x: 8.85, y: 1.45, w: 3.65, h: 3.8, fontSize: 14 });
-  card(s, 0.6, 5.6, 12.1, 0.85, "FEF3C7");
-  txt(s, [
-    { text: "AI가 하는 일은 여섯 단계 중 하나뿐이다. ", options: { bold: true, color: C.text1 } },
-    { text: "데이터를 찾고, 옮기고, 잇는 나머지 다섯 단계는 여전히 사람이 한다", options: { color: C.text1 } },
-  ], { x: 0.9, y: 5.6, w: 11.6, h: 0.85, fontSize: 16, valign: "middle" });
-  source(s, "실무 흐름을 단순화한 예시");
+    { text: "에이전트 플랫폼에서는: ", options: { bold: true } },
+    { text: "사람은 목표를 정하고 승인만 한다. 그 사이 다섯 단계는 에이전트가 사내 데이터로 잇는다" },
+  ], { x: 0.9, y: 5.8, w: 11.6, h: 0.72, fontSize: 15, valign: "middle" });
   s.addNotes(
-    "직원들이 범용 AI를 업무에 쓰고 있는 것은 맞습니다. 문제는 쓰는 방식입니다.\n" +
-    "지금은 이렇습니다. ERP나 MES 화면에서 조회하고 엑셀로 내려받습니다. 필요한 부분만 복사하고 민감한 정보를 지웁니다. 그걸 AI 대화창에 붙여넣고 상황을 설명합니다. 답을 보고, 모자라면 다시 시스템에 가서 조회합니다. 다음 질문을 할 때는 맥락을 다시 설명합니다. 마지막으로 결과를 메일이나 보고서, 시스템에 다시 옮깁니다.\n" +
-    "여섯 단계 중 AI가 하는 일은 하나뿐입니다. 판단하고 단계를 잇는 오케스트레이터는 여전히 사람입니다.\n" +
-    "에이전트 플랫폼에서는 사람이 목표를 정하고 결과를 승인합니다. 조회하고, 잇고, 초안을 만드는 일은 에이전트가 합니다."
+    "지금 직원들이 범용 AI로 일하는 방식을 한 장에 담았습니다. 거래처 잔액 확인이나 불량 원인 조사 같은 일입니다.\n" +
+    "시스템에서 조회하고, 복사하고, AI에 붙여넣어 묻고, 근거를 확인하러 다시 조회하고, 맥락을 다시 설명하며 이어 묻고, 결과를 손으로 옮깁니다. 여섯 단계 중 AI가 하는 것은 하나뿐입니다.\n" +
+    "단계마다 문제가 있습니다. 빨간 칸입니다. 그리고 그 하나뿐인 AI 단계도 우리 데이터를 모른 채 일반론으로 답합니다.\n" +
+    "한마디로 느리고, 반쪽이고, 위험합니다.\n" +
+    "에이전트 플랫폼에서는 사람은 목표를 정하고 승인만 하고, 그 사이 다섯 단계는 에이전트가 사내 데이터로 잇습니다."
   );
 }
 {
@@ -499,6 +494,60 @@ pres.addSection({ title: S2 });
     "둘째, 비용입니다. 범용 AI 구독료는 쓰는 만큼이 아니라 사람 수만큼 나갑니다. 단순 반복 작업도 고가 모델과 긴 대화로 처리합니다. 예를 들어 1인 월 4만 원씩 300명이면 연 1.4억 원입니다. 실제 결제 금액은 확인해서 말씀드리겠습니다.\n" +
     "셋째, 그리고 가장 큰 한계는 데이터입니다. 범용 AI는 우리 회계, 제조, 생산, 품질 데이터를 볼 수 없습니다. 그래서 '이번 달 왜 불량이 늘었나', '어느 거래처 잔액이 안 맞나' 같은, 정작 우리 회사에 필요한 질문에는 답하지 못합니다. 데이터를 통째로 붙여 넣으면 보안 문제가 되고, 일부만 넣으면 틀린 답이 나옵니다.\n" +
     "그래서 필요한 것은 더 똑똑한 범용 AI가 아니라, 우리 데이터에 연결되고 스스로 단계를 이어 가는 업무용 에이전트입니다."
+  );
+}
+{
+  const s = content("AI 에이전트는 어떻게 회사 데이터를 쓰나: 글로벌 표준 MCP", S2, { fontSize: 26 });
+  // 왼쪽 도식
+  txt(s, "AI는 회사 DB를 직접 열지 않는다. 회사가 정해 둔 '도구'로만 접근한다", { x: 0.6, y: 1.2, w: 6.6, h: 0.35, fontSize: 13.5, bold: true, color: C.accent2 });
+  card(s, 0.6, 1.75, 1.75, 2.1, "EEF2FF", HEX.accent6);
+  txt(s, [{ text: "AI 에이전트", options: { bold: true, fontSize: 15, breakLine: true } }, { text: "Claude · ChatGPT\nGemini · 사내 모델\n무엇이든", options: { fontSize: 11, color: HEX.accent3 } }],
+    { x: 0.7, y: 1.75, w: 1.55, h: 2.1, align: "center", valign: "middle", color: C.accent6 });
+  arrowR(s, 2.4, 2.8, 0.4, C.accent3);
+  card(s, 2.85, 1.6, 2.55, 2.4, "F0FDFA", HEX.accent2);
+  txt(s, "MCP 도구 (표준 연결구)", { x: 2.85, y: 1.65, w: 2.55, h: 0.35, fontSize: 12, bold: true, color: C.accent2, align: "center" });
+  ["거래처 잔액 조회", "LOT 추적", "불량 이력 조회", "작업지시 변경 제안 ✋"].forEach((t, i) => {
+    const y = 2.05 + i * 0.47;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 3.0, y, w: 2.25, h: 0.38, rectRadius: 0.08, fill: { color: "FFFFFF" }, line: { color: HEX.accent2, width: 0.75 }, objectName: nm("tool") });
+    txt(s, t, { x: 3.0, y, w: 2.25, h: 0.38, fontSize: 11.5, bold: true, align: "center", valign: "middle" });
+  });
+  arrowR(s, 5.45, 2.8, 0.4, C.accent3);
+  ["ERP", "MES", "그룹웨어"].forEach((t, i) => {
+    const y = 1.75 + i * 0.72;
+    card(s, 5.9, y, 1.3, 0.6, C.text1);
+    txt(s, t, { x: 5.9, y, w: 1.3, h: 0.6, fontSize: 14, bold: true, color: C.background1, align: "center", valign: "middle" });
+  });
+  const flow = [["1", "AI가 필요한 도구를 부른다"], ["2", "도구가 권한을 확인하고 시스템에서 조회"], ["3", "결과(숫자)만 AI에 돌려준다"], ["4", "모든 호출을 기록, 변경은 사람 승인 ✋"]];
+  flow.forEach(([n, t], i) => {
+    const y = 4.2 + i * 0.36;
+    badge(s, 0.65, y + 0.02, n, C.accent2, C.background1, 0.3);
+    txt(s, t, { x: 1.05, y, w: 6.1, h: 0.34, fontSize: 13, valign: "middle" });
+  });
+  // 오른쪽: 무엇인가 / 왜 필요한가 / 글로벌 표준
+  const qa = [
+    ["MCP란?", "AI와 회사 시스템을 잇는 표준 연결 규격. AI가 '할 수 있는 일'을 도구로 정해 둔다. 어떤 기기든 꽂으면 되는 USB-C 단자와 같다", C.accent2],
+    ["왜 필요한가?", "AI가 회사 데이터에 안전하게 닿는 유일한 길. 권한 안에서만, 기록을 남기며 접근한다. 한 번 만든 도구는 모든 에이전트가 재사용한다", C.accent1],
+    ["글로벌 표준", "2024년 11월 공개 → 2025년 12월 리눅스 재단(Agentic AI Foundation)으로 이관. Claude·ChatGPT·Gemini·Copilot 등 주요 AI가 모두 지원", C.accent6],
+  ];
+  qa.forEach(([t, d, col], i) => {
+    const y = 1.2 + i * 1.5;
+    card(s, 7.55, y, 5.15, 1.36, C.background2);
+    s.addShape(pres.shapes.RECTANGLE, { x: 7.55, y, w: 0.09, h: 1.36, fill: { color: col }, line: { type: "none" }, objectName: nm("bar") });
+    txt(s, t, { x: 7.8, y: y + 0.1, w: 4.8, h: 0.36, fontSize: 16, bold: true, color: col });
+    txt(s, d, { x: 7.8, y: y + 0.48, w: 4.8, h: 0.82, fontSize: 12.5 });
+  });
+  card(s, 0.6, 5.82, 12.1, 0.7, C.text1);
+  txt(s, [
+    { text: "글로벌 표준이라 특정 AI 회사에 묶이지 않는다. ", options: { bold: true, color: C.accent1 } },
+    { text: "지금 만든 도구는 AI를 바꿔도 그대로 쓰는 회사 자산이 된다", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.82, w: 11.6, h: 0.7, fontSize: 15, valign: "middle" });
+  source(s, "출처: Linux Foundation·Agentic AI Foundation 발표(2025.12), 업계 보도. ✋ = 사람 승인이 필요한 도구");
+  s.addNotes(
+    "여기서 용어 하나만 설명드리겠습니다. MCP입니다.\n" +
+    "AI 에이전트는 회사 데이터베이스를 직접 열지 않습니다. 회사가 정해 둔 '도구'를 통해서만 접근합니다. 예를 들어 '거래처 잔액 조회', 'LOT 추적', '작업지시 변경 제안' 같은 도구입니다.\n" +
+    "AI가 도구를 부르면, 도구가 그 직원의 권한을 확인하고 ERP나 MES에서 조회해 결과 숫자만 돌려줍니다. 모든 호출은 기록되고, 시스템을 바꾸는 도구는 사람이 승인해야 실행됩니다.\n" +
+    "이 도구를 만드는 표준 규격이 MCP입니다. 어떤 기기든 꽂으면 되는 USB-C 단자라고 생각하시면 됩니다.\n" +
+    "중요한 것은 이것이 글로벌 표준이라는 점입니다. 2024년 말 공개된 뒤 작년 12월 리눅스 재단으로 넘어갔고, Claude, ChatGPT, Gemini, Copilot 등 주요 AI가 모두 지원합니다. 그래서 지금 만든 도구는 나중에 어떤 AI로 바꿔도 그대로 씁니다. 특정 회사에 묶이지 않는 회사 자산입니다."
   );
 }
 {
@@ -561,7 +610,7 @@ pres.addSection({ title: S2 });
   );
 }
 {
-  const s = content("왜 지금인가: 챗봇에서 에이전트로, 그리고 표준이 정해졌다", S2);
+  const s = content("왜 지금인가: 업무 소프트웨어가 에이전트로 바뀌고 있다", S2);
   const trends = [
     ["33%", "2028년까지 기업 소프트웨어 중\n에이전트 AI를 포함하는 비율", "Gartner", C.accent6],
     ["15%", "2028년까지 자율적으로\n이뤄질 일상 업무 결정", "Gartner", C.accent6],
@@ -575,7 +624,7 @@ pres.addSection({ title: S2 });
     txt(s, src, { x: x + 0.3, y: 3.3, w: 3.4, h: 0.3, fontSize: 11, color: C.accent3 });
   });
   const facts = [
-    ["연결 표준 확정", "AI와 사내 시스템을 잇는 MCP가 리눅스 재단 산하 Agentic AI Foundation으로 이관(2025.12). Claude·Copilot·Gemini·ChatGPT 지원", C.accent2],
+    ["연결 표준 확정", "MCP가 글로벌 표준으로 자리 잡았다(앞 장). 지금 만든 도구는 어떤 AI로 바꿔도 그대로 쓴다", C.accent2],
     ["제도 시행", "AI 기본법 시행(2026.1.22): 생성물 표시, 사전 고지, 고영향 AI 관리. 통제 체계가 필요해졌다", C.accent1],
     ["경고", "Gartner: 에이전트 AI 프로젝트 40% 이상이 2027년까지 취소. 원인은 비용, 불분명한 가치, 리스크 통제 부족", C.accent4],
   ];
@@ -587,7 +636,7 @@ pres.addSection({ title: S2 });
   });
   s.addNotes(
     "왜 지금인가. 업무 소프트웨어가 에이전트로 바뀌고 있습니다. Gartner는 2028년까지 기업 소프트웨어의 3분의 1이 에이전트를 포함하고, 일상 업무 결정의 15%가 자율적으로 이뤄질 것으로 봅니다. 국내 기업 79%가 내년 AI 예산을 늘립니다.\n" +
-    "결정적인 변화는 표준입니다. AI와 사내 시스템을 잇는 MCP라는 표준이 작년 12월 리눅스 재단으로 넘어갔고, 주요 AI가 모두 지원합니다. 지금 도구를 만들면 나중에 어떤 AI로 바꿔도 그대로 씁니다.\n" +
+    "앞 장에서 말씀드린 대로 연결 표준도 정해졌습니다. 지금 도구를 만들면 나중에 어떤 AI로 바꿔도 그대로 씁니다.\n" +
     "AI 기본법도 올해 1월 시행됐습니다. 통제 체계가 필요해졌습니다.\n" +
     "다만 경고도 있습니다. 에이전트 프로젝트의 40% 이상이 취소될 것이라는 전망입니다. 원인은 비용, 불분명한 가치, 리스크 통제 부족입니다. 이 제안은 그 세 가지에 맞춰 설계했습니다."
   );
@@ -787,73 +836,52 @@ pres.addSection({ title: S3 });
 }
 
 // ═════════════════════════════════════════════════════════════════════════
-// 4. 투자와 효과
+// 4. 기대 효과 (재무 계산은 부록)
 // ═════════════════════════════════════════════════════════════════════════
-const S4 = "투자와 효과";
-pres.addSection({ title: S4 });
+const S4B = "기대 효과";
+pres.addSection({ title: S4B });
 {
-  const s = content("투자와 효과: 3년차 누적 손익분기, 이후 연 5억 원 이상", S4);
-  s.addChart(pres.charts.BAR, [
-    { name: "비용", labels: ["1년차", "2년차", "3년차", "4년차"], values: [7.8, 9.8, 8.0, 8.0] },
-    { name: "효과 (기준 시나리오)", labels: ["1년차", "2년차", "3년차", "4년차"], values: [3.4, 9.3, 13.1, 13.1] },
-  ], {
-    x: 0.6, y: 1.3, w: 7.2, h: 4.4, barDir: "col", barGapWidthPct: 60,
-    chartColors: [HEX.accent3, HEX.accent2],
-    showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 12, dataLabelColor: HEX.dk1, dataLabelFormatCode: "0.0",
-    catAxisLabelColor: HEX.accent3, valAxisLabelColor: HEX.accent3, catAxisLabelFontSize: 12, valAxisLabelFontSize: 11,
-    catAxisLabelFontFace: "+mn-lt", valAxisLabelFontFace: "+mn-lt", dataLabelFontFace: "+mn-lt", legendFontFace: "+mn-lt", titleFontFace: "+mn-lt",
-    valGridLine: { color: "E2E8F0", size: 0.75 }, catGridLine: { style: "none" },
-    valAxisMinVal: 0, valAxisMaxVal: 16, valAxisMajorUnit: 4,
-    showLegend: true, legendPos: "b", legendFontSize: 12, legendColor: HEX.dk1,
-    showTitle: true, title: "연간 비용과 효과 (억 원, 기준 시나리오)", titleFontSize: 14, titleColor: HEX.dk1,
-    objectName: nm("chart"),
+  const s = content("기대 효과: 같은 인원으로 더 많은 일을, 더 좋은 품질로", S4B);
+  const cols = [
+    ["더 많은 일", "같은 인원이 더 많은 건을 처리한다", C.accent2, [
+      "대사: 주요 50곳 표본 → 전체 거래처 전수 대사",
+      "영업: 1인이 하루에 회신하는 납기 문의 건수 증가",
+      "업무량이 늘어도 증원 없이 대응, 숙련자 퇴직 공백 완화"]],
+    ["더 좋은 품질", "매번 같은 절차, 근거 있는 결과", C.accent6, [
+      "숫자는 시스템 조회값, 근거 문서 표시 → 옮겨 적기 오류 감소",
+      "과거 사례·체크리스트 자동 적용 → 영향 범위·검토 누락 감소",
+      "잘 된 방식이 갤러리로 퍼져 사람·부서 간 품질 편차 감소"]],
+    ["더 빠른 대응", "기다리는 시간이 사라진다", C.accent1, [
+      "클레임 1차 회신: 다음 날 → 당일 오전",
+      "납기 회신: 반나절~하루 → 30분 안",
+      "아낀 시간(주 2~4시간 보고)은 판단·개선 업무로"]],
+  ];
+  cols.forEach(([t, sub, col, items], i) => {
+    const x = 0.6 + i * 4.1;
+    card(s, x, 1.3, 3.9, 3.3, C.background2);
+    s.addShape(pres.shapes.RECTANGLE, { x, y: 1.3, w: 3.9, h: 0.09, fill: { color: col }, line: { type: "none" }, objectName: nm("bar") });
+    txt(s, t, { x: x + 0.25, y: 1.5, w: 3.4, h: 0.5, fontSize: 24, bold: true, color: col });
+    txt(s, sub, { x: x + 0.25, y: 2.02, w: 3.45, h: 0.35, fontSize: 13.5, bold: true });
+    txt(s, items.map((it, k) => ({ text: it, options: { bullet: true, breakLine: k < items.length - 1 } })),
+      { x: x + 0.25, y: 2.45, w: 3.5, h: 2.05, fontSize: 13, paraSpaceAfter: 6 });
   });
-  const rows = [
-    [hdr("시나리오"), hdr("3년 누적"), hdr("4년 누적")],
-    ["보수 (주 1.5시간)", "−7.0", "−5.2"],
-    [{ text: "기준 (주 2.5시간)", options: { bold: true } }, { text: "+0.2", options: { bold: true } }, { text: "+5.3", options: { bold: true, color: HEX.accent5 } }],
-    ["낙관 (주 4시간)", "+10.9", { text: "+21.0", options: { color: HEX.accent5 } }],
-  ];
-  s.addTable(rows, { x: 8.1, y: 1.3, w: 4.6, colW: [2.2, 1.2, 1.2], rowH: 0.5, fontSize: 13, color: HEX.dk1, align: "center",
-    border: { type: "solid", pt: 0.75, color: BORDER }, valign: "middle", margin: [0, 0.08, 0, 0.08], objectName: nm("table") });
-  card(s, 8.1, 3.55, 4.6, 2.15, C.text1);
+  txt(s, "파일럿에서 재는 지표", { x: 0.6, y: 4.78, w: 3.0, h: 0.35, fontSize: 14, bold: true, color: C.accent3 });
+  ["1인당 처리 건수", "처리 리드타임", "오류·재작업률", "점검 범위 (전수 비율)", "절감 시간"].forEach((k, i) => {
+    const x = 0.6 + i * 2.44;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 5.15, w: 2.3, h: 0.45, rectRadius: 0.1, fill: { color: "FFFFFF" }, line: { color: BORDER, width: 1 }, objectName: nm("kpi") });
+    txt(s, k, { x, y: 5.15, w: 2.3, h: 0.45, fontSize: 13, bold: true, align: "center", valign: "middle" });
+  });
+  card(s, 0.6, 5.82, 12.1, 0.7, C.text1);
   txt(s, [
-    { text: "연간 운영비 회수 조건", options: { bold: true, color: C.accent1, breakLine: true } },
-    { text: "활성 사용자 300명이 주 1.4시간만 실제로 아끼면 된다", options: { bold: true, color: C.background1, breakLine: true } },
-    { text: "외부 조사 보고치는 주 2.2~3.8시간. 자동화 업무 30개를 넣으면 주 0.5시간", options: { color: "CBD5E1" } },
-  ], { x: 8.35, y: 3.6, w: 4.15, h: 2.05, fontSize: 14, valign: "middle", paraSpaceAfter: 4 });
-  source(s, "가정: 대상 600명 중 활성 120→300→360명, 시간당 4만 원, 절감 시간의 50%만 가치로 계산, 자동화 업무 1개 연 0.16억. 비용은 개략 추정 (근거 문서 8장)");
+    { text: "핵심은 인력 감축이 아니라 처리 능력 확대다. ", options: { bold: true, color: C.accent1 } },
+    { text: "재무 계산(부록)은 보수적으로 시간 절감만 넣어도 2년차에 누적 손익분기", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.82, w: 11.6, h: 0.7, fontSize: 15, valign: "middle" });
   s.addNotes(
-    "투자와 효과입니다. 숫자를 부풀리지 않으려고 보수적으로 계산했습니다. 아낀 시간의 절반만 가치로 셌습니다.\n" +
-    "기준 시나리오에서 1~2년차는 투자 구간이고, 3년차에 누적 손익분기, 그 이후 매년 5억 원 이상의 순효과가 납니다.\n" +
-    "가장 중요한 숫자는 오른쪽 아래입니다. 연간 운영비를 회수하려면 활성 사용자 300명이 일주일에 1.4시간만 실제로 아끼면 됩니다. 외부 조사에서 보고된 절감 시간은 주 2.2~3.8시간입니다. 반복 업무 자동화 30개의 효과까지 넣으면 주 30분이면 됩니다.\n" +
-    "그리고 이 계산에는 보안 리스크 감소가 빠져 있습니다. 섀도 AI 관련 침해 사고 한 건의 평균 피해가 70억 원대입니다. 한 건만 막아도 3년 투자액을 넘습니다.\n" +
-    "가정은 모두 근거 문서에 있고, 우리 회사 숫자로 바꾸면 바로 다시 계산됩니다."
-  );
-}
-{
-  const s = content("구축 방식: 오픈소스 기반 자체 구축 + 모델 혼합 운영을 권장", S4);
-  const rows = [
-    [hdr("방식"), hdr("장점"), hdr("단점"), hdr("판단")],
-    ["A. 상용 에이전트 플랫폼\n(Copilot Studio, Gemini Enterprise 등)", "빠른 시작, 높은 모델 품질, 업무 도구 통합", "사용자 수만큼 구독료, 데이터 외부 처리, 사내 ERP·MES 연결 어려움, 종속", "문서·메일 중심 부서에 일부"],
-    ["B. 오픈소스 기반 자체 구축\n(에이전트 빌더 + LangGraph + MCP + vLLM)", "데이터 통제, 사내 시스템 연결 자유, 비용 예측, 종속 없음", "구축·운영 인력 필요, 화면 완성도는 직접 다듬어야", "사내 연결이 핵심인 우리에게 적합"],
-    [{ text: "C. 혼합 (권장)", options: { bold: true } }, { text: "B를 기반으로, 모델은 대외비=사내 / 일반=클라우드. 상용 협업 도구는 필요 부서만", options: { bold: true } }, "두 체계를 관리해야 함", { text: "권장", options: { bold: true, color: HEX.accent5 } }],
-  ];
-  const hot = (r, i) => i === 3 ? r.map((c) => (typeof c === "string" ? { text: c, options: { fill: { color: "FEF3C7" } } } : { ...c, options: { ...c.options, fill: { color: "FEF3C7" } } })) : r;
-  s.addTable(rows.map(hot), { x: 0.6, y: 1.35, w: 12.1, colW: [3.3, 3.4, 3.4, 2.0], rowH: [0.5, 1.05, 1.05, 1.05], fontSize: 13, color: HEX.dk1,
-    border: { type: "solid", pt: 0.75, color: BORDER }, valign: "middle", margin: [0, 0.1, 0, 0.1], objectName: nm("table") });
-  card(s, 0.6, 5.2, 12.1, 1.2, C.text1);
-  txt(s, [
-    { text: "차별점은 플랫폼 화면이 아니라 '우리 도구와 지식'", options: { bold: true, color: C.accent1, breakLine: true } },
-    { text: "ERP·MES 연결 도구와 규정·매뉴얼·사례 지식은 회사가 소유한다. 오픈 표준을 따르면 플랫폼이나 모델을 바꿔도 그대로 쓴다", options: { color: C.background1 } },
-  ], { x: 0.9, y: 5.2, w: 11.6, h: 1.2, fontSize: 15, valign: "middle" });
-  source(s, "오픈소스 후보의 라이선스는 서로 다르다(예: Dify 조건부 Apache 2.0, n8n 소스 공개형, Langflow MIT). 도입 전 법무 검토 필요");
-  s.addNotes(
-    "구축 방식은 세 가지를 비교했습니다.\n" +
-    "상용 플랫폼은 빨리 시작할 수 있지만, 사용자 수만큼 구독료가 늘고, 데이터가 외부에서 처리되고, 우리 공장의 ERP와 MES에 연결하기 어렵습니다.\n" +
-    "오픈소스 기반 자체 구축은 인력이 필요하지만 데이터 통제와 사내 연결이 자유롭습니다.\n" +
-    "권장안은 혼합입니다. 오픈소스 기반으로 사내에 플랫폼을 두고, 모델은 대외비는 사내, 일반 업무는 클라우드로 나눕니다. 문서나 메일 위주 부서에는 상용 협업 도구를 선택적으로 씁니다.\n" +
-    "결국 차별점은 화면이 아니라 우리 도구와 지식입니다. 이건 우리가 소유해야 합니다."
+    "효과를 시간 절감으로만 보시면 안 됩니다. 핵심은 같은 인원으로 더 많은 일을, 더 좋은 품질로 처리하는 것입니다.\n" +
+    "더 많은 일: 지금 회계팀은 시간이 없어 주요 거래처 50곳만 표본으로 대사합니다. 에이전트가 있으면 전체 거래처를 전수 대사할 수 있습니다. 영업 담당 한 명이 하루에 회신할 수 있는 납기 문의도 늘어납니다. 업무량이 늘어도 사람을 늘리지 않고 대응할 수 있고, 숙련자가 떠난 공백도 줄어듭니다.\n" +
+    "더 좋은 품질: 숫자는 시스템에서 바로 가져오고 근거를 표시하니 옮겨 적다 생기는 오류가 줄어듭니다. 과거 사례와 체크리스트가 매번 자동으로 적용돼 누락이 줄고, 잘 하는 사람의 방식이 퍼져 사람마다 다른 품질이 고르게 됩니다.\n" +
+    "더 빠른 대응: 클레임 회신은 당일 오전으로, 납기 회신은 30분 안으로 당겨집니다.\n" +
+    "파일럿에서는 이 다섯 가지 지표를 직접 재겠습니다. 그리고 부록의 재무 계산은 보수적으로 시간 절감만 넣었는데도 2년차에 누적 손익분기입니다."
   );
 }
 
@@ -865,7 +893,7 @@ pres.addSection({ title: S5 });
 {
   const s = content("단계별 추진: 성과 지표를 넘어야 다음 단계로 간다", S5);
   const phases = [
-    ["1단계 파일럿", "0~6개월 · 약 3.4억 원", ["제조·품질·회계 3개 부서", "+ 전사 규정 Q&A", "사용자 60명, 조회 전용", "핵심 도구 10개, 템플릿 10개"], "FEF3C7", C.accent1],
+    ["1단계 파일럿", "0~6개월 · 약 0.95억 원", ["품질·영업·회계 3개 부서", "+ 전사 규정 Q&A", "사용자 60명, 조회 전용", "핵심 도구 10개, 템플릿 10개"], "FEF3C7", C.accent1],
     ["2단계 확산", "6~18개월", ["전 부서, 셀프 빌더 공개", "승인형 쓰기 도구 도입", "사용자 300명", "자동화 업무 15개"], C.background2, undefined],
     ["3단계 전사·고도화", "18~36개월", ["이벤트 기반 자동화", "부서 간 에이전트 협업", "역할별 화면 (공장장실 등)", "자동화 업무 30개"], C.background2, undefined],
   ];
@@ -882,16 +910,16 @@ pres.addSection({ title: S5 });
   });
   card(s, 0.6, 4.8, 12.1, 1.6, C.text1);
   txt(s, "1단계 → 2단계 확대 조건 (Go/No-go)", { x: 0.9, y: 4.9, w: 11.6, h: 0.4, fontSize: 15, bold: true, color: C.accent1 });
-  const kpis = ["주간 활성 사용률 60% 이상", "1인 주 1.5시간 이상 절감 (표본 측정)", "만족도 4.0 / 5 이상", "보안 사고 0건", "부서별 성공 사례 2건 이상"];
+  const kpis = ["주간 활성 사용률 60% 이상", "1인 주 1.5시간 이상 절감 (표본 측정)", "만족도 4.0 / 5 이상", "보안 사고 0건", "대표 업무 처리 시간 50% 단축"];
   kpis.forEach((k, i) => {
     const x = 0.9 + i * 2.36;
     txt(s, "✓ " + k, { x, y: 5.4, w: 2.26, h: 0.85, fontSize: 13, color: C.background1, valign: "middle" });
   });
-  source(s, "추진 조직: AI 추진 조직(CoE) 3~5명 + 부서별 AI 챔피언 1명 (업무를 아는 사람이 만들고 동료를 돕는다)");
+  source(s, "파일럿 비용 0.95억 원 = 외부 구축 지원 0.4 + GPU 워크스테이션 0.3 + 클라우드 모델 0.1 + 교육 0.05 + 예비비 0.1. 인력은 기존 IT 2명 + 부서 챔피언 3명(겸임)");
   s.addNotes(
     "추진은 3단계입니다. 핵심은 성과 지표를 넘어야 다음 단계로 간다는 것입니다.\n" +
-    "1단계 6개월 파일럿: 제조, 품질, 회계 3개 부서와 전사 규정 Q&A로 시작합니다. 사용자 60명, 조회 전용으로 위험을 낮춥니다.\n" +
-    "6개월 뒤 다섯 가지 지표로 판단합니다. 주간 활성 사용률 60%, 1인 주 1.5시간 절감, 만족도 4.0, 보안 사고 0건, 부서별 성공 사례 2건. 이걸 넘으면 2단계로 전 부서에 셀프 빌더를 열고 승인형 쓰기 도구를 도입합니다.\n" +
+    "1단계 6개월 파일럿: 품질, 영업, 회계 3개 부서와 전사 규정 Q&A로 시작합니다. 사용자 60명, 조회 전용으로 위험을 낮춥니다. 신규 지출은 1억 원 이하, 약 0.95억 원입니다. 플랫폼은 오픈소스로 세우고 외부 구축 지원 0.4억, 추론용 GPU 워크스테이션 1대 0.3억, 클라우드 모델 0.1억, 교육 0.05억, 예비비 0.1억입니다. 인력은 기존 IT 인력 2명과 부서 챔피언이 맡습니다.\n" +
+    "6개월 뒤 다섯 가지 지표로 판단합니다. 주간 활성 사용률 60%, 1인 주 1.5시간 절감, 만족도 4.0, 보안 사고 0건, 대표 업무 처리 시간 50% 단축. 이걸 넘으면 2단계로 전 부서에 셀프 빌더를 열고 승인형 쓰기 도구를 도입합니다.\n" +
     "조직은 작은 AI 추진 조직과 부서별 챔피언입니다. 업무를 아는 사람이 직접 만들어야 성공합니다."
   );
 }
@@ -942,42 +970,84 @@ pres.addSection({ title: S5 });
 // ═════════════════════════════════════════════════════════════════════════
 // 6. 요청
 // ═════════════════════════════════════════════════════════════════════════
-const S6 = "요청";
-pres.addSection({ title: S6 });
+const S7 = "부록";
+pres.addSection({ title: S7 });
+// ═════════════════════════════════════════════════════════════════════════
+// 4. 투자와 효과
+// ═════════════════════════════════════════════════════════════════════════
+const S4 = S7;
 {
-  const s = pres.addSlide({ masterName: "TITLE_DARK", sectionTitle: S6 });
-  s.addText("오늘 결정을 요청드립니다", { placeholder: "title" });
-  s.addText("전체 3년 투자가 아니라, 6개월 파일럿으로 시작합니다", { placeholder: "body" });
-  const asks = [
-    ["1단계 파일럿 승인", "6개월 · 약 3.4억 원 (인력 3명, GPU 서버 1대, 모델 사용료, 교육)"],
-    ["AI 추진 조직 구성", "CoE 3명 + 파일럿 3개 부서 챔피언 지정"],
-    ["데이터 등급 정책 위임", "정보보호 조직과 1개월 안에 대외비 범위·모델 사용 규칙 확정"],
-    ["6개월 뒤 Go/No-go 보고", "정해 둔 다섯 가지 지표로 확대 여부 결정"],
-  ];
-  asks.forEach(([t, d], i) => {
-    const y = 4.55 + i * 0.62;
-    badge(s, 0.8, y + 0.04, String(i + 1), C.accent1, C.text2, 0.44);
-    txt(s, t, { x: 1.45, y, w: 3.6, h: 0.52, fontSize: 17, bold: true, color: C.background1, valign: "middle" });
-    txt(s, d, { x: 5.1, y, w: 7.6, h: 0.52, fontSize: 14, color: "CBD5E1", valign: "middle" });
+  const s = content("부록 · 투자와 효과: 시간 절감만 따져도 2년차 누적 손익분기", S4);
+  s.addChart(pres.charts.BAR, [
+    { name: "비용", labels: ["1년차", "2년차", "3년차", "4년차"], values: [4.6, 6.4, 5.9, 5.9] },
+    { name: "효과 (기준 시나리오)", labels: ["1년차", "2년차", "3년차", "4년차"], values: [3.4, 9.3, 13.1, 13.1] },
+  ], {
+    x: 0.6, y: 1.3, w: 7.2, h: 4.4, barDir: "col", barGapWidthPct: 60,
+    chartColors: [HEX.accent3, HEX.accent2],
+    showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 12, dataLabelColor: HEX.dk1, dataLabelFormatCode: "0.0",
+    catAxisLabelColor: HEX.accent3, valAxisLabelColor: HEX.accent3, catAxisLabelFontSize: 12, valAxisLabelFontSize: 11,
+    catAxisLabelFontFace: "+mn-lt", valAxisLabelFontFace: "+mn-lt", dataLabelFontFace: "+mn-lt", legendFontFace: "+mn-lt", titleFontFace: "+mn-lt",
+    valGridLine: { color: "E2E8F0", size: 0.75 }, catGridLine: { style: "none" },
+    valAxisMinVal: 0, valAxisMaxVal: 16, valAxisMajorUnit: 4,
+    showLegend: true, legendPos: "b", legendFontSize: 12, legendColor: HEX.dk1,
+    showTitle: true, title: "연간 비용과 효과 (억 원, 기준 시나리오)", titleFontSize: 14, titleColor: HEX.dk1,
+    objectName: nm("chart"),
   });
+  const rows = [
+    [hdr("시나리오"), hdr("3년 누적"), hdr("4년 누적")],
+    ["보수 (주 1.5시간)", "+1.7", "+5.6"],
+    [{ text: "기준 (주 2.5시간)", options: { bold: true } }, { text: "+8.9", options: { bold: true } }, { text: "+16.1", options: { bold: true, color: HEX.accent5 } }],
+    ["낙관 (주 4시간)", "+19.6", { text: "+31.8", options: { color: HEX.accent5 } }],
+  ];
+  s.addTable(rows, { x: 8.1, y: 1.3, w: 4.6, colW: [2.2, 1.2, 1.2], rowH: 0.5, fontSize: 13, color: HEX.dk1, align: "center",
+    border: { type: "solid", pt: 0.75, color: BORDER }, valign: "middle", margin: [0, 0.08, 0, 0.08], objectName: nm("table") });
+  card(s, 8.1, 3.55, 4.6, 2.15, C.text1);
+  txt(s, [
+    { text: "연간 운영비 회수 조건", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "활성 사용자 300명이 주 1.1시간만 실제로 아끼면 된다", options: { bold: true, color: C.background1, breakLine: true } },
+    { text: "외부 조사 보고치는 주 2.2~3.8시간. 자동화 업무 30개를 넣으면 주 0.2시간", options: { color: "CBD5E1" } },
+  ], { x: 8.35, y: 3.6, w: 4.15, h: 2.05, fontSize: 14, valign: "middle", paraSpaceAfter: 4 });
+  source(s, "가정: 활성 120→300→360명, 시간당 4만 원, 절감 시간의 50%만 가치로, 자동화 업무 1개 연 0.16억. 처리량·품질 효과 제외. 비용은 개략 추정 (계산 엑셀)");
   s.addNotes(
-    "오늘 결정을 요청드립니다. 전체 3년 투자가 아니라 6개월 파일럿입니다.\n" +
-    "첫째, 1단계 파일럿 승인: 6개월, 약 3.4억 원. 둘째, 작은 AI 추진 조직과 부서 챔피언 지정. 셋째, 정보보호 조직과 데이터 등급 정책을 한 달 안에 확정하도록 위임. 넷째, 6개월 뒤 정해 둔 지표로 확대 여부를 다시 보고드리겠습니다.\n" +
-    "직원들은 이미 AI를 쓰고 있습니다. 회사가 그 흐름을 통제하고 자산으로 쌓을지, 밖으로 흘려보낼지를 결정하는 자리입니다. 감사합니다.\n" +
-    "예상 질문: 비용 근거는? → 근거 문서 6장, 견적으로 확정 예정. 왜 상용 제품을 안 쓰나? → 사내 ERP·MES 연결과 데이터 통제. 실패하면? → 6개월 뒤 지표 미달 시 확대하지 않으며 손실은 파일럿 비용으로 제한."
+    "부록: 투자와 효과입니다. 숫자를 부풀리지 않으려고 보수적으로 계산했습니다. 처리량과 품질 효과는 넣지 않고 시간 절감만, 그것도 아낀 시간의 절반만 가치로 셌습니다.\n" +
+    "비용은 1년차 4.6억 원입니다. 파일럿 신규 지출 0.95억 원, 내부 인력 2명 인건비 2.8억 원, 하반기 확대 지출 0.85억 원입니다. 2년차 6.4억, 3년차 이후 연 5.9억 원입니다.\n" +
+    "기준 시나리오에서 1년차만 투자 구간이고 2년차에 누적 손익분기, 3년 누적 8.9억 원의 순효과입니다. 보수 시나리오에서도 3년 누적 플러스입니다.\n" +
+    "연간 운영비를 회수하려면 활성 사용자 300명이 일주일에 1.1시간만 실제로 아끼면 됩니다. 외부 조사의 보고치는 주 2.2~3.8시간입니다.\n" +
+    "보안 리스크 감소도 빠져 있습니다. 섀도 AI 관련 침해 사고 한 건의 평균 피해가 70억 원대입니다.\n" +
+    "가정은 모두 근거 문서에 있고, 우리 회사 숫자로 바꾸면 바로 다시 계산됩니다."
+  );
+}
+{
+  const s = content("부록 · 구축 방식: 오픈소스 기반 자체 구축 + 모델 혼합 운영", S4);
+  const rows = [
+    [hdr("방식"), hdr("장점"), hdr("단점"), hdr("판단")],
+    ["A. 상용 에이전트 플랫폼\n(Copilot Studio, Gemini Enterprise 등)", "빠른 시작, 높은 모델 품질, 업무 도구 통합", "사용자 수만큼 구독료, 데이터 외부 처리, 사내 ERP·MES 연결 어려움, 종속", "문서·메일 중심 부서에 일부"],
+    ["B. 오픈소스 기반 자체 구축\n(에이전트 빌더 + LangGraph + MCP + vLLM)", "데이터 통제, 사내 시스템 연결 자유, 비용 예측, 종속 없음", "구축·운영 인력 필요, 화면 완성도는 직접 다듬어야", "사내 연결이 핵심인 우리에게 적합"],
+    [{ text: "C. 혼합 (권장)", options: { bold: true } }, { text: "B를 기반으로, 모델은 대외비=사내 / 일반=클라우드. 상용 협업 도구는 필요 부서만", options: { bold: true } }, "두 체계를 관리해야 함", { text: "권장", options: { bold: true, color: HEX.accent5 } }],
+  ];
+  const hot = (r, i) => i === 3 ? r.map((c) => (typeof c === "string" ? { text: c, options: { fill: { color: "FEF3C7" } } } : { ...c, options: { ...c.options, fill: { color: "FEF3C7" } } })) : r;
+  s.addTable(rows.map(hot), { x: 0.6, y: 1.35, w: 12.1, colW: [3.3, 3.4, 3.4, 2.0], rowH: [0.5, 1.05, 1.05, 1.05], fontSize: 13, color: HEX.dk1,
+    border: { type: "solid", pt: 0.75, color: BORDER }, valign: "middle", margin: [0, 0.1, 0, 0.1], objectName: nm("table") });
+  card(s, 0.6, 5.2, 12.1, 1.2, C.text1);
+  txt(s, [
+    { text: "차별점은 플랫폼 화면이 아니라 '우리 도구와 지식'", options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: "ERP·MES 연결 도구와 규정·매뉴얼·사례 지식은 회사가 소유한다. 오픈 표준을 따르면 플랫폼이나 모델을 바꿔도 그대로 쓴다", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.2, w: 11.6, h: 1.2, fontSize: 15, valign: "middle" });
+  source(s, "오픈소스 후보의 라이선스는 서로 다르다(예: Dify 조건부 Apache 2.0, n8n 소스 공개형, Langflow MIT). 도입 전 법무 검토 필요");
+  s.addNotes(
+    "구축 방식은 세 가지를 비교했습니다.\n" +
+    "상용 플랫폼은 빨리 시작할 수 있지만, 사용자 수만큼 구독료가 늘고, 데이터가 외부에서 처리되고, 우리 공장의 ERP와 MES에 연결하기 어렵습니다.\n" +
+    "오픈소스 기반 자체 구축은 인력이 필요하지만 데이터 통제와 사내 연결이 자유롭습니다.\n" +
+    "권장안은 혼합입니다. 오픈소스 기반으로 사내에 플랫폼을 두고, 모델은 대외비는 사내, 일반 업무는 클라우드로 나눕니다. 문서나 메일 위주 부서에는 상용 협업 도구를 선택적으로 씁니다.\n" +
+    "결국 차별점은 화면이 아니라 우리 도구와 지식입니다. 이건 우리가 소유해야 합니다."
   );
 }
 
-// ═════════════════════════════════════════════════════════════════════════
-// 부록: 예상 질문과 답변
-// ═════════════════════════════════════════════════════════════════════════
-const S7 = "부록";
-pres.addSection({ title: S7 });
 const QA = [
   [
-    ["비용 근거는 무엇인가?", "인건비 1인 연 1.4억, GPU 서버, 모델 사용료를 개략 추정했다. 가정과 계산식은 근거 문서와 계산 엑셀에 모두 공개했고, 견적으로 확정한다"],
+    ["비용 근거는 무엇인가?", "파일럿 0.95억 = 외부 구축 지원·GPU 워크스테이션·모델 사용료·교육·예비비. 1년차 4.6억은 내부 인력 2명 인건비 포함. 계산식은 부록과 계산 엑셀에 공개, 견적으로 확정"],
     ["이미 범용 AI(ChatGPT·Copilot)를 쓰는데?", "범용 AI는 대화 도구라 단계 연결은 사람 몫이고, 회계·제조·품질·생산 데이터에 닿지 못한다. 플랫폼은 범용 AI를 버리는 게 아니라 그 위에 우리 데이터와 업무 절차를 잇는 층이다"],
-    ["파일럿이 실패하면?", "6개월 뒤 다섯 가지 지표(활성 사용률 60%, 주 1.5시간 절감 등)에 못 미치면 확대하지 않는다. 손실은 파일럿 비용(약 3.4억)으로 제한된다"],
+    ["파일럿이 실패하면?", "6개월 뒤 다섯 가지 지표(활성 사용률 60%, 주 1.5시간 절감 등)에 못 미치면 확대하지 않는다. 손실은 파일럿 비용(1억 원 이하)으로 제한된다"],
     ["데이터 유출은 안전한가?", "대외비는 사내 모델에서만 처리하고, 에이전트는 실행한 사람의 권한만큼만 본다. 모든 실행은 기록된다. 오히려 지금의 섀도 AI가 더 위험하다"],
     ["AI가 틀리면 누가 책임지나?", "숫자는 시스템 조회값만 쓰고 AI는 해석만 한다. 답마다 근거를 표시하고, 시스템 변경과 외부 발송은 사람이 승인한다. 결정과 책임은 승인한 사람에게 있다"],
     ["인력 감축이 목적인가?", "아니다. 반복 업무를 덜어 판단과 개선에 시간을 쓰게 하는 것이 목적이다. 채용·평가 같은 인사 판단에는 AI를 쓰지 않는다"],
@@ -985,9 +1055,9 @@ const QA = [
   [
     ["직원들이 실제로 쓸까?", "부서별 템플릿으로 바로 쓰게 하고, 부서 챔피언이 동료를 돕는다. 지금도 절반이 외부 AI를 쓰고 있어 수요는 충분하다. 공식 경로가 더 편하면 옮겨 온다"],
     ["ERP·MES를 바꿔야 하나?", "아니다. 조회 도구와 승인된 쓰기만 연결한다. API가 없으면 읽기 전용 DB 뷰로 시작하고, 쓰기는 담당자 할 일로 보낸다"],
-    ["사내 GPU 서버가 꼭 필요한가?", "대외비(원가·설계·품질·인사)를 외부로 보내지 않으려면 필요하다. 파일럿은 1대로 시작하고, 사용량을 보고 증설한다"],
+    ["사내 GPU 서버가 꼭 필요한가?", "대외비(원가·설계·품질·인사)를 외부로 보내지 않으려면 필요하다. 파일럿은 GPU 워크스테이션 1대(0.3억)로 시작하고, 사용량을 보고 증설한다"],
     ["경쟁사·업계는 어떤가?", "국내 기업 79%가 내년 AI 예산을 늘리지만 업무 정착은 12.5% 수준이다. 먼저 정착시키는 회사가 앞선다"],
-    ["운영 인력은 어디서?", "AI 추진 조직 3~5명(기존 IT 인력 재배치 + 일부 채용 또는 외부 지원)과 부서 챔피언. 오픈소스 기반이라 특정 업체 인력에 묶이지 않는다"],
+    ["운영 인력은 어디서?", "파일럿은 기존 IT 인력 2명 + 외부 구축 지원, 확산 단계에서 3명 전담과 부서 챔피언. 오픈소스 기반이라 특정 업체 인력에 묶이지 않는다"],
     ["법적 문제(AI 기본법)는?", "2026.1 시행. 대외로 나가는 생성물에 AI 작성 표시, AI 사용 고지 규칙을 플랫폼에 내장한다. 고영향 AI에 해당하는 용도는 쓰지 않는다"],
   ],
 ];
