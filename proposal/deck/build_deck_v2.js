@@ -375,125 +375,58 @@ const S2 = "문제";
 pres.addSection({ title: S2 });
 {
   const s = content("직원들은 이미 AI를 쓰고 있다. 다만 통제되지 않은 방식으로, 비효율적으로", S2, { fontSize: 24 });
+  // ① 현황 수치
   const stats = [
-    ["45%", "업무 기기에서 AI를\n정기적으로 쓰는 직원\n(전년 15%의 3배)", "Verizon DBIR 2026", C.accent2],
-    ["49%", "회사가 승인하지 않은\nAI 도구를 쓰는 직원\n(500명 이상 기업)", "BlackFog 2026", C.accent1],
-    ["33%", "승인되지 않은 도구에\n연구 자료·데이터를\n넣어 본 직원", "BlackFog 2026", C.accent4],
-    ["43%", "침해 사고 조직 중\n섀도 AI 관련 사고\n(전년 20%)", "IBM 2026", C.accent4],
+    ["45%", "업무에 AI를 정기적으로 쓰는 직원", "Verizon DBIR 2026", C.accent2],
+    ["49%", "회사가 승인하지 않은 AI를 쓰는 직원", "BlackFog 2026", C.accent1],
+    ["33%", "승인 안 된 도구에 회사 자료를 넣어 본 직원", "BlackFog 2026", C.accent4],
+    ["43%", "침해 사고 조직 중 섀도 AI 관련 사고", "IBM 2026", C.accent4],
   ];
   stats.forEach(([n, d, src, col], i) => {
-    const x = 0.6 + i * 3.08;
-    card(s, x, 1.4, 2.86, 3.55, C.background2);
-    txt(s, n, { x: x + 0.25, y: 1.6, w: 2.4, h: 1.0, fontSize: 52, bold: true, color: col });
-    txt(s, d, { x: x + 0.25, y: 2.7, w: 2.45, h: 1.4, fontSize: 15 });
-    txt(s, src, { x: x + 0.25, y: 4.45, w: 2.45, h: 0.3, fontSize: 11, color: C.accent3 });
+    const x = 0.6 + i * 3.05;
+    card(s, x, 1.18, 2.9, 0.82, C.background2);
+    txt(s, n, { x: x + 0.12, y: 1.18, w: 1.15, h: 0.82, fontSize: 28, bold: true, color: col, valign: "middle" });
+    txt(s, [{ text: d, options: { breakLine: true } }, { text: src, options: { fontSize: 9.5, color: HEX.accent3 } }],
+      { x: x + 1.25, y: 1.18, w: 1.6, h: 0.82, fontSize: 10.5, valign: "middle" });
   });
-  card(s, 0.6, 5.25, 12.1, 1.2, C.text1);
+  // ② 지금의 방식: 6단계
+  txt(s, "지금의 방식: AI는 6단계 중 1단계, 나머지는 사람이 잇는다", { x: 0.6, y: 2.1, w: 12.1, h: 0.32, fontSize: 14, bold: true });
+  const steps = [
+    ["조회", "시스템마다 따로 접속"], ["복사", "민감 정보 유출 위험"], ["AI 대화", "우리 데이터를 모름"],
+    ["재조회", "근거 찾아 다시 조회"], ["이어 묻기", "맥락을 매번 다시 설명"], ["옮기기", "손으로 옮기다 오류"],
+  ];
+  steps.forEach(([t, pain], i) => {
+    const x = 0.6 + i * 2.02, ai = i === 2;
+    s.addText(`${i + 1} ${t}${ai ? " (AI)" : ""}`, { shape: pres.shapes.CHEVRON, x, y: 2.47, w: 2.1, h: 0.5, fill: { color: ai ? HEX.accent6 : "64748B" },
+      line: { type: "none" }, fontSize: 13, bold: true, color: "FFFFFF", align: "center", valign: "middle", margin: 0, objectName: nm("step") });
+    txt(s, "⚠ " + pain, { x: x + 0.1, y: 3.0, w: 1.85, h: 0.36, fontSize: 11, bold: true, color: ai ? C.accent6 : C.accent4, align: "center", valign: "middle" });
+  });
+  // ③ 세 가지 한계
+  const lim = [
+    ["느리다", "비효율", "6단계 중 5단계를 사람이 손으로 잇는다 · 사람마다 결과가 다르고 재현되지 않는다 · AI 도입 69.5% vs 업무 정착 12.5%", HEX.accent3, false],
+    ["반쪽이다", "데이터 · 가장 큰 한계", "회계·제조·품질·생산 데이터를 못 본다 · “이번 달 왜 불량이 늘었나” 같은 우리 회사의 질문에 답하지 못한다 · 숫자의 근거를 확인할 수 없다", HEX.accent4, true],
+    ["위험하다", "통제 · 비용", "무엇이 밖으로 나갔는지 기록이 없다 · 쓰는 만큼이 아니라 사람 수만큼 구독료 · 부서마다 따로 결제해 중복", HEX.accent1, false],
+  ];
+  lim.forEach(([w, tag, d, col, hot], i) => {
+    const x = 0.6 + i * 4.1;
+    card(s, x, 3.52, 3.9, 2.12, hot ? C.background1 : C.background2, hot ? C.accent4 : undefined);
+    txt(s, w, { x: x + 0.22, y: 3.6, w: 2.0, h: 0.6, fontSize: 26, bold: true, color: col, valign: "middle" });
+    txt(s, tag, { x: x + 2.0, y: 3.68, w: 1.75, h: 0.45, fontSize: 11.5, bold: true, color: col, align: "right", valign: "middle" });
+    txt(s, d.split(" · ").map((t, k, a) => ({ text: t, options: { bullet: true, breakLine: k < a.length - 1 } })),
+      { x: x + 0.22, y: 4.22, w: 3.5, h: 1.38, fontSize: 12.5, paraSpaceAfter: 4 });
+  });
+  card(s, 0.6, 5.8, 12.1, 0.72, C.text1);
   txt(s, [
-    { text: "금지만으로는 막히지 않는다", options: { bold: true, color: C.accent1, breakLine: true } },
-    { text: "임원의 65%가 승인되지 않은 AI를 쓴다(직원 31%). 더 편하고 안전한 공식 경로를 주는 것이 현실적인 대응이다", options: { color: C.background1 } },
-  ], { x: 0.9, y: 5.25, w: 11.6, h: 1.2, fontSize: 15, valign: "middle" });
-  source(s, "출처: Verizon 2026 DBIR·IBM 2026(2차 보도), BlackFog 2026, TrustedTech·Censuswide. 조사마다 정의가 달라 방향성 지표로 본다");
+    { text: "금지로는 못 막는다(임원 65%도 사용). ", options: { color: C.background1 } },
+    { text: "필요한 것은 우리 데이터에 연결되고 통제되는 업무용 에이전트다", options: { bold: true, color: C.accent1 } },
+  ], { x: 0.9, y: 5.8, w: 11.6, h: 0.72, fontSize: 15, valign: "middle" });
+  source(s, "출처: Verizon 2026 DBIR·IBM 2026(2차 보도), BlackFog 2026, TrustedTech·Censuswide, 조코딩AX파트너스(2,078명). 조사마다 정의가 달라 방향성 지표로 본다");
   s.addNotes(
     "직원들은 이미 AI를 쓰고 있습니다. 문제는 통제되지 않은 방식으로, 비효율적으로 쓴다는 것입니다.\n" +
-    "업무 기기에서 AI를 정기적으로 쓰는 직원이 45%로 1년 만에 3배가 됐고, 승인되지 않은 도구를 쓰는 직원이 절반 가까이 됩니다. 3명 중 1명은 연구 자료나 데이터를 거기에 넣어 봤다고 답했습니다.\n" +
-    "IBM 보고에 따르면 침해 사고를 겪은 조직의 43%가 섀도 AI 관련 사고를 겪었고, 평균 피해가 일반 사고보다 큽니다.\n" +
-    "흥미로운 점은 임원이 직원보다 두 배 더 많이 승인되지 않은 도구를 쓴다는 것입니다. 금지로는 막을 수 없습니다. 더 좋은 공식 길을 줘야 합니다.\n" +
-    "(국내에서도 2023년 대기업 직원이 소스 코드를 외부 AI에 입력해 사용을 제한한 사례가 있었습니다.)"
-  );
-}
-{
-  const s = content("지금의 방식: AI는 6단계 중 1단계, 나머지는 사람이 잇는다", S2, { fontSize: 26 });
-  txt(s, "예: 거래처 잔액 확인, 불량 원인 조사 같은 일을 지금 범용 AI로 할 때", { x: 0.6, y: 1.18, w: 12.1, h: 0.32, fontSize: 13, color: C.accent3 });
-  const steps = [
-    ["조회", "사람", "시스템마다 따로 접속하고 내려받는다"],
-    ["복사", "사람", "민감 정보가 외부 AI로 나갈 위험"],
-    ["AI 대화", "AI", "우리 데이터를 모른 채 일반론으로 답한다"],
-    ["재조회", "사람", "근거를 확인하려고 다시 시스템으로"],
-    ["이어 묻기", "사람", "단계마다 맥락을 처음부터 다시 설명"],
-    ["옮기기", "사람", "손으로 옮기다 오류, 결과는 개인 PC에"],
-  ];
-  steps.forEach(([t, who, pain], i) => {
-    const x = 0.6 + i * 2.02, ai = who === "AI";
-    s.addText(`${i + 1}  ${t}`, { shape: pres.shapes.CHEVRON, x, y: 1.6, w: 2.1, h: 0.7, fill: { color: ai ? HEX.accent6 : "64748B" },
-      line: { type: "none" }, fontSize: 15, bold: true, color: "FFFFFF", align: "center", valign: "middle", margin: 0, objectName: nm("step") });
-    txt(s, who === "AI" ? "AI가 하는 단계" : "사람이 하는 단계", { x, y: 2.36, w: 2.0, h: 0.28, fontSize: 11, bold: true, color: ai ? C.accent6 : C.accent3, align: "center" });
-    card(s, x + 0.08, 2.72, 1.86, 1.15, ai ? "EEF2FF" : "FEE2E2");
-    txt(s, [{ text: "⚠ ", options: { color: ai ? HEX.accent6 : HEX.accent4 } }, { text: pain }],
-      { x: x + 0.18, y: 2.72, w: 1.68, h: 1.15, fontSize: 13, bold: true, color: ai ? C.accent6 : C.accent4, valign: "middle" });
-  });
-  const big = [
-    ["느리다", "6단계 중 5단계를 사람이 손으로 잇는다"],
-    ["반쪽이다", "AI는 회계·생산·품질 데이터를 못 본다"],
-    ["위험하다", "무엇이 밖으로 나갔는지 기록이 없다"],
-  ];
-  big.forEach(([w, d], i) => {
-    const x = 0.6 + i * 4.1;
-    card(s, x, 4.12, 3.9, 1.42, C.background1, C.accent4);
-    txt(s, w, { x: x + 0.25, y: 4.2, w: 3.4, h: 0.65, fontSize: 30, bold: true, color: C.accent4, valign: "middle" });
-    txt(s, d, { x: x + 0.25, y: 4.85, w: 3.5, h: 0.55, fontSize: 14, bold: true, valign: "middle" });
-  });
-  card(s, 0.6, 5.8, 12.1, 0.72, "FEF3C7");
-  txt(s, [
-    { text: "에이전트 플랫폼에서는: ", options: { bold: true } },
-    { text: "사람은 목표를 정하고 승인만 한다. 그 사이 다섯 단계는 에이전트가 사내 데이터로 잇는다" },
-  ], { x: 0.9, y: 5.8, w: 11.6, h: 0.72, fontSize: 15, valign: "middle" });
-  s.addNotes(
-    "지금 직원들이 범용 AI로 일하는 방식을 한 장에 담았습니다. 거래처 잔액 확인이나 불량 원인 조사 같은 일입니다.\n" +
-    "시스템에서 조회하고, 복사하고, AI에 붙여넣어 묻고, 근거를 확인하러 다시 조회하고, 맥락을 다시 설명하며 이어 묻고, 결과를 손으로 옮깁니다. 여섯 단계 중 AI가 하는 것은 하나뿐입니다.\n" +
-    "단계마다 문제가 있습니다. 빨간 칸입니다. 그리고 그 하나뿐인 AI 단계도 우리 데이터를 모른 채 일반론으로 답합니다.\n" +
-    "한마디로 느리고, 반쪽이고, 위험합니다.\n" +
-    "에이전트 플랫폼에서는 사람은 목표를 정하고 승인만 하고, 그 사이 다섯 단계는 에이전트가 사내 데이터로 잇습니다."
-  );
-}
-{
-  const s = content("범용 AI 방식의 세 가지 한계: 비효율, 비용, 그리고 데이터", S2);
-  const cols = [
-    { x: 0.6, w: 3.75, n: "1", h: "비효율", t: "사람이 일을 잇는다", col: C.accent3,
-      b: ["매번 맥락을 다시 설명하고 결과를 옮긴다", "사람마다 방식과 결과가 다르고 재현되지 않는다", "정해진 시각·사건에 스스로 돌지 않는다"],
-      foot: "국내: AI 도입 69.5% vs 업무 표준 정착 12.5%\n(조코딩AX파트너스, 2,078명)" },
-    { x: 4.55, w: 3.75, n: "2", h: "비용", t: "범용 AI를 범용으로 쓴다", col: C.accent1,
-      b: ["쓰는 만큼이 아니라 사람 수만큼 구독료가 나간다", "단순 반복 작업도 고가 모델과 긴 대화로 처리한다", "부서마다 따로 결제해 중복된다"],
-      foot: "예: 1인 월 4만 원 × 300명 = 연 1.4억 원\n(회사 실제 결제 금액으로 확인)" },
-  ];
-  cols.forEach((c) => {
-    card(s, c.x, 1.3, c.w, 4.2, C.background2);
-    badge(s, c.x + 0.25, 1.48, c.n, c.col, C.background1, 0.44);
-    txt(s, c.h, { x: c.x + 0.8, y: 1.48, w: 2.6, h: 0.44, fontSize: 19, bold: true, valign: "middle" });
-    txt(s, c.t, { x: c.x + 0.25, y: 2.05, w: c.w - 0.45, h: 0.4, fontSize: 15, bold: true, color: c.col });
-    txt(s, c.b.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < c.b.length - 1 } })),
-      { x: c.x + 0.25, y: 2.5, w: c.w - 0.45, h: 1.85, fontSize: 13, paraSpaceAfter: 6 });
-    txt(s, c.foot, { x: c.x + 0.25, y: 4.55, w: c.w - 0.45, h: 0.8, fontSize: 11.5, color: C.accent3 });
-  });
-  // 3. 데이터: 가장 큰 한계
-  const x = 8.5, w = 4.2;
-  card(s, x, 1.3, w, 4.2, C.background1, C.accent4);
-  badge(s, x + 0.25, 1.48, "3", C.accent4, C.background1, 0.44);
-  txt(s, "데이터", { x: x + 0.8, y: 1.48, w: 1.3, h: 0.44, fontSize: 19, bold: true, valign: "middle" });
-  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 2.4, y: 1.55, w: 1.55, h: 0.32, rectRadius: 0.16, fill: { color: C.accent4 }, line: { type: "none" }, objectName: nm("pill") });
-  txt(s, "가장 큰 한계", { x: x + 2.4, y: 1.55, w: 1.55, h: 0.32, fontSize: 11.5, bold: true, color: C.background1, align: "center", valign: "middle" });
-  txt(s, "우리 회사 데이터를 쓸 수 없다", { x: x + 0.25, y: 2.05, w: w - 0.45, h: 0.4, fontSize: 15, bold: true, color: C.accent4 });
-  const chips = ["회계 · 전표·채권", "제조 · 공정·설비", "품질 · 검사·클레임", "생산 · 실적·LOT"];
-  chips.forEach((t, i) => {
-    const cx = x + 0.25 + (i % 2) * 1.88, cy = 2.5 + Math.floor(i / 2) * 0.42;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: cy, w: 1.8, h: 0.34, rectRadius: 0.08, fill: { color: "FEE2E2" }, line: { type: "none" }, objectName: nm("chip") });
-    txt(s, t, { x: cx, y: cy, w: 1.8, h: 0.34, fontSize: 10, bold: true, color: C.accent4, align: "center", valign: "middle" });
-  });
-  const b3 = ["“이번 달 왜 불량이 늘었나”, “어느 거래처 잔액이 안 맞나” 같은 우리 회사의 질문에 답하지 못한다",
-    "통째로 붙여 넣으면 보안 위험, 일부만 넣으면 틀린 답", "답에 나온 숫자의 근거를 확인할 수 없다"];
-  txt(s, b3.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < b3.length - 1 } })),
-    { x: x + 0.25, y: 3.4, w: w - 0.45, h: 2.0, fontSize: 13, paraSpaceAfter: 6 });
-  card(s, 0.6, 5.75, 12.1, 0.8, C.text1);
-  txt(s, [
-    { text: "필요한 것은 더 똑똑한 범용 AI가 아니라, ", options: { color: C.background1 } },
-    { text: "우리 데이터에 연결되고 스스로 단계를 이어 가는 업무용 에이전트", options: { bold: true, color: C.accent1 } },
-  ], { x: 0.9, y: 5.75, w: 11.6, h: 0.8, fontSize: 16, valign: "middle" });
-  s.addNotes(
-    "이 방식에는 세 가지 한계가 있습니다.\n" +
-    "첫째, 비효율입니다. 사람이 매번 맥락을 설명하고 결과를 옮깁니다. 사람마다 방식이 달라 결과도 다르고, 잘 된 방식이 재현되지 않습니다. 국내 조사에서도 AI를 도입한 기업은 70%에 가깝지만 업무 표준으로 정착한 곳은 12.5%입니다.\n" +
-    "둘째, 비용입니다. 범용 AI 구독료는 쓰는 만큼이 아니라 사람 수만큼 나갑니다. 단순 반복 작업도 고가 모델과 긴 대화로 처리합니다. 예를 들어 1인 월 4만 원씩 300명이면 연 1.4억 원입니다. 실제 결제 금액은 확인해서 말씀드리겠습니다.\n" +
-    "셋째, 그리고 가장 큰 한계는 데이터입니다. 범용 AI는 우리 회계, 제조, 생산, 품질 데이터를 볼 수 없습니다. 그래서 '이번 달 왜 불량이 늘었나', '어느 거래처 잔액이 안 맞나' 같은, 정작 우리 회사에 필요한 질문에는 답하지 못합니다. 데이터를 통째로 붙여 넣으면 보안 문제가 되고, 일부만 넣으면 틀린 답이 나옵니다.\n" +
-    "그래서 필요한 것은 더 똑똑한 범용 AI가 아니라, 우리 데이터에 연결되고 스스로 단계를 이어 가는 업무용 에이전트입니다."
+    "위의 숫자부터 보시면, 업무에 AI를 정기적으로 쓰는 직원이 45%로 1년 만에 3배가 됐고, 절반 가까이가 회사가 승인하지 않은 도구를 씁니다. 3명 중 1명은 회사 자료를 거기에 넣어 봤고, 침해 사고를 겪은 조직의 43%가 섀도 AI 관련 사고였습니다.\n" +
+    "가운데는 지금 일하는 방식입니다. 시스템에서 조회하고, 복사하고, AI에 묻고, 근거를 확인하러 다시 조회하고, 맥락을 다시 설명하며 이어 묻고, 결과를 손으로 옮깁니다. 여섯 단계 중 AI가 하는 것은 하나뿐이고, 그마저 우리 데이터를 모른 채 답합니다.\n" +
+    "그래서 세 가지 한계가 생깁니다. 느립니다. 사람이 다섯 단계를 잇습니다. 반쪽입니다. 이것이 가장 큰 한계로, 회계·제조·품질·생산 데이터를 볼 수 없어 정작 우리 회사의 질문에는 답하지 못합니다. 그리고 위험합니다. 무엇이 밖으로 나갔는지 기록이 없고, 비용은 사람 수만큼 늘어납니다.\n" +
+    "임원의 65%도 승인되지 않은 AI를 씁니다. 금지로는 막을 수 없습니다. 필요한 것은 우리 데이터에 연결되고 통제되는 업무용 에이전트입니다."
   );
 }
 {
