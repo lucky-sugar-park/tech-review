@@ -540,35 +540,43 @@ pres.addSection({ title: S2 });
   );
 }
 {
-  const s = content("왜 지금인가: 업무 소프트웨어가 에이전트로 바뀌고 있다", S2);
-  const trends = [
-    ["33%", "2028년까지 기업 소프트웨어 중\n에이전트 AI를 포함하는 비율", "Gartner", C.accent6],
-    ["15%", "2028년까지 자율적으로\n이뤄질 일상 업무 결정", "Gartner", C.accent6],
-    ["79%", "2026년 생성형 AI 예산을\n늘리는 국내 기업", "CIO Korea 2026 조사", C.accent2],
+  const s = content("왜 지금인가: 생존, 경쟁력, 그리고 직원 한 사람의 생산성", S2);
+  const cols = [
+    ["생존", C.accent4, "사람은 줄고, 일은 는다", "31.7%", "제조업 기간제 취업자 중 60세 이상\n(2010년 7.1% → 4배 이상)",
+      "숙련자가 떠나기 전에 노하우를 에이전트와 지식으로 남겨야 한다", "한국노동연구원 노동리뷰(2025)"],
+    ["경쟁력", C.accent2, "격차는 시간이 갈수록 벌어진다", "79% vs 12.5%", "AI 예산을 늘리는 국내 기업 vs\n업무 표준으로 정착시킨 기업",
+      "모델은 누구나 산다. 우리 데이터용 도구·지식은 쌓는 데 시간이 걸린다", "CIO Korea 2026 · 조코딩AX파트너스"],
+    ["개인 생산성", C.accent6, "AI를 쓰면 더 많이, 더 잘한다", "25% 더 빨리", "과제 12% 더 많이, 품질 40% 향상\n(컨설턴트 758명 무작위 실험)",
+      "상담원 처리량 14%↑, 신입은 34%↑: 신입이 빨리 숙련자 수준에 다가간다", "Harvard·BCG(2023) · Brynjolfsson 외(QJE 2025)"],
   ];
-  trends.forEach(([n, d, src, col], i) => {
+  cols.forEach(([tag, col, claim, big, cap, line, src], i) => {
     const x = 0.6 + i * 4.1;
-    card(s, x, 1.35, 3.9, 2.35, C.background2);
-    txt(s, n, { x: x + 0.3, y: 1.5, w: 3.3, h: 0.9, fontSize: 44, bold: true, color: col });
-    txt(s, d, { x: x + 0.3, y: 2.45, w: 3.4, h: 0.8, fontSize: 14 });
-    txt(s, src, { x: x + 0.3, y: 3.3, w: 3.4, h: 0.3, fontSize: 11, color: C.accent3 });
+    card(s, x, 1.3, 3.9, 4.05, C.background2);
+    s.addShape(pres.shapes.RECTANGLE, { x, y: 1.3, w: 3.9, h: 0.1, fill: { color: col }, line: { type: "none" }, objectName: nm("bar") });
+    txt(s, tag, { x: x + 0.3, y: 1.5, w: 3.3, h: 0.4, fontSize: 15, bold: true, color: col });
+    txt(s, claim, { x: x + 0.3, y: 1.9, w: 3.4, h: 0.7, fontSize: 17, bold: true, valign: "top" });
+    txt(s, big, { x: x + 0.3, y: 2.6, w: 3.4, h: 0.75, fontSize: 32, bold: true, color: col, valign: "middle" });
+    txt(s, cap, { x: x + 0.3, y: 3.35, w: 3.4, h: 0.6, fontSize: 11.5, color: C.accent3 });
+    s.addShape(pres.shapes.LINE, { x: x + 0.3, y: 4.05, w: 3.3, h: 0, line: { color: BORDER, width: 1 }, objectName: nm("hr") });
+    txt(s, line, { x: x + 0.3, y: 4.12, w: 3.4, h: 0.75, fontSize: 13, bold: true, valign: "middle" });
+    txt(s, src, { x: x + 0.3, y: 4.92, w: 3.4, h: 0.3, fontSize: 9.5, color: C.accent3 });
   });
-  const facts = [
-    ["연결 표준 확정", "MCP가 글로벌 표준으로 자리 잡았다(앞 장). 지금 만든 도구는 어떤 AI로 바꿔도 그대로 쓴다", C.accent2],
-    ["제도 시행", "AI 기본법 시행(2026.1.22): 생성물 표시, 사전 고지, 고영향 AI 관리. 통제 체계가 필요해졌다", C.accent1],
-    ["경고", "Gartner: 에이전트 AI 프로젝트 40% 이상이 2027년까지 취소. 원인은 비용, 불분명한 가치, 리스크 통제 부족", C.accent4],
-  ];
-  facts.forEach(([t, d, col], i) => {
-    const y = 3.95 + i * 0.85;
-    s.addShape(pres.shapes.OVAL, { x: 0.65, y: y + 0.12, w: 0.22, h: 0.22, fill: { color: col }, line: { type: "none" }, objectName: nm("dot") });
-    txt(s, t, { x: 1.05, y, w: 2.3, h: 0.5, fontSize: 16, bold: true, valign: "middle" });
-    txt(s, d, { x: 3.4, y, w: 9.3, h: 0.7, fontSize: 14, valign: "middle" });
-  });
+  txt(s, [
+    { text: "때도 맞다  ", options: { bold: true, color: HEX.dk1 } },
+    { text: "연결 표준(MCP) 확정 · AI 기본법 시행으로 통제 체계 필요 · 단, 에이전트 프로젝트 40%는 취소 전망(Gartner) → 작게 시작해 측정하며 넓힌다" },
+  ], { x: 0.6, y: 5.42, w: 12.1, h: 0.34, fontSize: 12, color: C.accent3 });
+  card(s, 0.6, 5.85, 12.1, 0.68, C.text1);
+  txt(s, [
+    { text: "지금 시작하지 않으면: ", options: { bold: true, color: C.accent1 } },
+    { text: "노하우는 사람과 함께 떠나고, 경쟁사와 격차는 벌어지고, 직원들은 통제 밖에서 각자 쓴다", options: { color: C.background1 } },
+  ], { x: 0.9, y: 5.85, w: 11.6, h: 0.68, fontSize: 15, valign: "middle" });
   s.addNotes(
-    "왜 지금인가. 업무 소프트웨어가 에이전트로 바뀌고 있습니다. Gartner는 2028년까지 기업 소프트웨어의 3분의 1이 에이전트를 포함하고, 일상 업무 결정의 15%가 자율적으로 이뤄질 것으로 봅니다. 국내 기업 79%가 내년 AI 예산을 늘립니다.\n" +
-    "앞 장에서 말씀드린 대로 연결 표준도 정해졌습니다. 지금 도구를 만들면 나중에 어떤 AI로 바꿔도 그대로 씁니다.\n" +
-    "AI 기본법도 올해 1월 시행됐습니다. 통제 체계가 필요해졌습니다.\n" +
-    "다만 경고도 있습니다. 에이전트 프로젝트의 40% 이상이 취소될 것이라는 전망입니다. 원인은 비용, 불분명한 가치, 리스크 통제 부족입니다. 이 제안은 그 세 가지에 맞춰 설계했습니다."
+    "왜 지금이어야 하는지, 세 가지로 말씀드리겠습니다.\n" +
+    "첫째, 생존입니다. 제조 현장은 사람이 줄고 일은 늘고 있습니다. 제조업 기간제 취업자 중 60세 이상이 31.7%로, 15년 전의 네 배가 넘습니다. 청년은 공장으로 오지 않습니다. 숙련자가 떠나기 전에 그 노하우를 에이전트와 지식으로 남겨야, 같은 인원으로 일을 감당할 수 있습니다. (가능하면 우리 회사의 5년 내 퇴직 예정 숙련 인력 수로 바꿔 말씀드립니다.)\n" +
+    "둘째, 경쟁력입니다. 국내 기업 79%가 AI 예산을 늘리지만, 업무 표준으로 정착시킨 곳은 12.5%입니다. AI 모델은 경쟁사도 똑같이 삽니다. 차이는 우리 데이터에 연결된 도구와 지식, 그리고 운영 경험에서 나는데, 이건 쌓는 데 시간이 걸립니다. 먼저 정착시키는 회사가 앞서고, 그 격차는 시간이 갈수록 벌어집니다.\n" +
+    "셋째, 직원 한 사람의 생산성입니다. 하버드와 BCG가 컨설턴트 758명으로 한 실험에서, AI를 쓴 그룹은 과제를 12% 더 많이, 25% 더 빨리 끝냈고 결과물 품질은 40% 높았습니다. 콜센터 상담원 연구에서는 시간당 처리량이 14% 늘었고, 신입은 34% 늘었습니다. 신입이 빨리 숙련자 수준에 다가간다는 뜻입니다. 단, AI가 잘하는 업무 범위 안에서의 결과라 파일럿으로 우리 업무에서 확인하겠습니다.\n" +
+    "때도 맞습니다. 연결 표준이 정해졌고, AI 기본법으로 통제 체계가 필요해졌습니다. 다만 에이전트 프로젝트의 40%가 취소될 것이라는 전망도 있어, 작게 시작해 측정하며 넓히겠습니다.\n" +
+    "지금 시작하지 않으면 노하우는 사람과 함께 떠나고, 경쟁사와 격차는 벌어지고, 직원들은 통제 밖에서 각자 씁니다."
   );
 }
 
